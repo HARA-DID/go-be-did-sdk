@@ -9,7 +9,7 @@ import (
 	GasManagerSDK "github.com/meQlause/account-abstraction-sdk/pkg/gasmanager"
 	WalletSDK "github.com/meQlause/account-abstraction-sdk/pkg/wallet"
 	WalletFactorySDK "github.com/meQlause/account-abstraction-sdk/pkg/walletfactory"
-	"github.com/meQlause/go-be-did/internal/domain/accountabstraction"
+	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/repository"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/wallet"
@@ -47,8 +47,8 @@ type AccountAbstractionSDK struct {
 
 func (s *AccountAbstractionSDK) CreateAccount(
 	ctx context.Context,
-	input accountabstraction.CreateAccountInput,
-) (*accountabstraction.TxHash, error) {
+	input aado.CreateAccountInput,
+) (*aado.TxHash, error) {
 	wallet := wallet.NewWallet(input.PrivKey)
 
 	txHashes, err := s.WalletFactory.DeployWallet(
@@ -61,15 +61,15 @@ func (s *AccountAbstractionSDK) CreateAccount(
 		return nil, fmt.Errorf("create wallet failed: %w", err)
 	}
 
-	return &accountabstraction.TxHash{
+	return &aado.TxHash{
 		TxHash: txHashes,
 	}, nil
 }
 
 func (s *AccountAbstractionSDK) ExecuteOperation(
 	ctx context.Context,
-	input accountabstraction.ExecuteOperationInput,
-) (*accountabstraction.TxHash, error) {
+	input aado.ExecuteOperationInput,
+) (*aado.TxHash, error) {
 	wallet := wallet.NewWallet(input.PrivKey)
 
 	hashes, err := s.EntryPoint.HandleOps(
@@ -82,7 +82,7 @@ func (s *AccountAbstractionSDK) ExecuteOperation(
 		return nil, fmt.Errorf("handle ops failed: %w", err)
 	}
 
-	return &accountabstraction.TxHash{
+	return &aado.TxHash{
 		TxHash: hashes,
 	}, nil
 }

@@ -1,4 +1,4 @@
-package accountabstraction
+package accountabstractiondomain
 
 import (
 	EntryPointSDK "github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
@@ -31,9 +31,9 @@ type ExecuteOperationOutput struct {
 }
 
 type AccountInfo struct {
-	Address string                 `json:"address"`
-	Owner   string                 `json:"owner"`
-	Nonce   int64                  `json:"nonce"`
-	Balance string                 `json:"balance"`
-	Data    map[string]interface{} `json:"data"`
+	Address string         `json:"address"`
+	Owner   string         `json:"owner"`
+	Nonce   int64          `json:"nonce"`
+	Balance string         `json:"balance"`
+	Data    map[string]any `json:"data"`
 }

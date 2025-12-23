@@ -1,13 +1,13 @@
-package accountabstraction
+package accountabstractionusecase
 
 import (
 	"github.com/meQlause/go-be-did/internal/repository"
 )
 
-type UseCase struct {
+type AccountAbstactionUseCase struct {
 	repo repository.AccountAbstractionRepository
 }
 
-func New(repo repository.AccountAbstractionRepository) *UseCase {
-	return &UseCase{repo: repo}
+func New(repo repository.AccountAbstractionRepository) *AccountAbstactionUseCase {
+	return &AccountAbstactionUseCase{repo: repo}
 }
