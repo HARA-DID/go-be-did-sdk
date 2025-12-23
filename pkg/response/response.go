@@ -3,12 +3,12 @@ package response
 import "github.com/gofiber/fiber/v2"
 
 type Response struct {
-	Success bool        `json:"success"`
-	Data    interface{} `json:"data,omitempty"`
-	Error   string      `json:"error,omitempty"`
+	Success bool   `json:"success"`
+	Data    any    `json:"data,omitempty"`
+	Error   string `json:"error,omitempty"`
 }
 
-func Success(c *fiber.Ctx, data interface{}) error {
+func Success(c *fiber.Ctx, data any) error {
 	return c.JSON(Response{
 		Success: true,
 		Data:    data,

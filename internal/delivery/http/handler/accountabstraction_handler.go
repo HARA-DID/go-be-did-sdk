@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/go-be-did/internal/domain/accountabstraction"
 	aauc "github.com/meQlause/go-be-did/internal/usecase/accountabstraction"
 	"github.com/meQlause/go-be-did/pkg/response"
@@ -25,7 +26,8 @@ func (h *AccountAbstractionHandler) CreateAccount(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return response.Success(c, result)
+	_, txError := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
+	return response.Success(c, txError)
 }
 
 func (h *AccountAbstractionHandler) ExecuteOperation(c *fiber.Ctx) error {
