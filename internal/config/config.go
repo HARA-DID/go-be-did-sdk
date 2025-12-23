@@ -22,7 +22,7 @@ type AppConfig struct {
 
 type HNSConfig struct {
 	AccountAbstraction sdk.AccountAbstractionHNS
-	DIDRoot            sdk.DIDRootHNS
+	// DIDRoot            sdk.DIDRootHNS
 }
 
 func Load() (*Config, error) {
@@ -41,10 +41,10 @@ func Load() (*Config, error) {
 				Wallet:        getEnv("AA_WALLET_HNS", ""),
 				WalletFactory: getEnv("AA_WALLET_FACTORY_HNS", ""),
 			},
-			DIDRoot: sdk.DIDRootHNS{
-				RootFactory: getEnv("DID_ROOT_FACTORY_HNS", ""),
-				RootStorage: getEnv("DID_ROOT_STORAGE_HNS", ""),
-			},
+			// DIDRoot: sdk.DIDRootHNS{
+			// 	RootFactory: getEnv("DID_ROOT_FACTORY_HNS", ""),
+			// 	RootStorage: getEnv("DID_ROOT_STORAGE_HNS", ""),
+			// },
 		},
 	}
 
@@ -64,9 +64,9 @@ func (c *Config) Validate() error {
 		return err
 	}
 
-	if err := c.HNS.DIDRoot.Validate(); err != nil {
-		return err
-	}
+	// if err := c.HNS.DIDRoot.Validate(); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

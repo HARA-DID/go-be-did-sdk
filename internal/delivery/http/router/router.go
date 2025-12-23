@@ -12,10 +12,10 @@ import (
 	"github.com/meQlause/go-be-did/internal/delivery/http/handler"
 	"github.com/meQlause/go-be-did/internal/infrastructure/sdk"
 	"github.com/meQlause/go-be-did/internal/usecase/accountabstraction"
-	"github.com/meQlause/hara-core-blockchain-lib/pkg"
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
 )
 
-func Setup(app *fiber.App, cfg *config.Config, bc *pkg.Blockchain) {
+func Setup(app *fiber.App, cfg *config.Config, bc *blockchain.Blockchain) {
 	// Middleware
 
 	app.Use(recover.New())

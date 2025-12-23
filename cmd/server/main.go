@@ -8,7 +8,8 @@ import (
 	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/go-be-did/internal/delivery/http/router"
 	"github.com/meQlause/go-be-did/pkg/logger"
-	"github.com/meQlause/hara-core-blockchain-lib/pkg"
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/network"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
 
@@ -20,7 +21,7 @@ func main() {
 		ErrorHandler: customErrorHandler,
 	})
 
-	net := pkg.NewNetwork([]string{
+	net := network.NewNetwork([]string{
 		"http://20.198.228.24:5625",
 		"http://13.214.26.197:5625",
 		"http://70.153.16.221:5628",
@@ -28,7 +29,7 @@ func main() {
 		"http://70.153.16.216:5625",
 	}, "2.0", 1, utils.DefaultLogConfig())
 
-	bc := pkg.NewBlockchain("seed-phrase-dummy2", net, big.NewInt(int64(1212)))
+	bc := blockchain.NewBlockchain(net, big.NewInt(int64(1212)))
 
 	router.Setup(app, cfg, bc)
 

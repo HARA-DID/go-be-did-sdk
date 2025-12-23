@@ -11,7 +11,8 @@ import (
 	WalletFactorySDK "github.com/meQlause/account-abstraction-sdk/pkg/walletfactory"
 	"github.com/meQlause/go-be-did/internal/domain/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/repository"
-	pkg "github.com/meQlause/hara-core-blockchain-lib/pkg"
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/wallet"
 )
 
 type AccountAbstractionHNS struct {
@@ -46,16 +47,14 @@ type AccountAbstractionSDK struct {
 
 func (s *AccountAbstractionSDK) CreateAccount(
 	ctx context.Context,
-	input *accountabstraction.CreateAccountInput,
+	input accountabstraction.CreateAccountInput,
 ) (*accountabstraction.TxHash, error) {
-
-	if input == nil {
-		return nil, fmt.Errorf("input cannot be nil")
-	}
+	wallet := wallet.NewWallet(input.PrivKey)
 
 	txHashes, err := s.WalletFactory.DeployWallet(
 		ctx,
-		*input,
+		wallet,
+		input.Input,
 		false,
 	)
 	if err != nil {
@@ -69,16 +68,14 @@ func (s *AccountAbstractionSDK) CreateAccount(
 
 func (s *AccountAbstractionSDK) ExecuteOperation(
 	ctx context.Context,
-	input *accountabstraction.ExecuteOperationInput,
+	input accountabstraction.ExecuteOperationInput,
 ) (*accountabstraction.TxHash, error) {
-
-	if input == nil {
-		return nil, fmt.Errorf("input cannot be nil")
-	}
+	wallet := wallet.NewWallet(input.PrivKey)
 
 	hashes, err := s.EntryPoint.HandleOps(
 		ctx,
-		*input,
+		wallet,
+		input.Input,
 		false,
 	)
 	if err != nil {
@@ -93,7 +90,7 @@ func (s *AccountAbstractionSDK) ExecuteOperation(
 func NewAccountAbstractionSDK(
 	ctx context.Context,
 	hns AccountAbstractionHNS,
-	bc *pkg.Blockchain,
+	bc *blockchain.Blockchain,
 ) (repository.AccountAbstractionRepository, error) {
 
 	if ctx == nil {

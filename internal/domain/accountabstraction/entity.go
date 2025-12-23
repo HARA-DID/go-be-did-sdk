@@ -11,13 +11,19 @@ type Account struct {
 	Nonce   int64
 }
 
-type CreateAccountInput = WalletFactorySDK.DeployWalletParams
+type CreateAccountInput struct {
+	PrivKey string
+	Input   WalletFactorySDK.DeployWalletParams
+}
 
 type TxHash struct {
 	TxHash []string
 }
 
-type ExecuteOperationInput = EntryPointSDK.HandleOpsParams
+type ExecuteOperationInput struct {
+	PrivKey string
+	Input   EntryPointSDK.HandleOpsParams
+}
 
 type ExecuteOperationOutput struct {
 	TxHash string

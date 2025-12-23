@@ -20,7 +20,7 @@ func (h *AccountAbstractionHandler) CreateAccount(c *fiber.Ctx) error {
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
-	result, err := h.uc.CreateAccount(c.Context(), &input)
+	result, err := h.uc.CreateAccount(c.Context(), input)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
@@ -34,7 +34,7 @@ func (h *AccountAbstractionHandler) ExecuteOperation(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	result, err := h.uc.ExecuteOperation(c.Context(), &input)
+	result, err := h.uc.ExecuteOperation(c.Context(), input)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}

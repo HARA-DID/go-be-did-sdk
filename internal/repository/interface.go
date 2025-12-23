@@ -7,6 +7,6 @@ import (
 )
 
 type AccountAbstractionRepository interface {
-	CreateAccount(ctx context.Context, input *accountabstraction.CreateAccountInput) (*accountabstraction.TxHash, error)
-	ExecuteOperation(ctx context.Context, input *accountabstraction.ExecuteOperationInput) (*accountabstraction.TxHash, error)
+	CreateAccount(ctx context.Context, input accountabstraction.CreateAccountInput) (*accountabstraction.TxHash, error)
+	ExecuteOperation(ctx context.Context, input accountabstraction.ExecuteOperationInput) (*accountabstraction.TxHash, error)
 }
