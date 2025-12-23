@@ -12,8 +12,8 @@ type Account struct {
 }
 
 type CreateAccountInput struct {
-	PrivKey string
-	Input   WalletFactorySDK.DeployWalletParams
+	PrivKey string                              `json:"privKey"`
+	Input   WalletFactorySDK.DeployWalletParams `json:"input"`
 }
 
 type TxHash struct {
