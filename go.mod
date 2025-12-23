@@ -6,13 +6,13 @@ replace github.com/meQlause/account-abstraction-sdk => ./internal/infrastructure
 
 replace github.com/meQlause/hara-core-blockchain-lib => ./internal/infrastructure/lib/core-general-sdk
 
-replace github.com/meQlause/did-root-sdk => ./internal/infrastructure/lib/did-root-sdk/did-root-sdk
+// replace github.com/meQlause/did-root-sdk => ./internal/infrastructure/lib/did-root-sdk/did-root-sdk
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.10
 	github.com/joho/godotenv v1.5.1
 	github.com/meQlause/account-abstraction-sdk v0.0.0-00010101000000-000000000000
-	github.com/meQlause/did-root-sdk v0.0.0-00010101000000-000000000000
+	// github.com/meQlause/did-root-sdk v0.0.0-00010101000000-000000000000
 	github.com/meQlause/hara-core-blockchain-lib v0.0.0
 )
 
