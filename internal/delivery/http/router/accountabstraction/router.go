@@ -20,6 +20,7 @@ func SetupAccountAbstractionRoutes(api fiber.Router, cfg *config.Config, bc *blo
 	if err != nil {
 		panic(err)
 	}
+
 	SetupWalletFactoryRoutes(aa, aaRepo, cfg, bc)
 	SetupWalletRoutes(aa, aaRepo, cfg, bc)
 }

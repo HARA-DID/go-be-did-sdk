@@ -12,5 +12,6 @@ import (
 func SetupWalletFactoryRoutes(aa fiber.Router, aaRepo repository.AccountAbstractionRepository, cfg *config.Config, bc *blockchain.Blockchain) {
 	aaUC := aauc.New(aaRepo)
 	aaHandler := aahandler.NewAccountAbstractionHandler(aaUC)
+
 	aa.Post("/create", aaHandler.CreateAccount)
 }

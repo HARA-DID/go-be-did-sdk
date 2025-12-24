@@ -10,9 +10,9 @@ import (
 )
 
 func SetupWalletRoutes(aa fiber.Router, aaRepo repository.AccountAbstractionRepository, cfg *config.Config, bc *blockchain.Blockchain) {
-
 	aaUC := aauc.New(aaRepo)
 	aaHandler := aahandler.NewAccountAbstractionHandler(aaUC)
+
 	aa.Post("/execute", aaHandler.ExecuteOperation)
 	// aa.Get("/:address", aaHandler.GetAccountInfo)
 }
