@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/joho/godotenv"
-	"github.com/meQlause/go-be-did/internal/infrastructure/sdk"
+	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 
 var (
@@ -26,7 +26,7 @@ type AppConfig struct {
 }
 
 type HNSConfig struct {
-	AccountAbstraction sdk.AccountAbstractionHNS
+	AccountAbstraction aasdk.AccountAbstractionHNS
 	// DIDRoot            sdk.DIDRootHNS
 }
 
@@ -51,7 +51,7 @@ func Load() (*Config, error) {
 			RPCTimeout: getEnvAsInt("RPC_TIMEOUT", 30),
 		},
 		HNS: HNSConfig{
-			AccountAbstraction: sdk.AccountAbstractionHNS{
+			AccountAbstraction: aasdk.AccountAbstractionHNS{
 				EntryPoint:    getEnv("AA_ENTRYPOINT_HNS", ""),
 				GasManager:    getEnv("AA_GAS_MANAGER_HNS", ""),
 				Wallet:        getEnv("AA_WALLET_HNS", ""),
