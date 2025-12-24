@@ -14,7 +14,7 @@ var (
 )
 
 func InitBlockchain() {
-	once.Do(func() {
+	onceBlockchain.Do(func() {
 
 		netInstance = network.NewNetwork(
 			[]string{

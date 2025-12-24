@@ -5,5 +5,6 @@ import (
 )
 
 var (
-	once sync.Once
+	onceConfig     sync.Once
+	onceBlockchain sync.Once
 )

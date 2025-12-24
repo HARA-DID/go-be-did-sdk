@@ -31,7 +31,7 @@ type HNSConfig struct {
 }
 
 func InitConfig() {
-	once.Do(func() {
+	onceConfig.Do(func() {
 		cfg, err := Load()
 		if err != nil {
 			panic(err)
