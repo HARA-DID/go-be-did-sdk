@@ -9,6 +9,10 @@ import (
 	"github.com/meQlause/go-be-did/internal/infrastructure/sdk"
 )
 
+var (
+	config *Config
+)
+
 type Config struct {
 	App AppConfig
 	HNS HNSConfig
@@ -16,6 +20,7 @@ type Config struct {
 
 type AppConfig struct {
 	Port       string
+	Version    string
 	LogLevel   string
 	RPCTimeout int
 }
@@ -25,6 +30,16 @@ type HNSConfig struct {
 	// DIDRoot            sdk.DIDRootHNS
 }
 
+func InitConfig() {
+	once.Do(func() {
+		cfg, err := Load()
+		if err != nil {
+			panic(err)
+		}
+		config = cfg
+	})
+}
+
 func Load() (*Config, error) {
 	_ = godotenv.Load()
 
@@ -32,6 +47,7 @@ func Load() (*Config, error) {
 		App: AppConfig{
 			Port:       getEnv("PORT", "8080"),
 			LogLevel:   getEnv("LOG_LEVEL", "info"),
+			Version:    getEnv("VERSION", "1.0"),
 			RPCTimeout: getEnvAsInt("RPC_TIMEOUT", 30),
 		},
 		HNS: HNSConfig{
@@ -85,4 +101,12 @@ func getEnvAsInt(key string, defaultValue int) int {
 		}
 	}
 	return defaultValue
+}
+
+func GetApp() AppConfig {
+	return config.App
+}
+
+func GetConfig() *Config {
+	return config
 }

@@ -10,18 +10,19 @@ import (
 )
 
 func main() {
-	cfg, _ := config.Load()
-	logger.Init(cfg.App.LogLevel)
+	config.InitConfig()
 	config.InitBlockchain()
+
+	logger.Init(config.GetApp().LogLevel)
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: customErrorHandler,
 	})
 
-	router.Setup(app, cfg, config.Blockchain())
+	router.Setup(app, config.GetConfig(), config.Blockchain())
 
-	log.Printf("Server starting on port %s", cfg.App.Port)
-	log.Fatal(app.Listen(":" + cfg.App.Port))
+	log.Printf("Server starting on port %s", config.GetApp().Port)
+	log.Fatal(app.Listen(":" + config.GetApp().Port))
 }
 
 func customErrorHandler(c *fiber.Ctx, err error) error {

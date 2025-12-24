@@ -2,7 +2,6 @@ package config
 
 import (
 	"math/big"
-	"sync"
 
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/network"
@@ -10,8 +9,6 @@ import (
 )
 
 var (
-	once sync.Once
-
 	bcInstance  *blockchain.Blockchain
 	netInstance *network.Network
 )
