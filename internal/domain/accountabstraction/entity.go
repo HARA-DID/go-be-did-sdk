@@ -5,13 +5,13 @@ import (
 	WalletFactorySDK "github.com/meQlause/account-abstraction-sdk/pkg/walletfactory"
 )
 
-type Account struct {
+type Wallet struct {
 	Address string
 	Owner   string
 	Nonce   int64
 }
 
-type CreateAccountInput struct {
+type CreateWalletInput struct {
 	PrivKey string                              `json:"privKey"`
 	Input   WalletFactorySDK.DeployWalletParams `json:"input"`
 }
@@ -30,7 +30,7 @@ type ExecuteOperationOutput struct {
 	Status string
 }
 
-type AccountInfo struct {
+type WalletInfo struct {
 	Address string         `json:"address"`
 	Owner   string         `json:"owner"`
 	Nonce   int64          `json:"nonce"`

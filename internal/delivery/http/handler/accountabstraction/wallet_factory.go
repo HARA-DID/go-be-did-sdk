@@ -20,7 +20,7 @@ type WalletDeployedEvent struct {
 }
 
 func (ah *AccountAbstractionHandler) CreateAccount(c *fiber.Ctx) error {
-	var input aado.CreateAccountInput
+	var input aado.CreateWalletInput
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}

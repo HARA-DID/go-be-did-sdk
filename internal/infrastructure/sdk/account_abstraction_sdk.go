@@ -47,7 +47,7 @@ type AccountAbstractionSDK struct {
 
 func (s *AccountAbstractionSDK) CreateAccount(
 	ctx context.Context,
-	input aado.CreateAccountInput,
+	input aado.CreateWalletInput,
 ) (*aado.TxHash, error) {
 	wallet := wallet.NewWallet(input.PrivKey)
 
