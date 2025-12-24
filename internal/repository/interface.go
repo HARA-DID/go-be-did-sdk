@@ -8,7 +8,7 @@ import (
 )
 
 type AccountAbstractionRepository interface {
-	CreateAccount(ctx context.Context, input aa.CreateWalletInput) (*aa.TxHash, error)
+	CreateWallet(ctx context.Context, input aa.CreateWalletInput) (*aa.TxHash, error)
 	ExecuteOperation(ctx context.Context, input aa.ExecuteOperationInput) (*aa.TxHash, error)
 }
 

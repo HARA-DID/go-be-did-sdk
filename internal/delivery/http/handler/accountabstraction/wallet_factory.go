@@ -11,13 +11,13 @@ import (
 	"github.com/meQlause/go-be-did/pkg/response"
 )
 
-func (ah *AccountAbstractionHandler) CreateAccount(c *fiber.Ctx) error {
+func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 	var input aado.CreateWalletInput
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	result, err := ah.uc.CreateAccount(c.Context(), input)
+	result, err := ah.uc.CreateWallet(c.Context(), input)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}

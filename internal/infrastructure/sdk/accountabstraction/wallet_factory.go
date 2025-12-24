@@ -8,7 +8,7 @@ import (
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/wallet"
 )
 
-func (s *AccountAbstractionSDK) CreateAccount(
+func (s *AccountAbstractionSDK) CreateWallet(
 	ctx context.Context,
 	input aado.CreateWalletInput,
 ) (*aado.TxHash, error) {

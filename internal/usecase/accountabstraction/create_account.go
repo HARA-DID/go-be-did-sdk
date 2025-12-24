@@ -7,8 +7,8 @@ import (
 	"github.com/meQlause/go-be-did/pkg/logger"
 )
 
-func (uc *AccountAbstactionUseCase) CreateAccount(ctx context.Context, input aa.CreateWalletInput) (*aa.TxHash, error) {
-	result, err := uc.repo.CreateAccount(ctx, input)
+func (uc *AccountAbstactionUseCase) CreateWallet(ctx context.Context, input aa.CreateWalletInput) (*aa.TxHash, error) {
+	result, err := uc.repo.CreateWallet(ctx, input)
 	if err != nil {
 		logger.ErrorLogger.Printf("Failed to create account: %v", err)
 		return nil, err

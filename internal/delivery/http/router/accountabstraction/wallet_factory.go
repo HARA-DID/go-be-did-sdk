@@ -13,5 +13,5 @@ func SetupWalletFactoryRoutes(aa fiber.Router, aaRepo repository.AccountAbstract
 	aaUC := aauc.New(aaRepo)
 	aaHandler := aahandler.NewAccountAbstractionHandler(aaUC)
 
-	aa.Post("/create", aaHandler.CreateAccount)
+	aa.Post("/create", aaHandler.CreateWallet)
 }
