@@ -1,13 +1,20 @@
-package sdk
+package didrootsdk
 
 import (
 	"context"
 	"errors"
 	"fmt"
+	"sync"
 
 	rootFactorySDK "github.com/meQlause/did-root-sdk/pkg/rootfactory"
 	rootStorageSDK "github.com/meQlause/did-root-sdk/pkg/rootstorage"
-	pkg "github.com/meQlause/hara-core-blockchain-lib/pkg"
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
+)
+
+var (
+	didRootOnce sync.Once
+	didRootSDK  *DIDRootSDK
+	didRootErr  error
 )
 
 type DIDRootHNS struct {
@@ -30,10 +37,10 @@ type DIDRootSDK struct {
 	RootStorage *rootStorageSDK.RootStorage
 }
 
-func NewDIDRootSDK(
+func newDIDRootSDK(
 	ctx context.Context,
 	hns DIDRootHNS,
-	bc *pkg.Blockchain,
+	bc *blockchain.Blockchain,
 ) (*DIDRootSDK, error) {
 
 	if ctx == nil {
@@ -68,4 +75,26 @@ func NewDIDRootSDK(
 		RootFactory: rootFactory,
 		RootStorage: rootStorage,
 	}, nil
+}
+
+func InitializeDIDRootSDK(ctx context.Context, hns DIDRootHNS, bc *blockchain.Blockchain) error {
+	didRootOnce.Do(func() {
+		didRootSDK, didRootErr = newDIDRootSDK(ctx, hns, bc)
+	})
+	return didRootErr
+}
+
+func GetDIDRootSDK() *DIDRootSDK {
+	sdk, err := rootSDK()
+	if err != nil {
+		panic(err)
+	}
+	return sdk
+}
+
+func rootSDK() (*DIDRootSDK, error) {
+	if didRootSDK == nil {
+		return nil, errors.New("DIDRootSDK not initialized, call InitializeDIDRootSDK first")
+	}
+	return didRootSDK, nil
 }

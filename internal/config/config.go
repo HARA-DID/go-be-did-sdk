@@ -7,6 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
+	drsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 )
 
 var (
@@ -27,7 +28,7 @@ type AppConfig struct {
 
 type HNSConfig struct {
 	AccountAbstraction aasdk.AccountAbstractionHNS
-	// DIDRoot            sdk.DIDRootHNS
+	DIDRoot            drsdk.DIDRootHNS
 }
 
 func InitConfig() {
@@ -57,10 +58,10 @@ func Load() (*Config, error) {
 				Wallet:        getEnv("AA_WALLET_HNS", ""),
 				WalletFactory: getEnv("AA_WALLET_FACTORY_HNS", ""),
 			},
-			// DIDRoot: sdk.DIDRootHNS{
-			// 	RootFactory: getEnv("DID_ROOT_FACTORY_HNS", ""),
-			// 	RootStorage: getEnv("DID_ROOT_STORAGE_HNS", ""),
-			// },
+			DIDRoot: drsdk.DIDRootHNS{
+				RootFactory: getEnv("DID_ROOT_FACTORY_HNS", ""),
+				RootStorage: getEnv("DID_ROOT_STORAGE_HNS", ""),
+			},
 		},
 	}
 
@@ -80,9 +81,9 @@ func (c *Config) Validate() error {
 		return err
 	}
 
-	// if err := c.HNS.DIDRoot.Validate(); err != nil {
-	// 	return err
-	// }
+	if err := c.HNS.DIDRoot.Validate(); err != nil {
+		return err
+	}
 
 	return nil
 }

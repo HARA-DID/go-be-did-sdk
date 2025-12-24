@@ -18,4 +18,5 @@ func SetupHelperRoutes(api fiber.Router) {
 	helper := api.Group("/helper")
 
 	helper.Post("/string-2-byte32", helperHandler.StringToByte32)
+	helper.Post("/encode-create-did-param", helperHandler.EncodeCreateDIDParam)
 }

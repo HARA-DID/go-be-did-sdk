@@ -1,18 +1,22 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/go-be-did/internal/delivery/http/router"
+	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
+	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 	"github.com/meQlause/go-be-did/pkg/logger"
 )
 
 func main() {
 	config.InitConfig()
 	config.InitBlockchain()
-
+	aasdk.InitializeAccountAbstractionSDK(context.Background(), config.GetConfig().HNS.AccountAbstraction, config.Blockchain())
+	didrootsdk.InitializeDIDRootSDK(context.Background(), config.GetConfig().HNS.DIDRoot, config.Blockchain())
 	logger.Init(config.GetApp().LogLevel)
 
 	app := fiber.New(fiber.Config{

@@ -24,7 +24,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 
 	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
 
-	resp := make(map[string]Response)
+	resp := make(map[string]CreateWalletResponse)
 
 	for txHash, ok := range txSuccess {
 		eventData, err := aaevent.DecodeWalletDeployedEvent(c.Context(), txHash)
@@ -33,7 +33,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 			continue
 		}
 		if eventData != nil {
-			resp[txHash.Hex()] = Response{
+			resp[txHash.Hex()] = CreateWalletResponse{
 				Success:  ok,
 				Errors:   "No Error Message",
 				Returned: eventData,
@@ -42,7 +42,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 	}
 
 	for h, err := range txErrors {
-		resp[h.Hex()] = Response{
+		resp[h.Hex()] = CreateWalletResponse{
 			Success:  false,
 			Errors:   err.Error(),
 			Returned: nil,

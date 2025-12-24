@@ -4,14 +4,20 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sync"
 
 	EntryPointSDK "github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
 	GasManagerSDK "github.com/meQlause/account-abstraction-sdk/pkg/gasmanager"
 	WalletSDK "github.com/meQlause/account-abstraction-sdk/pkg/wallet"
 	WalletFactorySDK "github.com/meQlause/account-abstraction-sdk/pkg/walletfactory"
 
-	"github.com/meQlause/go-be-did/internal/repository"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
+)
+
+var (
+	aaOnce sync.Once
+	aaSDK  *AccountAbstractionSDK
+	aaErr  error
 )
 
 type AccountAbstractionHNS struct {
@@ -44,11 +50,11 @@ type AccountAbstractionSDK struct {
 	WalletFactory *WalletFactorySDK.WalletFactory
 }
 
-func NewAccountAbstractionSDK(
+func newAccountAbstractionSDK(
 	ctx context.Context,
 	hns AccountAbstractionHNS,
 	bc *blockchain.Blockchain,
-) (repository.AccountAbstractionRepository, error) {
+) (*AccountAbstractionSDK, error) {
 
 	if ctx == nil {
 		return nil, errors.New("context cannot be nil")
@@ -86,4 +92,27 @@ func NewAccountAbstractionSDK(
 		Wallet:        wallet,
 		WalletFactory: walletFactory,
 	}, nil
+}
+
+func InitializeAccountAbstractionSDK(ctx context.Context, hns AccountAbstractionHNS, bc *blockchain.Blockchain) error {
+	aaOnce.Do(func() {
+		aaSDK, aaErr = newAccountAbstractionSDK(ctx, hns, bc)
+	})
+	return aaErr
+}
+
+
+func GetAccountAbstractionSDK() *AccountAbstractionSDK {
+	sdk, err := accountAbstractionSDK()
+	if err != nil {
+		panic(err)
+	}
+	return sdk
+}
+
+func accountAbstractionSDK() (*AccountAbstractionSDK, error) {
+	if aaSDK == nil {
+		return nil, errors.New("AccountAbstractionSDK not initialized, call InitializeAccountAbstractionSDK first")
+	}
+	return aaSDK, nil
 }
