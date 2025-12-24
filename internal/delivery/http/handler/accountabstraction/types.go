@@ -1,7 +1,7 @@
 package accountabstractionhandler
 
-type TxCheckResponse struct {
-	Success  map[string]bool                 `json:"success"`
-	Errors   map[string]string               `json:"errors"`
-	Returned map[string]*WalletDeployedEvent `json:"returned"`
+type Response struct {
+	Success  bool                 `json:"success"`
+	Errors   string               `json:"errors"`
+	Returned *WalletDeployedEvent `json:"returned"`
 }

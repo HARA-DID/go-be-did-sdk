@@ -3,7 +3,6 @@ package accountabstractionhandler
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gofiber/fiber/v2"
@@ -32,35 +31,28 @@ func (ah *AccountAbstractionHandler) CreateAccount(c *fiber.Ctx) error {
 
 	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
 
-	resp := TxCheckResponse{
-		Success:  make(map[string]bool),
-		Errors:   make(map[string]string),
-		Returned: make(map[string]*WalletDeployedEvent),
-	}
+	resp := make(map[string]Response)
 
-	for h, ok := range txSuccess {
-		resp.Success[h.Hex()] = ok
-		resp.Errors[h.Hex()] = "No Error Message"
-	}
-	for h, err := range txErrors {
-		if err != nil {
-			resp.Errors[h.Hex()] = err.Error()
-		}
-	}
-
-	for _, txHashStr := range result.TxHash {
-		txHash := strings.TrimSpace(txHashStr)
-		txHash = strings.TrimPrefix(txHash, "\"")
-		txHash = strings.TrimSuffix(txHash, "\"")
-		txHashParsed := common.HexToHash(txHash)
-
-		eventData, err := ah.decodeWalletDeployedEvent(c.Context(), txHashParsed)
+	for txHash, ok := range txSuccess {
+		eventData, err := ah.decodeWalletDeployedEvent(c.Context(), txHash)
 		if err != nil {
 			fmt.Printf("Could not decode event for tx %s: %v\n", txHash, err)
 			continue
 		}
 		if eventData != nil {
-			resp.Returned[txHash] = eventData
+			resp[txHash.Hex()] = Response{
+				Success:  ok,
+				Errors:   "No Error Message",
+				Returned: eventData,
+			}
+		}
+	}
+
+	for h, err := range txErrors {
+		resp[h.Hex()] = Response{
+			Success:  false,
+			Errors:   err.Error(),
+			Returned: nil,
 		}
 	}
 
