@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	entryPointSDK "github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
+	EntryPointSDK "github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
 	GasManagerSDK "github.com/meQlause/account-abstraction-sdk/pkg/gasmanager"
 	WalletSDK "github.com/meQlause/account-abstraction-sdk/pkg/wallet"
 	WalletFactorySDK "github.com/meQlause/account-abstraction-sdk/pkg/walletfactory"
@@ -38,7 +38,7 @@ func (h AccountAbstractionHNS) Validate() error {
 }
 
 type AccountAbstractionSDK struct {
-	EntryPoint    *entryPointSDK.EntryPoint
+	EntryPoint    *EntryPointSDK.EntryPoint
 	GasManager    *GasManagerSDK.GasManager
 	Wallet        *WalletSDK.Wallet
 	WalletFactory *WalletFactorySDK.WalletFactory
@@ -60,7 +60,7 @@ func NewAccountAbstractionSDK(
 		return nil, fmt.Errorf("invalid HNS config: %w", err)
 	}
 
-	entryPoint, err := entryPointSDK.NewEntryPointWithHNS(ctx, hns.EntryPoint, bc)
+	entryPoint, err := EntryPointSDK.NewEntryPointWithHNS(ctx, hns.EntryPoint, bc)
 	if err != nil {
 		return nil, fmt.Errorf("init entry point: %w", err)
 	}

@@ -4,3 +4,6 @@
 [submodule "internal/infrastructure/lib/core-account-abstraction-sdk"]
 	path = internal/infrastructure/lib/core-account-abstraction-sdk
 	url = https://dattabot@dev.azure.com/dattabot/Blockchain%202024/_git/core-account-abstraction-sdk
+[submodule "internal/infrastructure/lib/did-root-sdk"]
+	path = internal/infrastructure/lib/did-root-sdk
+	url = https://dattabot@dev.azure.com/dattabot/Blockchain%202024/_git/did-root-sdk
