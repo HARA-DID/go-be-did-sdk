@@ -1,8 +1,6 @@
 package accountabstractionhandler
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	aaevent "github.com/meQlause/go-be-did/internal/delivery/event/accountabstraction"
 	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
@@ -24,16 +22,15 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 
 	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
 
-	resp := make(map[string]CreateWalletResponse)
+	resp := make(map[string]Response)
 
 	for txHash, ok := range txSuccess {
 		eventData, err := aaevent.DecodeWalletDeployedEvent(c.Context(), txHash)
 		if err != nil {
-			fmt.Printf("Could not decode event for tx %s: %v\n", txHash, err)
 			continue
 		}
 		if eventData != nil {
-			resp[txHash.Hex()] = CreateWalletResponse{
+			resp[txHash.Hex()] = Response{
 				Success:  ok,
 				Errors:   "No Error Message",
 				Returned: eventData,
@@ -42,7 +39,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 	}
 
 	for h, err := range txErrors {
-		resp[h.Hex()] = CreateWalletResponse{
+		resp[h.Hex()] = Response{
 			Success:  false,
 			Errors:   err.Error(),
 			Returned: nil,

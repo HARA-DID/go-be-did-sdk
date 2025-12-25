@@ -11,5 +11,5 @@ func SetupAccountAbstractionRoutes(api fiber.Router, cfg *config.Config, bc *blo
 	aa := api.Group("/account-abstraction")
 
 	SetupWalletFactoryRoutes(aa, aasdk.GetAccountAbstractionSDK(), cfg, bc)
-	SetupWalletRoutes(aa, aasdk.GetAccountAbstractionSDK(), cfg, bc)
+	SetupEntryPointRoutes(aa, aasdk.GetAccountAbstractionSDK(), cfg, bc)
 }

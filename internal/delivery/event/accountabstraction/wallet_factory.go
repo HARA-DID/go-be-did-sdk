@@ -2,10 +2,9 @@ package accountabstractionevent
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/meQlause/go-be-did/internal/config"
+	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
 
 type WalletDeployedEvent struct {
@@ -14,14 +13,13 @@ type WalletDeployedEvent struct {
 	Salt            string `json:"salt"`
 }
 
-func DecodeWalletDeployedEvent(ctx context.Context, txHash common.Hash) (*WalletDeployedEvent, error) {
+func DecodeWalletDeployedEvent(ctx context.Context, txHash utils.Hash) (*WalletDeployedEvent, error) {
 	receipt, err := config.Blockchain().Network.GetPrimaryClient().Client.TransactionReceipt(ctx, txHash)
 	if err != nil {
-		fmt.Println("Error getting receipt:", err.Error())
 		return nil, err
 	}
 
-	contractAddress := common.HexToAddress("0x17ad613d07e9DdEeBE5D9C903E137142d49A294B")
+	contractAddress := utils.HexToAddress("0x17ad613d07e9DdEeBE5D9C903E137142d49A294B")
 
 	for _, log := range receipt.Logs {
 		if log.Address != contractAddress {
@@ -29,8 +27,8 @@ func DecodeWalletDeployedEvent(ctx context.Context, txHash common.Hash) (*Wallet
 		}
 
 		if len(log.Topics) >= 4 {
-			walletAddress := common.BytesToAddress(log.Topics[1].Bytes())
-			deployerAddress := common.BytesToAddress(log.Topics[2].Bytes())
+			walletAddress := utils.BytesToAddress(log.Topics[1].Bytes())
+			deployerAddress := utils.BytesToAddress(log.Topics[2].Bytes())
 			salt := log.Topics[3].Hex()
 
 			return &WalletDeployedEvent{

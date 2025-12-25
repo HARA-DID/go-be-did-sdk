@@ -9,10 +9,10 @@ import (
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
 )
 
-func SetupWalletRoutes(aa fiber.Router, aaRepo repository.AccountAbstractionRepository, cfg *config.Config, bc *blockchain.Blockchain) {
+func SetupEntryPointRoutes(aa fiber.Router, aaRepo repository.AccountAbstractionRepository, cfg *config.Config, bc *blockchain.Blockchain) {
 	aaUC := aauc.New(aaRepo)
 	aaHandler := aahandler.NewAccountAbstractionHandler(aaUC)
 
-	aa.Post("/execute", aaHandler.ExecuteOperation)
+	aa.Post("/handle-ops", aaHandler.HandleOps)
 	// aa.Get("/:address", aaHandler.GetAccountInfo)
 }

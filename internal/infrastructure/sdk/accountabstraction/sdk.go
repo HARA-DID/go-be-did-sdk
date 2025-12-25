@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/contract"
+	"github.com/meQlause/hara-core-blockchain-lib/utils"
+
 	EntryPointSDK "github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
 	GasManagerSDK "github.com/meQlause/account-abstraction-sdk/pkg/gasmanager"
 	WalletSDK "github.com/meQlause/account-abstraction-sdk/pkg/wallet"
 	WalletFactorySDK "github.com/meQlause/account-abstraction-sdk/pkg/walletfactory"
-
-	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
 )
 
 var (
@@ -101,6 +103,24 @@ func InitializeAccountAbstractionSDK(ctx context.Context, hns AccountAbstraction
 	return aaErr
 }
 
+func ChangeWalletImplementationAddress(newAddress utils.Address, bc *blockchain.Blockchain) {
+	contract, _ := contract.NewContract(utils.ContractConfig{
+		ABIJSON: aaSDK.Wallet.Contract.ABI,
+		Detail: utils.ContractDetail{
+			Address:         newAddress.Hex(),
+			CallBackend:     aaSDK.Wallet.Contract.Caller,
+			TransactBackend: aaSDK.Wallet.Contract.Transact,
+			LogBackend:      aaSDK.Wallet.Contract.Filter,
+		},
+	})
+
+	aaSDK.Wallet = WalletSDK.NewWallet(
+		newAddress,
+		aaSDK.Wallet.ContractABI,
+		bc,
+		contract,
+	)
+}
 
 func GetAccountAbstractionSDK() *AccountAbstractionSDK {
 	sdk, err := accountAbstractionSDK()

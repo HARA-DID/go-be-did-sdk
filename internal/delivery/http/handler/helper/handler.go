@@ -39,7 +39,10 @@ func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	decodedData := hh.uc.EncodeCreateDIDParam(input)
+	decodedData, err := hh.uc.EncodeCreateDIDParam(input)
+	if err != nil {
+		response.Error(c, fiber.StatusInternalServerError, "Can Not Get Nonce")
+	}
 
 	walletAddress := utils.HexToAddress(input.Address)
 

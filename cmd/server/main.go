@@ -7,11 +7,19 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/go-be-did/internal/delivery/http/router"
+	"github.com/meQlause/go-be-did/pkg/logger"
+
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
-	"github.com/meQlause/go-be-did/pkg/logger"
+
+	_ "github.com/meQlause/go-be-did/docs"
 )
 
+// @title           DID API
+// @version         1.0
+// @description     DID Backend API
+// @host            localhost:8080
+// @BasePath        /api/v1
 func main() {
 	config.InitConfig()
 	config.InitBlockchain()
