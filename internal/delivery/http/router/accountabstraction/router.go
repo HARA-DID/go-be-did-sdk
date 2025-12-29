@@ -3,8 +3,9 @@ package accountabstractionrouter
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
-	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
+
+	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 
 func SetupAccountAbstractionRoutes(api fiber.Router, cfg *config.Config, bc *blockchain.Blockchain) {
@@ -12,4 +13,5 @@ func SetupAccountAbstractionRoutes(api fiber.Router, cfg *config.Config, bc *blo
 
 	SetupWalletFactoryRoutes(aa, aasdk.GetAccountAbstractionSDK(), cfg, bc)
 	SetupEntryPointRoutes(aa, aasdk.GetAccountAbstractionSDK(), cfg, bc)
+	SetupWalletRoutes(aa, aasdk.GetAccountAbstractionSDK(), cfg, bc)
 }

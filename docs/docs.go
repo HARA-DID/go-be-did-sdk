@@ -14,17 +14,99 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/account-abstraction/create": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account-abstraction"
+                ],
+                "summary": "Create Account Abstraction Wallet",
+                "parameters": [
+                    {
+                        "description": "Create wallet payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateWalletRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "$ref": "#/definitions/accountabstractionhandler.Response"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "accountabstractionhandler.Response": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "string"
+                },
+                "returned": {},
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.CreateWalletRequest": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "$ref": "#/definitions/dto.DeployWalletParamsRequest"
+                },
+                "privKey": {
+                    "type": "string",
+                    "example": "0xabc123..."
+                }
+            }
+        },
+        "dto.DeployWalletParamsRequest": {
+            "type": "object",
+            "properties": {
+                "owners": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "0x111...",
+                        "0x222..."
+                    ]
+                },
+                "salt": {
+                    "type": "string",
+                    "example": "0xaaaaaaaa...(32 bytes hex)"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "localhost:8080",
+	BasePath:         "/api/v1",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "DID API",
+	Description:      "DID Backend API",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

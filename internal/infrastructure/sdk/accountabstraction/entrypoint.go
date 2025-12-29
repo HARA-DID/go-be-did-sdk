@@ -16,9 +16,9 @@ func (s *AccountAbstractionSDK) HandleOps(
 	input aado.HandleOpsInput,
 	net *network.Network,
 ) (*aado.TxHash, error) {
-	fmt.Println(input.PrivKey)
 	relayerWallet := wallet.NewWallet(input.PrivKey)
 
+	relayerPubAddress, _ := relayerWallet.GetAddress()
 	latestBlock, err := net.LatestBlock(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("error fetching latest block: %w", err)
@@ -40,7 +40,7 @@ func (s *AccountAbstractionSDK) HandleOps(
 	}
 
 	handleOp := aado.HandleOpsParams{
-		Wallet: utils.HexToAddress("0xdAfd31c719D1903Dc16e6d98CAb1A381A806717E"),
+		Wallet: relayerPubAddress,
 		UserOp: aado.UserOp{
 			Target:            input.Target,
 			Value:             big.NewInt(0),
@@ -50,6 +50,8 @@ func (s *AccountAbstractionSDK) HandleOps(
 			Signature:         utils.Hex2Bytes(sig.Signature[2:]),
 		},
 	}
+
+	aaSDK.Wallet.Contract.ABI.Methods["validateUserOps"].Inputs.Pack()
 
 	hashes, err := s.EntryPoint.HandleOps(
 		ctx,

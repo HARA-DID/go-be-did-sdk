@@ -5,14 +5,13 @@ import (
 	"math/big"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/meQlause/go-be-did/pkg/response"
+	"github.com/meQlause/hara-core-blockchain-lib/utils"
 
 	helperdo "github.com/meQlause/go-be-did/internal/domain/helper"
 	accountabstractionsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 	helperuc "github.com/meQlause/go-be-did/internal/usecase/helper"
-
-	"github.com/meQlause/go-be-did/pkg/response"
-	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
 
 type HelperHandler struct {

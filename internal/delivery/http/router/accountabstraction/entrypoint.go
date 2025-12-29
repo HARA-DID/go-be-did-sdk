@@ -3,10 +3,11 @@ package accountabstractionrouter
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
-	aahandler "github.com/meQlause/go-be-did/internal/delivery/http/handler/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/repository"
-	aauc "github.com/meQlause/go-be-did/internal/usecase/accountabstraction"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
+
+	aahandler "github.com/meQlause/go-be-did/internal/delivery/http/handler/accountabstraction"
+	aauc "github.com/meQlause/go-be-did/internal/usecase/accountabstraction"
 )
 
 func SetupEntryPointRoutes(aa fiber.Router, aaRepo repository.AccountAbstractionRepository, cfg *config.Config, bc *blockchain.Blockchain) {

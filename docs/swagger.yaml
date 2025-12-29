@@ -1,4 +1,62 @@
+basePath: /api/v1
+definitions:
+  accountabstractionhandler.Response:
+    properties:
+      errors:
+        type: string
+      returned: {}
+      success:
+        type: boolean
+    type: object
+  dto.CreateWalletRequest:
+    properties:
+      input:
+        $ref: '#/definitions/dto.DeployWalletParamsRequest'
+      privKey:
+        example: 0xabc123...
+        type: string
+    type: object
+  dto.DeployWalletParamsRequest:
+    properties:
+      owners:
+        example:
+        - 0x111...
+        - 0x222...
+        items:
+          type: string
+        type: array
+      salt:
+        example: 0xaaaaaaaa...(32 bytes hex)
+        type: string
+    type: object
+host: localhost:8080
 info:
   contact: {}
-paths: {}
+  description: DID Backend API
+  title: DID API
+  version: "1.0"
+paths:
+  /account-abstraction/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create wallet payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateWalletRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/accountabstractionhandler.Response'
+            type: object
+      summary: Create Account Abstraction Wallet
+      tags:
+      - account-abstraction
 swagger: "2.0"

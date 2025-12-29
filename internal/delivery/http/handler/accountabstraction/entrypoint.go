@@ -5,9 +5,10 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
+	"github.com/meQlause/go-be-did/pkg/response"
+
 	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
-	"github.com/meQlause/go-be-did/pkg/response"
 )
 
 func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {

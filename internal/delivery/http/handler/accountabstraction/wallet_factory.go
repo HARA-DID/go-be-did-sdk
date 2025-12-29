@@ -2,13 +2,22 @@ package accountabstractionhandler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	aaevent "github.com/meQlause/go-be-did/internal/delivery/event/accountabstraction"
-	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
 
 	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/go-be-did/pkg/response"
+
+	aaevent "github.com/meQlause/go-be-did/internal/delivery/event/accountabstraction"
+	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
 )
 
+// CreateWallet godoc
+// @Summary      Create Account Abstraction Wallet
+// @Tags         account-abstraction
+// @Accept       json
+// @Produce      json
+// @Param        request body dto.CreateWalletRequest true "Create wallet payload"
+// @Success      200 {object} map[string]Response
+// @Router       /account-abstraction/create [post]
 func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 	var input aado.CreateWalletInput
 	if err := c.BodyParser(&input); err != nil {
