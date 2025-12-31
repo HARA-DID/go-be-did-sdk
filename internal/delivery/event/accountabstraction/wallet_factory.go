@@ -5,6 +5,8 @@ import (
 
 	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
+
+	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 
 type WalletDeployedEvent struct {
@@ -19,7 +21,7 @@ func DecodeWalletDeployedEvent(ctx context.Context, txHash utils.Hash) (*WalletD
 		return nil, err
 	}
 
-	contractAddress := utils.HexToAddress("0x17ad613d07e9DdEeBE5D9C903E137142d49A294B")
+	contractAddress := aasdk.GetAccountAbstractionSDK().WalletFactory.Address
 
 	for _, log := range receipt.Logs {
 		if log.Address != contractAddress {

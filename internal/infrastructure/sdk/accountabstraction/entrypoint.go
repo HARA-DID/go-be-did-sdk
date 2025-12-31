@@ -18,40 +18,39 @@ func (s *AccountAbstractionSDK) HandleOps(
 ) (*aado.TxHash, error) {
 	relayerWallet := wallet.NewWallet(input.PrivKey)
 
-	relayerPubAddress, _ := relayerWallet.GetAddress()
 	latestBlock, err := net.LatestBlock(context.Background())
 	if err != nil {
 		return nil, fmt.Errorf("error fetching latest block: %w", err)
 	}
+	latestBlock += 10
 
-	data := utils.Hex2Bytes(input.Data[2:])
+	data := utils.Hex2Bytes(input.Data)
+
 	messageHash := net.PackedKeccak256().
 		AddAddress(input.Wallet).
 		AddAddress(input.Target).
 		AddUint256(big.NewInt(0)).
-		AddBytes32(utils.Keccak256Hash(data).Bytes()).
+		AddBytes32(utils.Keccak256Hash(data)).
 		AddUint256(new(big.Int).SetUint64(latestBlock)).
 		AddUint256(new(big.Int).SetUint64(input.Nonce.Uint64())).
 		Hash()
 
-	sig, err := relayerWallet.SignEIP191(messageHash.Hex())
+	sig, err := relayerWallet.SignEIP191Message(messageHash.Bytes())
 	if err != nil {
 		return nil, fmt.Errorf("error signing message: %w", err)
 	}
 
 	handleOp := aado.HandleOpsParams{
-		Wallet: relayerPubAddress,
+		Wallet: input.Wallet,
 		UserOp: aado.UserOp{
 			Target:            input.Target,
 			Value:             big.NewInt(0),
 			Data:              data,
 			ClientBlockNumber: new(big.Int).SetUint64(latestBlock),
 			UserNonce:         &input.Nonce,
-			Signature:         utils.Hex2Bytes(sig.Signature[2:]),
+			Signature:         utils.Hex2Bytes(sig.Signature),
 		},
 	}
-
-	aaSDK.Wallet.Contract.ABI.Methods["validateUserOps"].Inputs.Pack()
 
 	hashes, err := s.EntryPoint.HandleOps(
 		ctx,
