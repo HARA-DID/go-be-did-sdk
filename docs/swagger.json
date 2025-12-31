@@ -11,6 +11,7 @@
     "paths": {
         "/account-abstraction/create": {
             "post": {
+                "description": "Creates a new Account Abstraction wallet by deploying a smart contract wallet on the blockchain.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): Map where each key is a transaction hash and value contains transaction result\n- `meta` (object): Contains timestamp and API version\n\n## Transaction Result Object\nEach transaction hash in the data map contains:\n- `success` (boolean): Indicates if the transaction was successful on the blockchain\n- `errors` (string): Error message if failed, or \"No Error Message\" if successful\n- `returned` (object|null): WalletDeployedEvent object containing wallet details, or null if transaction failed or event decoding failed\n\n## WalletDeployedEvent Object\n- `wallet_address` (string): The deployed smart contract wallet address\n- `deployer_address` (string): The Ethereum address that deployed the wallet\n- `salt` (string): The salt value used for deterministic wallet address generation\n\n## Common Error Scenarios\n### Transaction Errors (success: false in transaction result):\n- \"execution reverted: insufficient funds for gas * price + value\" - Deployer lacks ETH for gas fees\n- \"execution reverted: wallet already exists\" - Wallet with same salt already deployed\n- \"execution reverted: invalid deployer\" - Deployer address not authorized\n- \"nonce too low\" - Transaction nonce conflict\n- \"transaction underpriced\" - Gas price below network minimum\n- \"invalid signature\" - Transaction signing failed\n\n### Event Decode Failures (transaction success: true, returned: null):\n- Transaction succeeded but event parsing failed\n- Event signature mismatch or unexpected contract behavior\n- Wrong contract address in logs or insufficient log topics\n\n## Important Notes\n- HTTP 200 status does NOT guarantee wallet creation success\n- Always check the `success` field within each transaction result in the data map\n- Multiple transaction hashes may be returned for batch operations\n- Empty data object {} indicates no events were emitted\n- Salt must be unique per deployer address to avoid conflicts",
                 "consumes": [
                     "application/json"
                 ],
@@ -23,23 +24,282 @@
                 "summary": "Create Account Abstraction Wallet",
                 "parameters": [
                     {
-                        "description": "Create wallet payload",
+                        "description": "Wallet creation payload with deployer address and optional salt value",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateWalletRequest"
+                            "$ref": "#/definitions/dto.DeployWalletParamsDTO"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "No events emitted\" example(EmptyResponse)",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "$ref": "#/definitions/accountabstractionhandler.Response"
-                            }
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "$ref": "#/definitions/accountabstractionhandler.Response"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body - malformed JSON, missing required fields, or invalid Ethereum address format\" example(BadRequest)",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - wallet creation use case failed, network connectivity issues, RPC node errors, or smart contract deployment failure\" example(InternalServerError)",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/account-abstraction/handle-ops": {
+            "post": {
+                "description": "Executes user operations through the Account Abstraction entry point. This endpoint processes user operations by signing and submitting them to the blockchain via the entry point contract.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): Map where each key is a transaction hash and value contains transaction result\n- `meta` (object): Contains timestamp and API version\n\n## Transaction Result Object\nEach transaction hash in the data map contains:\n- `success` (boolean): Indicates if the transaction was successful on the blockchain\n- `errors` (string): Error message if failed, or \"No Error Message\" if successful\n- `returned` (object|null): CreateDIDEvent object containing DID creation details, or null if transaction failed or event decoding failed\n\n## Common Error Scenarios\n### Transaction Errors (success: false in transaction result):\n- \"execution reverted\" - Transaction reverted on the blockchain\n- \"nonce too low\" - Transaction nonce conflict\n- \"transaction underpriced\" - Gas price below network minimum\n- \"invalid signature\" - Transaction signing failed\n- \"insufficient funds\" - Relayer lacks funds for gas fees\n\n## Important Notes\n- HTTP 200 status does NOT guarantee operation success\n- Always check the `success` field within each transaction result in the data map\n- Multiple transaction hashes may be returned for batch operations\n- The PrivKey is used by the relayer to sign and submit the transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account-abstraction"
+                ],
+                "summary": "Handle User Operations",
+                "parameters": [
+                    {
+                        "description": "HandleOps payload with private key, wallet address, target address, data, and nonce",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.HandleOpsInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transaction(s) processed successfully - check individual transaction results",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "$ref": "#/definitions/accountabstractionhandler.Response"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/account-abstraction/validate-userop": {
+            "post": {
+                "description": "Validates a user operation for an Account Abstraction wallet. This endpoint checks if a user operation is valid before execution, ensuring the operation can be processed by the wallet contract.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (string): Validation result message (\"UserOp Valid\")\n- `meta` (object): Contains timestamp and API version\n\n## UserOp Structure\nThe UserOp object contains:\n- `Target` (string): The target contract address for the operation\n- `Value` (string): The amount of ETH to send (in wei, as hex string)\n- `Data` (string): The encoded function call data (hex string)\n- `ClientBlockNumber` (string): The client block number (as hex string)\n- `UserNonce` (string): The user operation nonce (as hex string)\n- `Signature` (string): The signature for the user operation (hex string)\n\n## Common Error Scenarios\n### Validation Errors:\n- \"invalid user operation\" - UserOp structure is invalid\n- \"signature verification failed\" - Signature does not match the operation\n- \"nonce mismatch\" - UserNonce does not match expected value\n- \"insufficient balance\" - Wallet lacks sufficient funds\n- \"invalid target address\" - Target contract address is invalid\n\n## Important Notes\n- This endpoint only validates the operation, it does not execute it\n- The wallet implementation address is automatically updated before validation\n- Validation ensures the operation can be safely executed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account-abstraction"
+                ],
+                "summary": "Validate User Operation",
+                "parameters": [
+                    {
+                        "description": "Validation payload with wallet address and UserOp object",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.ValidateUserOpsInputDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User operation is valid",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - validation failed, network connectivity issues, or RPC node errors",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/encode-create-did-param": {
+            "post": {
+                "description": "Encodes parameters for creating a DID (Decentralized Identifier) and prepares the transaction data. This endpoint encodes the DID creation parameters, retrieves the current nonce for the wallet, and returns the encoded call data along with the target contract address.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): EncodeCreateDIDParamResponse containing:\n- `Data` (string): The hex-encoded call data for the DID creation transaction\n- `Target` (string): The target contract address (DID Root Factory address)\n- `Nonce` (uint64): The current nonce for the wallet address\n- `meta` (object): Contains timestamp and API version\n\n## CreateDIDParam Structure\nThe DIDParam object contains:\n- `DID` (string): The Decentralized Identifier string to create\n\n## Common Error Scenarios\n- \"Can Not Get Nonce\" - Failed to retrieve nonce from the blockchain\n- \"failed to encode DID\" - Failed to encode the DID parameter\n- \"failed to pack\" - Failed to pack the function call data\n\n## Important Notes\n- The nonce is retrieved from the EntryPoint contract for the specified wallet address\n- The encoded data is ready to be used in a user operation\n- The KeyIdentifier is used to identify which key will sign the operation\n- The address must be a valid Ethereum address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "helper"
+                ],
+                "summary": "Encode Create DID Parameters",
+                "parameters": [
+                    {
+                        "description": "Encode DID creation parameters with wallet address, DID parameter, and key identifier",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdomain.EncodeCreateDIDParamInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully encoded DID creation parameters",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.EncodeCreateDIDParamResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - encoding failed, nonce retrieval failed, or RPC node errors",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/string-2-byte32": {
+            "post": {
+                "description": "Converts a string input to a 32-byte array (byte32). This is a utility endpoint commonly used for encoding data that needs to fit into a single bytes32 storage slot in smart contracts.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (string): The hex-encoded 32-byte array result\n- `meta` (object): Contains timestamp and API version\n\n## Common Use Cases\n- Encoding strings for smart contract storage\n- Preparing data for keccak256 hashing\n- Converting identifiers to fixed-size byte arrays\n\n## Important Notes\n- Input strings longer than 32 bytes will be truncated\n- Shorter strings will be padded with zeros\n- The result is returned as a hex string with 0x prefix",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "helper"
+                ],
+                "summary": "Convert String to Byte32",
+                "parameters": [
+                    {
+                        "description": "String input to convert to byte32",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdomain.StringToByte32Input"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully converted string to byte32",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body - malformed JSON or missing required fields",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - conversion failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
                         }
                     }
                 }
@@ -51,27 +311,18 @@
             "type": "object",
             "properties": {
                 "errors": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "No Error Message"
                 },
                 "returned": {},
                 "success": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
-        "dto.CreateWalletRequest": {
-            "type": "object",
-            "properties": {
-                "input": {
-                    "$ref": "#/definitions/dto.DeployWalletParamsRequest"
-                },
-                "privKey": {
-                    "type": "string",
-                    "example": "0xabc123..."
-                }
-            }
-        },
-        "dto.DeployWalletParamsRequest": {
+        "dto.DeployWalletParamsDTO": {
+            "description": "Wallet deployment parameters with owners and salt",
             "type": "object",
             "properties": {
                 "owners": {
@@ -86,7 +337,160 @@
                 },
                 "salt": {
                     "type": "string",
-                    "example": "0xaaaaaaaa...(32 bytes hex)"
+                    "example": "0xabc... (32 bytes hex)"
+                }
+            }
+        },
+        "dto.HandleOpsInputDTO": {
+            "description": "HandleOps request payload with private key, wallet address, target address, data, and nonce",
+            "type": "object",
+            "required": [
+                "data",
+                "nonce",
+                "priv_key",
+                "target",
+                "wallet"
+            ],
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "example": "0x..."
+                },
+                "nonce": {
+                    "type": "string",
+                    "example": "0x0"
+                },
+                "priv_key": {
+                    "type": "string",
+                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "target": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                }
+            }
+        },
+        "dto.UserOpDTO": {
+            "description": "UserOp object containing target address, value, data, client block number, user nonce, and signature",
+            "type": "object",
+            "properties": {
+                "client_block_number": {
+                    "type": "string",
+                    "example": "0x12345"
+                },
+                "data": {
+                    "type": "string",
+                    "example": "0x..."
+                },
+                "signature": {
+                    "type": "string",
+                    "example": "0x..."
+                },
+                "target": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "user_nonce": {
+                    "type": "string",
+                    "example": "0x0"
+                },
+                "value": {
+                    "type": "string",
+                    "example": "0x0"
+                }
+            }
+        },
+        "dto.ValidateUserOpsInputDTO": {
+            "description": "Validation payload with wallet address and UserOp object",
+            "type": "object",
+            "properties": {
+                "input": {
+                    "$ref": "#/definitions/dto.UserOpDTO"
+                },
+                "wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                }
+            }
+        },
+        "helperdomain.EncodeCreateDIDParamInput": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/rootfactory.CreateDIDParam"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdomain.StringToByte32Input": {
+            "type": "object",
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "example": "example_string"
+                }
+            }
+        },
+        "helperhandler.EncodeCreateDIDParamResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "example": "0x..."
+                },
+                "nonce": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "target": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                }
+            }
+        },
+        "response.Meta": {
+            "type": "object",
+            "properties": {
+                "timestamp": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/response.Meta"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "rootfactory.CreateDIDParam": {
+            "type": "object",
+            "properties": {
+                "did": {
+                    "type": "string",
+                    "example": "did:example:123456789"
                 }
             }
         }

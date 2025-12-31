@@ -23,9 +23,9 @@ import (
 func main() {
 	config.InitConfig()
 	config.InitBlockchain()
+	logger.Init(config.GetApp().LogLevel)
 	aasdk.InitializeAccountAbstractionSDK(context.Background(), config.GetConfig().HNS.AccountAbstraction, config.Blockchain())
 	didrootsdk.InitializeDIDRootSDK(context.Background(), config.GetConfig().HNS.DIDRoot, config.Blockchain())
-	logger.Init(config.GetApp().LogLevel)
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: customErrorHandler,

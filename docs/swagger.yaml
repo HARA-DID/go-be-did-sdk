@@ -3,20 +3,15 @@ definitions:
   accountabstractionhandler.Response:
     properties:
       errors:
+        example: No Error Message
         type: string
       returned: {}
       success:
+        example: true
         type: boolean
     type: object
-  dto.CreateWalletRequest:
-    properties:
-      input:
-        $ref: '#/definitions/dto.DeployWalletParamsRequest'
-      privKey:
-        example: 0xabc123...
-        type: string
-    type: object
-  dto.DeployWalletParamsRequest:
+  dto.DeployWalletParamsDTO:
+    description: Wallet deployment parameters with owners and salt
     properties:
       owners:
         example:
@@ -26,7 +21,117 @@ definitions:
           type: string
         type: array
       salt:
-        example: 0xaaaaaaaa...(32 bytes hex)
+        example: 0xabc... (32 bytes hex)
+        type: string
+    type: object
+  dto.HandleOpsInputDTO:
+    description: HandleOps request payload with private key, wallet address, target
+      address, data, and nonce
+    properties:
+      data:
+        example: 0x...
+        type: string
+      nonce:
+        example: "0x0"
+        type: string
+      priv_key:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      target:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+    required:
+    - data
+    - nonce
+    - priv_key
+    - target
+    - wallet
+    type: object
+  dto.UserOpDTO:
+    description: UserOp object containing target address, value, data, client block
+      number, user nonce, and signature
+    properties:
+      client_block_number:
+        example: "0x12345"
+        type: string
+      data:
+        example: 0x...
+        type: string
+      signature:
+        example: 0x...
+        type: string
+      target:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      user_nonce:
+        example: "0x0"
+        type: string
+      value:
+        example: "0x0"
+        type: string
+    type: object
+  dto.ValidateUserOpsInputDTO:
+    description: Validation payload with wallet address and UserOp object
+    properties:
+      input:
+        $ref: '#/definitions/dto.UserOpDTO'
+      wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+    type: object
+  helperdomain.EncodeCreateDIDParamInput:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/rootfactory.CreateDIDParam'
+      key_identifier:
+        example: key1
+        type: string
+    type: object
+  helperdomain.StringToByte32Input:
+    properties:
+      input:
+        example: example_string
+        type: string
+    type: object
+  helperhandler.EncodeCreateDIDParamResponse:
+    properties:
+      data:
+        example: 0x...
+        type: string
+      nonce:
+        example: 1
+        type: integer
+      target:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+    type: object
+  response.Meta:
+    properties:
+      timestamp:
+        type: string
+      version:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error:
+        type: string
+      meta:
+        $ref: '#/definitions/response.Meta'
+      success:
+        type: boolean
+    type: object
+  rootfactory.CreateDIDParam:
+    properties:
+      did:
+        example: did:example:123456789
         type: string
     type: object
 host: localhost:8080
@@ -40,23 +145,329 @@ paths:
     post:
       consumes:
       - application/json
+      description: |-
+        Creates a new Account Abstraction wallet by deploying a smart contract wallet on the blockchain.
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true for HTTP 200
+        - `data` (object): Map where each key is a transaction hash and value contains transaction result
+        - `meta` (object): Contains timestamp and API version
+
+        ## Transaction Result Object
+        Each transaction hash in the data map contains:
+        - `success` (boolean): Indicates if the transaction was successful on the blockchain
+        - `errors` (string): Error message if failed, or "No Error Message" if successful
+        - `returned` (object|null): WalletDeployedEvent object containing wallet details, or null if transaction failed or event decoding failed
+
+        ## WalletDeployedEvent Object
+        - `wallet_address` (string): The deployed smart contract wallet address
+        - `deployer_address` (string): The Ethereum address that deployed the wallet
+        - `salt` (string): The salt value used for deterministic wallet address generation
+
+        ## Common Error Scenarios
+        ### Transaction Errors (success: false in transaction result):
+        - "execution reverted: insufficient funds for gas * price + value" - Deployer lacks ETH for gas fees
+        - "execution reverted: wallet already exists" - Wallet with same salt already deployed
+        - "execution reverted: invalid deployer" - Deployer address not authorized
+        - "nonce too low" - Transaction nonce conflict
+        - "transaction underpriced" - Gas price below network minimum
+        - "invalid signature" - Transaction signing failed
+
+        ### Event Decode Failures (transaction success: true, returned: null):
+        - Transaction succeeded but event parsing failed
+        - Event signature mismatch or unexpected contract behavior
+        - Wrong contract address in logs or insufficient log topics
+
+        ## Important Notes
+        - HTTP 200 status does NOT guarantee wallet creation success
+        - Always check the `success` field within each transaction result in the data map
+        - Multiple transaction hashes may be returned for batch operations
+        - Empty data object {} indicates no events were emitted
+        - Salt must be unique per deployer address to avoid conflicts
       parameters:
-      - description: Create wallet payload
+      - description: Wallet creation payload with deployer address and optional salt
+          value
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.CreateWalletRequest'
+          $ref: '#/definitions/dto.DeployWalletParamsDTO'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: No events emitted" example(EmptyResponse)
           schema:
-            additionalProperties:
-              $ref: '#/definitions/accountabstractionhandler.Response'
-            type: object
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties:
+                    $ref: '#/definitions/accountabstractionhandler.Response'
+                  type: object
+              type: object
+        "400":
+          description: Invalid request body - malformed JSON, missing required fields,
+            or invalid Ethereum address format" example(BadRequest)
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - wallet creation use case failed, network
+            connectivity issues, RPC node errors, or smart contract deployment failure"
+            example(InternalServerError)
+          schema:
+            $ref: '#/definitions/response.Response'
       summary: Create Account Abstraction Wallet
       tags:
       - account-abstraction
+  /account-abstraction/handle-ops:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Executes user operations through the Account Abstraction entry point. This endpoint processes user operations by signing and submitting them to the blockchain via the entry point contract.
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true for HTTP 200
+        - `data` (object): Map where each key is a transaction hash and value contains transaction result
+        - `meta` (object): Contains timestamp and API version
+
+        ## Transaction Result Object
+        Each transaction hash in the data map contains:
+        - `success` (boolean): Indicates if the transaction was successful on the blockchain
+        - `errors` (string): Error message if failed, or "No Error Message" if successful
+        - `returned` (object|null): CreateDIDEvent object containing DID creation details, or null if transaction failed or event decoding failed
+
+        ## Common Error Scenarios
+        ### Transaction Errors (success: false in transaction result):
+        - "execution reverted" - Transaction reverted on the blockchain
+        - "nonce too low" - Transaction nonce conflict
+        - "transaction underpriced" - Gas price below network minimum
+        - "invalid signature" - Transaction signing failed
+        - "insufficient funds" - Relayer lacks funds for gas fees
+
+        ## Important Notes
+        - HTTP 200 status does NOT guarantee operation success
+        - Always check the `success` field within each transaction result in the data map
+        - Multiple transaction hashes may be returned for batch operations
+        - The PrivKey is used by the relayer to sign and submit the transaction
+      parameters:
+      - description: HandleOps payload with private key, wallet address, target address,
+          data, and nonce
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.HandleOpsInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Transaction(s) processed successfully - check individual transaction
+            results
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties:
+                    $ref: '#/definitions/accountabstractionhandler.Response'
+                  type: object
+              type: object
+        "400":
+          description: Invalid request body - malformed JSON, missing required fields,
+            or invalid address format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - handle ops use case failed, network
+            connectivity issues, RPC node errors, or transaction submission failure
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Handle User Operations
+      tags:
+      - account-abstraction
+  /account-abstraction/validate-userop:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Validates a user operation for an Account Abstraction wallet. This endpoint checks if a user operation is valid before execution, ensuring the operation can be processed by the wallet contract.
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true for HTTP 200
+        - `data` (string): Validation result message ("UserOp Valid")
+        - `meta` (object): Contains timestamp and API version
+
+        ## UserOp Structure
+        The UserOp object contains:
+        - `Target` (string): The target contract address for the operation
+        - `Value` (string): The amount of ETH to send (in wei, as hex string)
+        - `Data` (string): The encoded function call data (hex string)
+        - `ClientBlockNumber` (string): The client block number (as hex string)
+        - `UserNonce` (string): The user operation nonce (as hex string)
+        - `Signature` (string): The signature for the user operation (hex string)
+
+        ## Common Error Scenarios
+        ### Validation Errors:
+        - "invalid user operation" - UserOp structure is invalid
+        - "signature verification failed" - Signature does not match the operation
+        - "nonce mismatch" - UserNonce does not match expected value
+        - "insufficient balance" - Wallet lacks sufficient funds
+        - "invalid target address" - Target contract address is invalid
+
+        ## Important Notes
+        - This endpoint only validates the operation, it does not execute it
+        - The wallet implementation address is automatically updated before validation
+        - Validation ensures the operation can be safely executed
+      parameters:
+      - description: Validation payload with wallet address and UserOp object
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.ValidateUserOpsInputDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User operation is valid
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid request body - malformed JSON, missing required fields,
+            or invalid address format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - validation failed, network connectivity
+            issues, or RPC node errors
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Validate User Operation
+      tags:
+      - account-abstraction
+  /helper/encode-create-did-param:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Encodes parameters for creating a DID (Decentralized Identifier) and prepares the transaction data. This endpoint encodes the DID creation parameters, retrieves the current nonce for the wallet, and returns the encoded call data along with the target contract address.
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true for HTTP 200
+        - `data` (object): EncodeCreateDIDParamResponse containing:
+        - `Data` (string): The hex-encoded call data for the DID creation transaction
+        - `Target` (string): The target contract address (DID Root Factory address)
+        - `Nonce` (uint64): The current nonce for the wallet address
+        - `meta` (object): Contains timestamp and API version
+
+        ## CreateDIDParam Structure
+        The DIDParam object contains:
+        - `DID` (string): The Decentralized Identifier string to create
+
+        ## Common Error Scenarios
+        - "Can Not Get Nonce" - Failed to retrieve nonce from the blockchain
+        - "failed to encode DID" - Failed to encode the DID parameter
+        - "failed to pack" - Failed to pack the function call data
+
+        ## Important Notes
+        - The nonce is retrieved from the EntryPoint contract for the specified wallet address
+        - The encoded data is ready to be used in a user operation
+        - The KeyIdentifier is used to identify which key will sign the operation
+        - The address must be a valid Ethereum address
+      parameters:
+      - description: Encode DID creation parameters with wallet address, DID parameter,
+          and key identifier
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdomain.EncodeCreateDIDParamInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully encoded DID creation parameters
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.EncodeCreateDIDParamResponse'
+              type: object
+        "400":
+          description: Invalid request body - malformed JSON, missing required fields,
+            or invalid address format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - encoding failed, nonce retrieval failed,
+            or RPC node errors
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Create DID Parameters
+      tags:
+      - helper
+  /helper/string-2-byte32:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Converts a string input to a 32-byte array (byte32). This is a utility endpoint commonly used for encoding data that needs to fit into a single bytes32 storage slot in smart contracts.
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true for HTTP 200
+        - `data` (string): The hex-encoded 32-byte array result
+        - `meta` (object): Contains timestamp and API version
+
+        ## Common Use Cases
+        - Encoding strings for smart contract storage
+        - Preparing data for keccak256 hashing
+        - Converting identifiers to fixed-size byte arrays
+
+        ## Important Notes
+        - Input strings longer than 32 bytes will be truncated
+        - Shorter strings will be padded with zeros
+        - The result is returned as a hex string with 0x prefix
+      parameters:
+      - description: String input to convert to byte32
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdomain.StringToByte32Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully converted string to byte32
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Invalid request body - malformed JSON or missing required fields
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - conversion failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Convert String to Byte32
+      tags:
+      - helper
 swagger: "2.0"

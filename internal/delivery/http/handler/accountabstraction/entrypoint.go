@@ -10,6 +10,43 @@ import (
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 
+// HandleOps godoc
+// @Summary      Handle User Operations
+// @Description  Executes user operations through the Account Abstraction entry point. This endpoint processes user operations by signing and submitting them to the blockchain via the entry point contract.
+// @Description
+// @Description  ## Response Structure
+// @Description  Success responses (HTTP 200) contain:
+// @Description  - `success` (boolean): Always true for HTTP 200
+// @Description  - `data` (object): Map where each key is a transaction hash and value contains transaction result
+// @Description  - `meta` (object): Contains timestamp and API version
+// @Description
+// @Description  ## Transaction Result Object
+// @Description  Each transaction hash in the data map contains:
+// @Description  - `success` (boolean): Indicates if the transaction was successful on the blockchain
+// @Description  - `errors` (string): Error message if failed, or "No Error Message" if successful
+// @Description  - `returned` (object|null): CreateDIDEvent object containing DID creation details, or null if transaction failed or event decoding failed
+// @Description
+// @Description  ## Common Error Scenarios
+// @Description  ### Transaction Errors (success: false in transaction result):
+// @Description  - "execution reverted" - Transaction reverted on the blockchain
+// @Description  - "nonce too low" - Transaction nonce conflict
+// @Description  - "transaction underpriced" - Gas price below network minimum
+// @Description  - "invalid signature" - Transaction signing failed
+// @Description  - "insufficient funds" - Relayer lacks funds for gas fees
+// @Description
+// @Description  ## Important Notes
+// @Description  - HTTP 200 status does NOT guarantee operation success
+// @Description  - Always check the `success` field within each transaction result in the data map
+// @Description  - Multiple transaction hashes may be returned for batch operations
+// @Description  - The PrivKey is used by the relayer to sign and submit the transaction
+// @Tags         account-abstraction
+// @Accept       json
+// @Produce      json
+// @Param        request body dto.HandleOpsInputDTO true "HandleOps payload with private key, wallet address, target address, data, and nonce"
+// @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Transaction(s) processed successfully - check individual transaction results"
+// @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid address format"
+// @Failure      500 {object} response.Response "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure"
+// @Router       /account-abstraction/handle-ops [post]
 func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 	var input aado.HandleOpsInput
 	if err := c.BodyParser(&input); err != nil {

@@ -5,9 +5,12 @@ import (
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
 
+// ValidateUserOpsInput represents the input for validating user operations
+// @Description Validation payload with wallet address and UserOp object
+// @Model ValidateUserOpsInput
 type ValidateUserOpsInput struct {
-	Wallet utils.Address
-	Input  WalletSDK.UserOp
+	Wallet utils.Address    `json:"wallet" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Input  WalletSDK.UserOp `json:"input"`
 }
 
 type Wallet struct {

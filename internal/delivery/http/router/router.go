@@ -25,6 +25,26 @@ func Setup(app *fiber.App, cfg *config.Config, bc *blockchain.Blockchain) {
 	aarouter.SetupAccountAbstractionRoutes(api, cfg, bc)
 	helperrouter.SetupHelperRoutes(api)
 
+	// Health godoc
+	// @Summary      Health Check
+	// @Description  Returns the health status of the API service. This endpoint provides information about the service status and available modules.
+	// @Description
+	// @Description  ## Response Structure
+	// @Description  Success responses (HTTP 200) contain:
+	// @Description  - `status` (string): Service status (always "ok" when service is running)
+	// @Description  - `service` (string): Service name identifier
+	// @Description  - `modules` (array): List of available service modules
+	// @Description
+	// @Description  ## Available Modules
+	// @Description  - `didroot`: DID Root management module
+	// @Description  - `account-abstraction`: Account Abstraction wallet module
+	// @Description  - `alias`: Alias management module
+	// @Description  - `credentials`: Credentials management module
+	// @Tags         system
+	// @Accept       json
+	// @Produce      json
+	// @Success      200 {object} map[string]interface{} "Service is healthy and operational"
+	// @Router       /health [get]
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"status":  "ok",

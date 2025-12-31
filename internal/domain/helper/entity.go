@@ -5,11 +5,11 @@ import (
 )
 
 type StringToByte32Input struct {
-	Input string `json:"Input"`
+	Input string `json:"input" example:"example_string"`
 }
 
 type EncodeCreateDIDParamInput struct {
-	Address       string                     `json:"Address"`
-	DIDParam      rootfactory.CreateDIDParam `json:"DIDParam"`
-	KeyIdentifier string                     `json:"KeyIdentifier"`
+	Address       string                     `json:"address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	DIDParam      rootfactory.CreateDIDParam `json:"did_param"`
+	KeyIdentifier string                     `json:"key_identifier" example:"key1"`
 }

@@ -1,9 +1,9 @@
 [submodule "internal/infrastructure/lib/core-general-sdk"]
 	path = internal/infrastructure/lib/core-general-sdk
-	url = https://dattabot@dev.azure.com/dattabot/Blockchain%202024/_git/core-general-sdk
+	url = git@ssh.dev.azure.com:v3/dattabot/Blockchain%202024/core-general-sdk
 [submodule "internal/infrastructure/lib/core-account-abstraction-sdk"]
 	path = internal/infrastructure/lib/core-account-abstraction-sdk
-	url = https://dattabot@dev.azure.com/dattabot/Blockchain%202024/_git/core-account-abstraction-sdk
+	url = git@ssh.dev.azure.com:v3/dattabot/Blockchain%202024/core-account-abstraction-sdk
 [submodule "internal/infrastructure/lib/did-root-sdk"]
 	path = internal/infrastructure/lib/did-root-sdk
-	url = https://dattabot@dev.azure.com/dattabot/Blockchain%202024/_git/did-root-sdk
+	url = git@ssh.dev.azure.com:v3/dattabot/Blockchain%202024/did-root-sdk
