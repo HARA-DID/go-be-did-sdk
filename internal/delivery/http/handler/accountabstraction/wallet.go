@@ -44,13 +44,13 @@ import (
 // @Tags         account-abstraction
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.ValidateUserOpsInputDTO true "Validation payload with wallet address and UserOp object"
+// @Param        request body dto.ValidateUserOpsDTO true "Validation payload with wallet address and UserOp object"
 // @Success      200 {object} response.Response{data=string} "User operation is valid"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid address format"
 // @Failure      500 {object} response.Response "Internal server error - validation failed, network connectivity issues, or RPC node errors"
 // @Router       /account-abstraction/validate-userop [post]
 func (ah *AccountAbstractionHandler) ValidateUserOps(c *fiber.Ctx) error {
-	var input dto.ValidateUserOpsInputDTO
+	var input dto.ValidateUserOpsDTO
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}

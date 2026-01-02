@@ -15,15 +15,15 @@ import (
 
 // HandleOpsInputDTO represents the DTO for HandleOps request (used for Swagger documentation and request parsing)
 // @Description HandleOps request payload with private key, wallet address, target address, data, and nonce
-type HandleOpsInputDTO struct {
+type HandleOpsDTO struct {
 	PrivKey string `json:"priv_key" validate:"required,eth_private_key" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
-	Data    string `json:"data" validate:"required,hexadecimal" example:"0x..."`
+	Data    string `json:"data" validate:"required,hex_data" example:"0x..."`
 	Target  string `json:"target" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	Nonce   string `json:"nonce" validate:"required,numeric" example:"0"`
 	Wallet  string `json:"wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 }
 
-func (dto HandleOpsInputDTO) Into() aado.HandleOpsInput {
+func (dto *HandleOpsDTO) Into() aado.HandleOpsInput {
 	return aado.HandleOpsInput{
 		PrivKey: dto.PrivKey,
 		Data:    dto.Data,
@@ -35,7 +35,7 @@ func (dto HandleOpsInputDTO) Into() aado.HandleOpsInput {
 
 // ValidateUserOpsInputDTO represents the DTO for ValidateUserOps request (used for Swagger documentation and request parsing)
 // @Description Validation payload with wallet address and UserOp object
-type ValidateUserOpsInputDTO struct {
+type ValidateUserOpsDTO struct {
 	Wallet string    `json:"wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	Input  UserOpDTO `json:"input" validate:"required,dive"`
 }
@@ -52,7 +52,7 @@ type UserOpDTO struct {
 	Signature         string `json:"signature" validate:"required,hex_data" example:"0x..."`
 }
 
-func (dto *ValidateUserOpsInputDTO) Into() accountabstractiondomain.ValidateUserOpsInput {
+func (dto *ValidateUserOpsDTO) Into() accountabstractiondomain.ValidateUserOpsInput {
 	return accountabstractiondomain.ValidateUserOpsInput{
 		Wallet: utils.HexToAddress(dto.Wallet),
 		Input: WalletSDK.UserOp{
@@ -80,7 +80,7 @@ type DeployWalletParamsDTO struct {
 	Salt   string   `json:"salt" validate:"required,hex32" example:"0xabc123... (32 bytes hex)"`
 }
 
-func (dto CreateWalletInputDTO) Into() accountabstractiondomain.CreateWalletInput {
+func (dto *CreateWalletInputDTO) Into() accountabstractiondomain.CreateWalletInput {
 	owners := make([]utils.Address, len(dto.Input.Owners))
 	for i, o := range dto.Input.Owners {
 		owners[i] = utils.HexToAddress(o)
@@ -112,11 +112,11 @@ func (dto *StringToHex32DTO) Into() helperdomain.StringToHex32Input {
 type EncodeCreateDIDDTO struct {
 	Address       string       `json:"address" validate:"required" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      CreateDIDDTO `json:"did_param"`
-	KeyIdentifier string       `json:"key_identifier" validate:"required" example:"key1"`
+	KeyIdentifier string       `json:"key_identifier" example:"key1"`
 }
 
 type CreateDIDDTO struct {
-	DID string `json:"did" validate:"required" example:"did:example:123456789"`
+	DID string `json:"did" example:"did:example:123456789"`
 }
 
 func (dto *EncodeCreateDIDDTO) Into() helperdomain.EncodeCreateDIDParamInput {

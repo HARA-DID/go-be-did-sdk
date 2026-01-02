@@ -43,13 +43,13 @@ import (
 // @Tags         account-abstraction
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.HandleOpsInputDTO true "HandleOps payload with private key, wallet address, target address, data, and nonce"
+// @Param        request body dto.HandleOpsDTO true "HandleOps payload with private key, wallet address, target address, data, and nonce"
 // @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Transaction(s) processed successfully - check individual transaction results"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid address format"
 // @Failure      500 {object} response.Response "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure"
 // @Router       /account-abstraction/handle-ops [post]
 func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
-	var input dto.HandleOpsInputDTO
+	var input dto.HandleOpsDTO
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
