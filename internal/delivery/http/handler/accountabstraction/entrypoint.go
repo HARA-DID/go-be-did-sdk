@@ -4,9 +4,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
 	didrootevent "github.com/meQlause/go-be-did/internal/delivery/event/didroot"
+	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
-	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
+	"github.com/meQlause/go-be-did/internal/domain/dto"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 
@@ -48,14 +49,20 @@ import (
 // @Failure      500 {object} response.Response "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure"
 // @Router       /account-abstraction/handle-ops [post]
 func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
-	var input aado.HandleOpsInput
+	var input dto.HandleOpsInputDTO
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	aasdk.ChangeWalletImplementationAddress(input.Wallet, config.Blockchain())
+	if err := validator.Validate.Struct(&input); err != nil {
+		validationErrors := validator.FormatError(err)
+		return response.Error(c, fiber.StatusBadRequest, validationErrors)
+	}
+	
+	handleOpsInput := input.Into()
+	aasdk.ChangeWalletImplementationAddress(handleOpsInput.Wallet, config.Blockchain())
 
-	result, err := ah.uc.HandleOps(c.Context(), input, config.Network())
+	result, err := ah.uc.HandleOps(c.Context(), handleOpsInput, config.Network())
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}

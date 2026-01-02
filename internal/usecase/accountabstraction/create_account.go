@@ -4,6 +4,7 @@ import (
 	"context"
 
 	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
+
 	"github.com/meQlause/go-be-did/pkg/logger"
 )
 

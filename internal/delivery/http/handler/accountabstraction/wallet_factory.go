@@ -4,10 +4,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/meQlause/go-be-did/internal/config"
+	"github.com/meQlause/go-be-did/internal/domain/dto"
+	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
 	aaevent "github.com/meQlause/go-be-did/internal/delivery/event/accountabstraction"
-	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
 )
 
 // CreateWallet godoc
@@ -54,7 +55,7 @@ import (
 // @Tags         account-abstraction
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.DeployWalletParamsDTO true "Wallet creation payload with deployer address and optional salt value"
+// @Param        request body dto.CreateWalletInputDTO true "Wallet creation payload with deployer address and optional salt value"
 // @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Transaction(s) processed successfully - check individual transaction results" example(SuccessfulWalletCreation)
 // @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Transaction failed on blockchain - returned in 200 response with error details" example(TransactionFailed)
 // @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Multiple transactions with mixed results" example(MultipleTxMixedResults)
@@ -64,12 +65,18 @@ import (
 // @Failure      500 {object} response.Response "Internal server error - wallet creation use case failed, network connectivity issues, RPC node errors, or smart contract deployment failure" example(InternalServerError)
 // @Router       /account-abstraction/create [post]
 func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
-	var input aado.CreateWalletInput
+	var input dto.CreateWalletInputDTO
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	result, err := ah.uc.CreateWallet(c.Context(), input)
+	if err := validator.Validate.Struct(&input); err != nil {
+		validationErrors := validator.FormatError(err)
+		return response.Error(c, fiber.StatusBadRequest, validationErrors)
+	}
+
+	createWalletInput := input.Into()
+	result, err := ah.uc.CreateWallet(c.Context(), createWalletInput)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
 	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/network"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/wallet"
@@ -40,14 +41,14 @@ func (s *AccountAbstractionSDK) HandleOps(
 		return nil, fmt.Errorf("error signing message: %w", err)
 	}
 
-	handleOp := aado.HandleOpsParams{
+	handleOp := entrypoint.HandleOpsParams{
 		Wallet: input.Wallet,
-		UserOp: aado.UserOp{
+		UserOp: entrypoint.UserOp{
 			Target:            input.Target,
 			Value:             big.NewInt(0),
 			Data:              data,
 			ClientBlockNumber: new(big.Int).SetUint64(latestBlock),
-			UserNonce:         &input.Nonce,
+			UserNonce:         input.Nonce,
 			Signature:         utils.Hex2Bytes(sig.Signature),
 		},
 	}

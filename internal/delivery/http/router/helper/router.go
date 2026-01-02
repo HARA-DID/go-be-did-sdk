@@ -18,6 +18,6 @@ func SetupHelperRoutes(api fiber.Router) {
 	helperHandler := helperhandler.NewHelperHandler(helperUC)
 	helper := api.Group("/helper")
 
-	helper.Post("/string-2-byte32", helperHandler.StringToByte32)
+	helper.Post("/string-2-hex32", helperHandler.StringToHex32)
 	helper.Post("/encode-create-did-param", helperHandler.EncodeCreateDIDParam)
 }

@@ -8,10 +8,10 @@ import (
 )
 
 type Response struct {
-	Success bool   `json:"success"`
-	Data    any    `json:"data,omitempty"`
-	Error   string `json:"error,omitempty"`
-	Meta    Meta   `json:"meta"`
+	Success bool `json:"success"`
+	Error   any  `json:"error,omitempty"`
+	Data    any  `json:"data,omitempty"`
+	Meta    Meta `json:"meta"`
 }
 
 type Meta struct {
@@ -30,7 +30,7 @@ func Success(c *fiber.Ctx, data any) error {
 	})
 }
 
-func Error(c *fiber.Ctx, statusCode int, message string) error {
+func Error(c *fiber.Ctx, statusCode int, message any) error {
 	return c.Status(statusCode).JSON(Response{
 		Success: false,
 		Error:   message,

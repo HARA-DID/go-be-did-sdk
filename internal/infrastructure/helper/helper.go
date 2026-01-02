@@ -20,8 +20,8 @@ func NewInternalHelper() (repository.HelperRepository, error) {
 	return &InternalHelper{}, nil
 }
 
-func (h *InternalHelper) StringToByte32(input helperdo.StringToByte32Input) [32]byte {
-	return utils.StringToByte32(input.Input)
+func (h *InternalHelper) StringToHex32(input helperdo.StringToHex32Input) string {
+	return utils.StringToHex32(input.Input)
 }
 
 func (huc *InternalHelper) EncodeCreateDIDParam(createDIDParam helperdo.EncodeCreateDIDParamInput) (string, error) {

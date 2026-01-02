@@ -5,10 +5,11 @@ import (
 	"math/big"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/meQlause/go-be-did/internal/domain/dto"
+	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 
-	helperdo "github.com/meQlause/go-be-did/internal/domain/helper"
 	accountabstractionsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 	helperuc "github.com/meQlause/go-be-did/internal/usecase/helper"
@@ -44,18 +45,24 @@ func NewHelperHandler(uc *helperuc.HelperUseCase) *HelperHandler {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body helperdomain.StringToByte32Input true "String input to convert to byte32"
+// @Param        request body dto.StringToHex32DTO true "String input to convert to byte32"
 // @Success      200 {object} response.Response{data=string} "Successfully converted string to byte32"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON or missing required fields"
 // @Failure      500 {object} response.Response "Internal server error - conversion failed"
 // @Router       /helper/string-2-byte32 [post]
-func (hh *HelperHandler) StringToByte32(c *fiber.Ctx) error {
-	var input helperdo.StringToByte32Input
+func (hh *HelperHandler) StringToHex32(c *fiber.Ctx) error {
+	var input dto.StringToHex32DTO
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	resp := hh.uc.StringToByte32(input)
+	if err := validator.Validate.Struct(&input); err != nil {
+		validationErrors := validator.FormatError(err)
+		return response.Error(c, fiber.StatusBadRequest, validationErrors)
+	}
+
+	stringToHex32Input := input.Into()
+	resp := hh.uc.StringToHex32(stringToHex32Input)
 	return response.Success(c, resp)
 }
 
@@ -95,12 +102,19 @@ func (hh *HelperHandler) StringToByte32(c *fiber.Ctx) error {
 // @Failure      500 {object} response.Response "Internal server error - encoding failed, nonce retrieval failed, or RPC node errors"
 // @Router       /helper/encode-create-did-param [post]
 func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
-	var input helperdo.EncodeCreateDIDParamInput
+	var input dto.EncodeCreateDIDDTO
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
 
-	decodedData, err := hh.uc.EncodeCreateDIDParam(input)
+	if err := validator.Validate.Struct(&input); err != nil {
+		validationErrors := validator.FormatError(err)
+		return response.Error(c, fiber.StatusBadRequest, validationErrors)
+	}
+
+	encodeCreateDIDInput := input.Into()
+
+	decodedData, err := hh.uc.EncodeCreateDIDParam(encodeCreateDIDInput)
 	if err != nil {
 		response.Error(c, fiber.StatusInternalServerError, "Can Not Get Nonce")
 	}

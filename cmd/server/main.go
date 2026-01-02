@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/go-be-did/internal/delivery/http/router"
+	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/logger"
 
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
@@ -21,6 +22,7 @@ import (
 // @host            localhost:8080
 // @BasePath        /api/v1
 func main() {
+	validator.Init()
 	config.InitConfig()
 	config.InitBlockchain()
 	logger.Init(config.GetApp().LogLevel)
