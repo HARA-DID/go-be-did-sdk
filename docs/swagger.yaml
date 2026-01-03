@@ -10,6 +10,36 @@ definitions:
         example: true
         type: boolean
     type: object
+  dto.CreateDIDDTO:
+    properties:
+      did:
+        example: did:example:123456789
+        type: string
+    type: object
+  dto.CreateWalletInputDTO:
+    description: Wallet creation payload with deployer address and optional salt value
+    properties:
+      input:
+        $ref: '#/definitions/dto.DeployWalletParamsDTO'
+      priv_key:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+    required:
+    - input
+    - priv_key
+    type: object
+  dto.DeleteDataDTO:
+    properties:
+      did_index:
+        example: 1
+        type: integer
+      key:
+        example: email
+        type: string
+    required:
+    - did_index
+    - key
+    type: object
   dto.DeployWalletParamsDTO:
     description: Wallet deployment parameters with owners and salt
     properties:
@@ -19,12 +49,163 @@ definitions:
         - 0x222...
         items:
           type: string
+        minItems: 1
         type: array
       salt:
-        example: 0xabc... (32 bytes hex)
+        example: 0xabc123... (32 bytes hex)
         type: string
+    required:
+    - owners
+    - salt
     type: object
-  dto.HandleOpsInputDTO:
+  dto.EncodeAddClaimDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.StoreClaimDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.EncodeAddKeyDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.StoreKeyDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.EncodeCreateDIDDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.CreateDIDDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.EncodeDeactiveDIDDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_index:
+        example: 1
+        type: integer
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    - did_index
+    type: object
+  dto.EncodeDeleteDataDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.DeleteDataDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.EncodeReactiveDIDDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_index:
+        example: 1
+        type: integer
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    - did_index
+    type: object
+  dto.EncodeRemoveClaimDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.RemoveClaimDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.EncodeRemoveKeyDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.RemoveKeyDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.EncodeStoreDataDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.StoreDataDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.EncodeTransferDIDOwnerDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.TransferDIDOwnershipDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.EncodeUpdateDIDDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: '#/definitions/dto.UpdateDIDDTO'
+      key_identifier:
+        example: key1
+        type: string
+    required:
+    - address
+    type: object
+  dto.HandleOpsDTO:
     description: HandleOps request payload with private key, wallet address, target
       address, data, and nonce
     properties:
@@ -32,7 +213,7 @@ definitions:
         example: 0x...
         type: string
       nonce:
-        example: "0x0"
+        example: "0"
         type: string
       priv_key:
         example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
@@ -50,12 +231,140 @@ definitions:
     - target
     - wallet
     type: object
+  dto.RemoveClaimDTO:
+    properties:
+      claim_id:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      did_index:
+        example: 1
+        type: integer
+    required:
+    - claim_id
+    - did_index
+    type: object
+  dto.RemoveKeyDTO:
+    properties:
+      did_index:
+        example: 1
+        type: integer
+      key_data:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+    required:
+    - did_index
+    - key_data
+    type: object
+  dto.StoreClaimDTO:
+    properties:
+      claim_id:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      data:
+        example: "0x1234567890"
+        type: string
+      did_index:
+        example: 1
+        type: integer
+      issuer:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      signature:
+        example: "0xabcdef"
+        type: string
+      topic:
+        example: 1
+        type: integer
+      uri:
+        example: https://example.com/claims/1
+        type: string
+    required:
+    - claim_id
+    - data
+    - did_index
+    - issuer
+    - signature
+    - topic
+    - uri
+    type: object
+  dto.StoreDataDTO:
+    properties:
+      did_index:
+        example: 1
+        type: integer
+      key:
+        example: email
+        type: string
+      value:
+        example: user@example.com
+        type: string
+    required:
+    - did_index
+    - key
+    - value
+    type: object
+  dto.StoreKeyDTO:
+    properties:
+      did_index:
+        example: 1
+        type: integer
+      key_data_hashed:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      key_type:
+        example: 1
+        type: integer
+      purpose:
+        example: 1
+        type: integer
+    required:
+    - did_index
+    - key_data_hashed
+    - key_type
+    - purpose
+    type: object
+  dto.StringToHex32DTO:
+    properties:
+      input:
+        example: example_string
+        type: string
+    required:
+    - input
+    type: object
+  dto.TransferDIDOwnershipDTO:
+    properties:
+      did_index:
+        example: 1
+        type: integer
+      new_owner:
+        example: 0x8ba1f109551bD432803012645Ac136ddd64DBA72
+        type: string
+      old_owner:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+    required:
+    - did_index
+    - new_owner
+    - old_owner
+    type: object
+  dto.UpdateDIDDTO:
+    properties:
+      did_index:
+        example: 1
+        type: integer
+      uri:
+        example: https://example.com/did/metadata
+        type: string
+    required:
+    - did_index
+    - uri
+    type: object
   dto.UserOpDTO:
     description: UserOp object containing target address, value, data, client block
       number, user nonce, and signature
     properties:
       client_block_number:
-        example: "0x12345"
+        example: "12345"
         type: string
       data:
         example: 0x...
@@ -67,13 +376,20 @@ definitions:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
       user_nonce:
-        example: "0x0"
+        example: "0"
         type: string
       value:
-        example: "0x0"
+        example: "0"
         type: string
+    required:
+    - client_block_number
+    - data
+    - signature
+    - target
+    - user_nonce
+    - value
     type: object
-  dto.ValidateUserOpsInputDTO:
+  dto.ValidateUserOpsDTO:
     description: Validation payload with wallet address and UserOp object
     properties:
       input:
@@ -81,25 +397,11 @@ definitions:
       wallet:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
+    required:
+    - input
+    - wallet
     type: object
-  helperdomain.EncodeCreateDIDParamInput:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/rootfactory.CreateDIDParam'
-      key_identifier:
-        example: key1
-        type: string
-    type: object
-  helperdomain.StringToByte32Input:
-    properties:
-      input:
-        example: example_string
-        type: string
-    type: object
-  helperhandler.EncodeCreateDIDParamResponse:
+  helperhandler.HelperResponse:
     properties:
       data:
         example: 0x...
@@ -121,18 +423,11 @@ definitions:
   response.Response:
     properties:
       data: {}
-      error:
-        type: string
+      error: {}
       meta:
         $ref: '#/definitions/response.Meta'
       success:
         type: boolean
-    type: object
-  rootfactory.CreateDIDParam:
-    properties:
-      did:
-        example: did:example:123456789
-        type: string
     type: object
 host: localhost:8080
 info:
@@ -192,7 +487,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.DeployWalletParamsDTO'
+          $ref: '#/definitions/dto.CreateWalletInputDTO'
       produces:
       - application/json
       responses:
@@ -260,7 +555,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.HandleOpsInputDTO'
+          $ref: '#/definitions/dto.HandleOpsDTO'
       produces:
       - application/json
       responses:
@@ -329,7 +624,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.ValidateUserOpsInputDTO'
+          $ref: '#/definitions/dto.ValidateUserOpsDTO'
       produces:
       - application/json
       responses:
@@ -355,6 +650,76 @@ paths:
       summary: Validate User Operation
       tags:
       - account-abstraction
+  /helper/encode-add-claim-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for adding a claim to a DID
+      parameters:
+      - description: Add claim parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeAddClaimDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Add Claim Parameters
+      tags:
+      - helper
+  /helper/encode-add-key-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for adding a key to a DID
+      parameters:
+      - description: Add key parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeAddKeyDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Add Key Parameters
+      tags:
+      - helper
   /helper/encode-create-did-param:
     post:
       consumes:
@@ -392,7 +757,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/helperdomain.EncodeCreateDIDParamInput'
+          $ref: '#/definitions/dto.EncodeCreateDIDDTO'
       produces:
       - application/json
       responses:
@@ -403,7 +768,7 @@ paths:
             - $ref: '#/definitions/response.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/helperhandler.EncodeCreateDIDParamResponse'
+                  $ref: '#/definitions/helperhandler.HelperResponse'
               type: object
         "400":
           description: Invalid request body - malformed JSON, missing required fields,
@@ -416,6 +781,286 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Encode Create DID Parameters
+      tags:
+      - helper
+  /helper/encode-deactivate-did-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for deactivating a DID
+      parameters:
+      - description: Deactivate DID parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeDeactiveDIDDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Deactivate DID Parameters
+      tags:
+      - helper
+  /helper/encode-delete-data-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for deleting data from a DID
+      parameters:
+      - description: Delete data parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeDeleteDataDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Delete Data Parameters
+      tags:
+      - helper
+  /helper/encode-reactivate-did-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for reactivating a DID
+      parameters:
+      - description: Reactivate DID parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeReactiveDIDDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Reactivate DID Parameters
+      tags:
+      - helper
+  /helper/encode-remove-claim-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for removing a claim from a DID
+      parameters:
+      - description: Remove claim parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeRemoveClaimDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Remove Claim Parameters
+      tags:
+      - helper
+  /helper/encode-remove-key-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for removing a key from a DID
+      parameters:
+      - description: Remove key parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeRemoveKeyDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Remove Key Parameters
+      tags:
+      - helper
+  /helper/encode-store-data-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for storing data in a DID
+      parameters:
+      - description: Store data parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeStoreDataDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Store Data Parameters
+      tags:
+      - helper
+  /helper/encode-transfer-did-owner-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for transferring DID ownership
+      parameters:
+      - description: Transfer DID ownership parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeTransferDIDOwnerDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Transfer DID Owner Parameters
+      tags:
+      - helper
+  /helper/encode-update-did-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for updating a DID's URI
+      parameters:
+      - description: Update DID parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EncodeUpdateDIDDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Update DID Parameters
       tags:
       - helper
   /helper/string-2-byte32:
@@ -446,7 +1091,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/helperdomain.StringToByte32Input'
+          $ref: '#/definitions/dto.StringToHex32DTO'
       produces:
       - application/json
       responses:
