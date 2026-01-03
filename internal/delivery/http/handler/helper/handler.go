@@ -104,17 +104,18 @@ func (hh *HelperHandler) StringToHex32(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 	var input dto.EncodeCreateDIDDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
+
 	}
 
 	encodedData, err := hh.uc.EncodeCreateDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -134,17 +135,17 @@ func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
 	var input dto.EncodeUpdateDIDDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeUpdateDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -164,17 +165,17 @@ func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
 	var input dto.EncodeDeactiveDIDDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeDeactiveDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -194,17 +195,17 @@ func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
 	var input dto.EncodeReactiveDIDDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeReactiveDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -224,17 +225,17 @@ func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
 	var input dto.EncodeTransferDIDOwnerDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeTransferDIDOwnerParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -254,17 +255,17 @@ func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
 	var input dto.EncodeStoreDataDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeStoreDataParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -284,17 +285,17 @@ func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
 	var input dto.EncodeDeleteDataDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeDeleteDataParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -314,17 +315,17 @@ func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
 	var input dto.EncodeAddKeyDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeAddKeyParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -344,17 +345,17 @@ func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
 	var input dto.EncodeRemoveKeyDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeRemoveKeyParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -374,17 +375,17 @@ func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
 	var input dto.EncodeAddClaimDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeAddClaimParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
@@ -404,30 +405,30 @@ func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
 func (hh *HelperHandler) EncodeRemoveClaimParam(c *fiber.Ctx) error {
 	var input dto.EncodeRemoveClaimDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
-		return err
+		return response.Error(c, fiber.StatusBadRequest, err)
 	}
 
 	encodedData, err := hh.uc.EncodeRemoveClaimParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to encode DID parameters")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	resp, err := hh.buildHelperResponse(input.Address, encodedData)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, "Failed to get nonce")
+		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
 	return response.Success(c, resp)
 }
 
-func (hh *HelperHandler) parseAndValidate(c *fiber.Ctx, input any) error {
-	if err := validator.Validate.Struct(input); err != nil {
-		validationErrors := validator.FormatError(err)
-		return response.Error(c, fiber.StatusBadRequest, validationErrors)
+func (hh *HelperHandler) parseAndValidate(c *fiber.Ctx, input any) any {
+	if err := c.BodyParser(&input); err != nil {
+		return "Invalid request body"
 	}
 
-	if err := c.BodyParser(input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
+	if err := validator.Validate.Struct(input); err != nil {
+		validationErrors := validator.FormatError(err)
+		return validationErrors
 	}
 
 	return nil

@@ -16,6 +16,8 @@ func message(e validator.FieldError) string {
 	switch e.Tag() {
 	case "required":
 		return "field is required"
+	case "uint64":
+		return "must be a valid unsigned 64-bit integer"
 	case "eth_private_key":
 		return "invalid ethereum private key (must be 64 hex characters)"
 	case "eth_public_key":

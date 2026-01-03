@@ -1,6 +1,8 @@
 package helperdomain
 
 import (
+	"math/big"
+
 	"github.com/meQlause/did-root-sdk/pkg/rootfactory"
 )
 
@@ -22,13 +24,13 @@ type EncodeUpdateDIDParamInput struct {
 
 type EncodeDeactiveDIDParamInput struct {
 	Address       string
-	DIDIndex      uint64
+	DIDIndex      *big.Int
 	KeyIdentifier string
 }
 
 type EncodeReactiveDIDParamInput struct {
 	Address       string
-	DIDIndex      uint64
+	DIDIndex      *big.Int
 	KeyIdentifier string
 }
 

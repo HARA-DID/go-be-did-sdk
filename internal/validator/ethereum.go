@@ -2,6 +2,7 @@ package validator
 
 import (
 	"math/big"
+	"strconv"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -17,6 +18,7 @@ func registerEthereum(v *validator.Validate) {
 	v.RegisterValidation("hex32", hex32Bytes)
 	v.RegisterValidation("hex_bigint", hexBigInt)
 	v.RegisterValidation("hex_data", hexData)
+	v.RegisterValidation("uint64", uint64String)
 }
 
 func ethPrivateKey(fl validator.FieldLevel) bool {
@@ -32,6 +34,17 @@ func ethPrivateKey(fl validator.FieldLevel) bool {
 	}
 
 	_, err = crypto.ToECDSA(bytes)
+	return err == nil
+}
+
+func uint64String(fl validator.FieldLevel) bool {
+	value := strings.TrimSpace(fl.Field().String())
+
+	if value == "" {
+		return false
+	}
+
+	_, err := strconv.ParseUint(value, 10, 64)
 	return err == nil
 }
 

@@ -17,16 +17,16 @@ func (dto *StringToHex32DTO) Into() helperdomain.StringToHex32Input {
 }
 
 type EncodeCreateDIDDTO struct {
-	Address       string       `json:"address" validate:"required" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
-	DIDParam      CreateDIDDTO `json:"did_param"`
-	KeyIdentifier string       `json:"key_identifier" example:"key1"`
+	Address       string       `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	DIDParam      CreateDIDDTO `json:"did_param" validate:"required"`
+	KeyIdentifier string       `json:"key_identifier" validate:"required" example:"key1"`
 }
 
 type CreateDIDDTO struct {
-	DID string `json:"did" example:"did:example:123456789"`
+	DID string `json:"did" validate:"required" example:"did:example:123456789"`
 }
 
-func (dto *EncodeCreateDIDDTO) Into() helperdomain.EncodeCreateDIDParamInput {
+func (dto EncodeCreateDIDDTO) Into() helperdomain.EncodeCreateDIDParamInput {
 	return helperdomain.EncodeCreateDIDParamInput{
 		Address: dto.Address,
 		DIDParam: rootfactory.CreateDIDParam{
@@ -60,28 +60,28 @@ func (dto EncodeUpdateDIDDTO) Into() helperdomain.EncodeUpdateDIDParamInput {
 
 type EncodeDeactiveDIDDTO struct {
 	Address       string `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
-	DIDIndex      uint64 `json:"did_index" validate:"required" example:"1"`
+	DIDIndex      string `json:"did_index" validate:"required,uint64" example:"1"`
 	KeyIdentifier string `json:"key_identifier" example:"key1"`
 }
 
 func (dto EncodeDeactiveDIDDTO) Into() helperdomain.EncodeDeactiveDIDParamInput {
 	return helperdomain.EncodeDeactiveDIDParamInput{
 		Address:       dto.Address,
-		DIDIndex:      dto.DIDIndex,
+		DIDIndex:      utils.StringToBigInt(dto.DIDIndex),
 		KeyIdentifier: dto.KeyIdentifier,
 	}
 }
 
 type EncodeReactiveDIDDTO struct {
 	Address       string `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
-	DIDIndex      uint64 `json:"did_index" validate:"required" example:"1"`
+	DIDIndex      string `json:"did_index" validate:"required" example:"1"`
 	KeyIdentifier string `json:"key_identifier" example:"key1"`
 }
 
 func (dto EncodeReactiveDIDDTO) Into() helperdomain.EncodeReactiveDIDParamInput {
 	return helperdomain.EncodeReactiveDIDParamInput{
 		Address:       dto.Address,
-		DIDIndex:      dto.DIDIndex,
+		DIDIndex:      utils.StringToBigInt(dto.DIDIndex),
 		KeyIdentifier: dto.KeyIdentifier,
 	}
 }

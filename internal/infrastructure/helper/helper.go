@@ -25,7 +25,6 @@ func (h *InternalHelper) StringToHex32(input helperdo.StringToHex32Input) string
 
 func (huc *InternalHelper) EncodeCreateDIDParam(input helperdo.EncodeCreateDIDParamInput) (string, error) {
 	contractABI := didrootsdk.GetDIDRootSDK().RootFactory.ContractABI
-
 	encodedData := utils.EncodeArgs(config.Network().ArgBuilder().
 		Type("string").Value(input.DIDParam.DID))
 
