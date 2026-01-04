@@ -39,9 +39,9 @@ type DIDReactivatedEvent struct {
 }
 
 type DIDTransferredEvent struct {
-	DIDID *big.Int `json:"did_id"`
-	From  string   `json:"from"`
-	To    string   `json:"to"`
+	DIDID    *big.Int `json:"did_id"`
+	OldOwner string   `json:"old_owner"`
+	NewOwner string   `json:"new_owner"`
 }
 
 type DataChangedEvent struct {
@@ -63,7 +63,7 @@ type KeyRemovedEvent struct {
 type ClaimAddedEvent struct {
 	DIDID   *big.Int `json:"did_id"`
 	ClaimID string   `json:"claim_id"`
-	Topic   *big.Int `json:"topic"`
+	Topic   uint8    `json:"topic"`
 	Issuer  string   `json:"issuer"`
 	Data    string   `json:"data"`
 }
@@ -282,13 +282,13 @@ func DecodeTransferDIDEvents(ctx context.Context, txHash utils.Hash) (*TransferD
 
 		if eventSignature == events["DIDTransferred"].ID && len(log.Topics) >= 4 {
 			didID := new(big.Int).SetBytes(log.Topics[1].Bytes())
-			from := utils.BytesToAddress(log.Topics[2].Bytes())
-			to := utils.BytesToAddress(log.Topics[3].Bytes())
+			oldOwner := utils.BytesToAddress(log.Topics[2].Bytes())
+			newOwner := utils.BytesToAddress(log.Topics[3].Bytes())
 
 			result.DIDTransferred = &DIDTransferredEvent{
-				DIDID: didID,
-				From:  from.Hex(),
-				To:    to.Hex(),
+				DIDID:    didID,
+				OldOwner: oldOwner.Hex(),
+				NewOwner: newOwner.Hex(),
 			}
 		}
 	}
@@ -453,14 +453,14 @@ func DecodeAddClaimEvents(ctx context.Context, txHash utils.Hash) (*AddClaimEven
 
 		eventSignature := log.Topics[0]
 
-		if eventSignature == events["ClaimAdded"].ID && len(log.Topics) >= 3 && len(log.Data) >= 96 {
+		if eventSignature == events["ClaimAdded"].ID && len(log.Topics) >= 4 && len(log.Data) >= 32 {
 			didID := new(big.Int).SetBytes(log.Topics[1].Bytes())
 			claimID := utils.BytesToHash(log.Topics[2].Bytes())
+			topic := uint8(log.Topics[3].Bytes()[31])
 
-			topic := new(big.Int).SetBytes(log.Data[0:32])
-			issuer := utils.BytesToAddress(log.Data[44:64])
+			issuer := utils.BytesToAddress(log.Data[12:32])
 
-			dataOffset := new(big.Int).SetBytes(log.Data[64:96]).Uint64()
+			dataOffset := new(big.Int).SetBytes(log.Data[32:64]).Uint64()
 			dataLength := new(big.Int).SetBytes(log.Data[dataOffset : dataOffset+32]).Uint64()
 			claimData := utils.Bytes2Hex(log.Data[dataOffset+32 : dataOffset+32+dataLength])
 

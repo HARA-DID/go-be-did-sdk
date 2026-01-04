@@ -3,11 +3,11 @@ package accountabstractionhandler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
+	didrootevent "github.com/meQlause/go-be-did/internal/delivery/event/handleops"
 	"github.com/meQlause/go-be-did/internal/domain/dto"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
-	didrootevent "github.com/meQlause/go-be-did/internal/delivery/event/didroot"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 
@@ -70,9 +70,10 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
 
 	resp := make(map[string]Response)
+	decodeEventFunc, _ := didrootevent.Registry[input.Details.Service][input.Details.TxType]
 
 	for txHash, ok := range txSuccess {
-		eventData, err := didrootevent.DecodeCreateDIDEvents(c.Context(), txHash)
+		eventData, err := decodeEventFunc(c.Context(), txHash)
 		if err != nil {
 			continue
 		}
