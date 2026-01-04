@@ -14,3 +14,8 @@ const (
 	TypeAddClaim       uint8 = 10
 	TypeRemoveClaim    uint8 = 11
 )
+
+const (
+	ServiceDIDRoot uint8 = 0
+	ServiceDIDHNS  uint8 = 1
+)

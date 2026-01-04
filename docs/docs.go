@@ -907,6 +907,27 @@ const docTemplate = `{
                 }
             }
         },
+        "backendutils.Details": {
+            "type": "object",
+            "required": [
+                "service",
+                "tx_type"
+            ],
+            "properties": {
+                "service": {
+                    "type": "integer",
+                    "maximum": 1,
+                    "minimum": 0,
+                    "example": 0
+                },
+                "tx_type": {
+                    "type": "integer",
+                    "maximum": 11,
+                    "minimum": 0,
+                    "example": 10
+                }
+            }
+        },
         "dto.CreateDIDDTO": {
             "type": "object",
             "properties": {
@@ -941,8 +962,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "key": {
                     "type": "string",
@@ -1044,8 +1065,8 @@ const docTemplate = `{
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 },
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "key_identifier": {
                     "type": "string",
@@ -1084,8 +1105,8 @@ const docTemplate = `{
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 },
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "key_identifier": {
                     "type": "string",
@@ -1193,6 +1214,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "data",
+                "details",
                 "nonce",
                 "priv_key",
                 "target",
@@ -1202,6 +1224,9 @@ const docTemplate = `{
                 "data": {
                     "type": "string",
                     "example": "0x..."
+                },
+                "details": {
+                    "$ref": "#/definitions/backendutils.Details"
                 },
                 "nonce": {
                     "type": "string",
@@ -1233,8 +1258,8 @@ const docTemplate = `{
                     "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
                 },
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },
@@ -1246,8 +1271,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "key_data": {
                     "type": "string",
@@ -1276,8 +1301,8 @@ const docTemplate = `{
                     "example": "0x1234567890"
                 },
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "issuer": {
                     "type": "string",
@@ -1306,8 +1331,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "key": {
                     "type": "string",
@@ -1329,8 +1354,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "key_data_hashed": {
                     "type": "string",
@@ -1367,8 +1392,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "new_owner": {
                     "type": "string",
@@ -1388,8 +1413,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "did_index": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "uri": {
                     "type": "string",
@@ -1458,6 +1483,9 @@ const docTemplate = `{
                 "data": {
                     "type": "string",
                     "example": "0x..."
+                },
+                "details": {
+                    "$ref": "#/definitions/backendutils.Details"
                 },
                 "nonce": {
                     "type": "integer",

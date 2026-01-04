@@ -3,11 +3,11 @@ package accountabstractionhandler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
-	didrootevent "github.com/meQlause/go-be-did/internal/delivery/event/didroot"
+	"github.com/meQlause/go-be-did/internal/domain/dto"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
-	"github.com/meQlause/go-be-did/internal/domain/dto"
+	didrootevent "github.com/meQlause/go-be-did/internal/delivery/event/didroot"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 
@@ -58,7 +58,7 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 		validationErrors := validator.FormatError(err)
 		return response.Error(c, fiber.StatusBadRequest, validationErrors)
 	}
-	
+
 	handleOpsInput := input.Into()
 	aasdk.ChangeWalletImplementationAddress(handleOpsInput.Wallet, config.Blockchain())
 

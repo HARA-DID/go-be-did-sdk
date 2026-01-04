@@ -3,11 +3,13 @@ package helperhandler
 import (
 	"context"
 	"math/big"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/domain/dto"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
+	backendutils "github.com/meQlause/go-be-did/utils"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 
 	accountabstractionsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
@@ -113,7 +115,12 @@ func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeCreateDID,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -143,7 +150,12 @@ func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeUpdateDID,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -173,7 +185,12 @@ func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeDeactivateDID,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -203,7 +220,12 @@ func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeReactivateDID,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -233,7 +255,12 @@ func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeTransferDID,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -263,7 +290,12 @@ func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeStoreData,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -293,7 +325,12 @@ func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeDeleteData,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -323,7 +360,12 @@ func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeAddKey,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -353,7 +395,12 @@ func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeRemoveKey,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -383,7 +430,12 @@ func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeAddClaim,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -413,7 +465,12 @@ func (hh *HelperHandler) EncodeRemoveClaimParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	resp, err := hh.buildHelperResponse(input.Address, encodedData)
+	details := backendutils.Details{
+		Service: backendutils.ServiceDIDRoot,
+		TxType:  backendutils.TypeRemoveClaim,
+	}
+
+	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
 	if err != nil {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
@@ -434,7 +491,7 @@ func (hh *HelperHandler) parseAndValidate(c *fiber.Ctx, input any) any {
 	return nil
 }
 
-func (hh *HelperHandler) buildHelperResponse(address string, encodedData string) (HelperResponse, error) {
+func (hh *HelperHandler) buildHelperResponse(address string, encodedData string, details backendutils.Details) (HelperResponse, error) {
 	walletAddress := utils.HexToAddress(address)
 
 	key := new(big.Int).SetInt64(0)
@@ -448,10 +505,12 @@ func (hh *HelperHandler) buildHelperResponse(address string, encodedData string)
 	}
 
 	nonceValue := nonce.Uint64() & ((1 << 64) - 1)
+	nonceStr := strconv.FormatUint(nonceValue, 10)
 
 	return HelperResponse{
-		Data:   encodedData,
-		Target: didrootsdk.GetDIDRootSDK().RootFactory.Address.Hex(),
-		Nonce:  nonceValue,
+		Data:    encodedData,
+		Target:  didrootsdk.GetDIDRootSDK().RootFactory.Address.Hex(),
+		Nonce:   nonceStr,
+		Details: details,
 	}, nil
 }

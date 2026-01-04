@@ -19,6 +19,7 @@ func registerEthereum(v *validator.Validate) {
 	v.RegisterValidation("hex_bigint", hexBigInt)
 	v.RegisterValidation("hex_data", hexData)
 	v.RegisterValidation("uint64", uint64String)
+	v.RegisterValidation("uint8", uint8String)
 }
 
 func ethPrivateKey(fl validator.FieldLevel) bool {
@@ -35,6 +36,21 @@ func ethPrivateKey(fl validator.FieldLevel) bool {
 
 	_, err = crypto.ToECDSA(bytes)
 	return err == nil
+}
+
+func uint8String(fl validator.FieldLevel) bool {
+	value := strings.TrimSpace(fl.Field().String())
+
+	if value == "" {
+		return false
+	}
+
+	n, err := strconv.ParseUint(value, 10, 8)
+	if err != nil {
+		return false
+	}
+
+	return n <= 255
 }
 
 func uint64String(fl validator.FieldLevel) bool {
