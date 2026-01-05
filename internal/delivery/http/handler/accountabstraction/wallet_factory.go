@@ -9,7 +9,6 @@ import (
 	"github.com/meQlause/go-be-did/pkg/response"
 
 	aaevent "github.com/meQlause/go-be-did/internal/delivery/event/accountabstraction"
-	backendutils "github.com/meQlause/go-be-did/utils"
 )
 
 // CreateWallet godoc
@@ -83,7 +82,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 	}
 
 	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
-	resp := make(map[string]backendutils.Response)
+	resp := make(map[string]response.BlockchainResponse)
 
 	for txHash, ok := range txSuccess {
 		eventData, err := aaevent.DecodeWalletDeployedEvent(c.Context(), txHash)
@@ -92,7 +91,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 		}
 
 		if eventData != nil {
-			resp[txHash.Hex()] = backendutils.Response{
+			resp[txHash.Hex()] = response.BlockchainResponse{
 				Success:  ok,
 				Errors:   "No Error Message",
 				Returned: eventData,
@@ -101,7 +100,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 	}
 
 	for h, err := range txErrors {
-		resp[h.Hex()] = backendutils.Response{
+		resp[h.Hex()] = response.BlockchainResponse{
 			Success:  false,
 			Errors:   err.Error(),
 			Returned: nil,

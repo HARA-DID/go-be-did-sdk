@@ -7,11 +7,22 @@ import (
 	"github.com/meQlause/go-be-did/internal/config"
 )
 
+type Details struct {
+	Service uint8 `json:"service" example:"0"`
+	TxType  uint8 `json:"tx_type" example:"10"`
+}
+
 type Response struct {
 	Success bool `json:"success"`
 	Error   any  `json:"error,omitempty"`
 	Data    any  `json:"data,omitempty"`
 	Meta    Meta `json:"meta"`
+}
+
+type BlockchainResponse struct {
+	Success  bool   `json:"success" example:"true"`
+	Errors   string `json:"errors" example:"No Error Message"`
+	Returned any    `json:"returned,omitempty"`
 }
 
 type Meta struct {

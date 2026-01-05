@@ -6,7 +6,6 @@ import (
 	"github.com/meQlause/go-be-did/pkg/response"
 
 	didrootdto "github.com/meQlause/go-be-did/internal/domain/dto/didroot"
-	backendutils "github.com/meQlause/go-be-did/utils"
 )
 
 // GetData godoc
@@ -39,7 +38,7 @@ func (drh *DIDRootHandler) GetData(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -77,7 +76,7 @@ func (drh *DIDRootHandler) ResolveDID(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -116,7 +115,7 @@ func (drh *DIDRootHandler) VerifyDIDOwnership(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -155,7 +154,7 @@ func (drh *DIDRootHandler) GetKey(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -193,7 +192,7 @@ func (drh *DIDRootHandler) GetKeysByDID(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -232,7 +231,7 @@ func (drh *DIDRootHandler) GetClaim(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -270,7 +269,7 @@ func (drh *DIDRootHandler) GetClaimsByDID(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -310,7 +309,7 @@ func (drh *DIDRootHandler) VerifyClaim(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -348,7 +347,7 @@ func (drh *DIDRootHandler) GetDIDKeyDataCount(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -387,7 +386,7 @@ func (drh *DIDRootHandler) GetDIDKeyDataByIndex(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -425,7 +424,7 @@ func (drh *DIDRootHandler) GetOriginalKey(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -463,7 +462,7 @@ func (drh *DIDRootHandler) DIDIndexMap(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,
@@ -501,7 +500,7 @@ func (drh *DIDRootHandler) DIDIndexMapReverse(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
-	resp := backendutils.Response{
+	resp := response.BlockchainResponse{
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result,

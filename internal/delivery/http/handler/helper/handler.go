@@ -115,7 +115,7 @@ func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeCreateDID,
 	}
@@ -150,7 +150,7 @@ func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeUpdateDID,
 	}
@@ -185,7 +185,7 @@ func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeDeactivateDID,
 	}
@@ -220,7 +220,7 @@ func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeReactivateDID,
 	}
@@ -255,7 +255,7 @@ func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeTransferDID,
 	}
@@ -290,7 +290,7 @@ func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeStoreData,
 	}
@@ -325,7 +325,7 @@ func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeDeleteData,
 	}
@@ -360,7 +360,7 @@ func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeAddKey,
 	}
@@ -395,7 +395,7 @@ func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeRemoveKey,
 	}
@@ -430,7 +430,7 @@ func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeAddClaim,
 	}
@@ -465,7 +465,7 @@ func (hh *HelperHandler) EncodeRemoveClaimParam(c *fiber.Ctx) error {
 		return response.Error(c, fiber.StatusInternalServerError, err)
 	}
 
-	details := backendutils.Details{
+	details := response.Details{
 		Service: backendutils.ServiceDIDRoot,
 		TxType:  backendutils.TypeRemoveClaim,
 	}
@@ -491,7 +491,7 @@ func (hh *HelperHandler) parseAndValidate(c *fiber.Ctx, input any) any {
 	return nil
 }
 
-func (hh *HelperHandler) buildHelperResponse(address string, encodedData string, details backendutils.Details) (HelperResponse, error) {
+func (hh *HelperHandler) buildHelperResponse(address string, encodedData string, details response.Details) (HelperResponse, error) {
 	walletAddress := utils.HexToAddress(address)
 
 	key := new(big.Int).SetInt64(0)

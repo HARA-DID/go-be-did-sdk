@@ -6,7 +6,6 @@ import (
 	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dto/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
-	backendutils "github.com/meQlause/go-be-did/utils"
 
 	didrootevent "github.com/meQlause/go-be-did/internal/delivery/event/handleops"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
@@ -70,7 +69,7 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 
 	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
 
-	resp := make(map[string]backendutils.Response)
+	resp := make(map[string]response.BlockchainResponse)
 	decodeEventFunc, _ := didrootevent.Registry[input.Details.Service][input.Details.TxType]
 
 	for txHash, ok := range txSuccess {
@@ -79,7 +78,7 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 			continue
 		}
 
-		resp[txHash.Hex()] = backendutils.Response{
+		resp[txHash.Hex()] = response.BlockchainResponse{
 			Success:  ok,
 			Errors:   "No Error Message",
 			Returned: eventData,
@@ -87,7 +86,7 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 	}
 
 	for txHash, txErr := range txErrors {
-		resp[txHash.Hex()] = backendutils.Response{
+		resp[txHash.Hex()] = response.BlockchainResponse{
 			Success:  false,
 			Errors:   txErr.Error(),
 			Returned: nil,
