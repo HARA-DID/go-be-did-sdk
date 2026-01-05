@@ -53,7 +53,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "object",
                                             "additionalProperties": {
-                                                "$ref": "#/definitions/backendutils.Response"
+                                                "$ref": "#/definitions/response.BlockchainResponse"
                                             }
                                         }
                                     }
@@ -114,7 +114,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "object",
                                             "additionalProperties": {
-                                                "$ref": "#/definitions/backendutils.Response"
+                                                "$ref": "#/definitions/response.BlockchainResponse"
                                             }
                                         }
                                     }
@@ -130,6 +130,63 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/account-abstraction/is-valid-wallet": {
+            "get": {
+                "description": "Checks whether a given wallet address is a valid Account Abstraction smart wallet.\n\nThis endpoint verifies:\n- The wallet contract exists on-chain\n- The wallet conforms to the expected smart wallet implementation\n- The wallet can be used with the Account Abstraction entry point\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): Validation result returned from the blockchain\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version\n\n## Important Notes\n- HTTP 200 does NOT guarantee the wallet is valid\n- Always check the ` + "`" + `data` + "`" + ` field for validation result\n- This endpoint does NOT modify blockchain state (read-only)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account-abstraction"
+                ],
+                "summary": "Validate Smart Wallet",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+                        "description": "Smart wallet address to validate",
+                        "name": "wallet",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Wallet validation result",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or invalid wallet address format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed or RPC error",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -230,7 +287,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -287,7 +344,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -352,7 +409,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -409,7 +466,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -474,7 +531,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -539,7 +596,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -596,7 +653,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -661,7 +718,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -718,7 +775,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -775,7 +832,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -832,7 +889,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -905,7 +962,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -970,7 +1027,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/backendutils.Response"
+                                            "$ref": "#/definitions/response.BlockchainResponse"
                                         }
                                     }
                                 }
@@ -1749,7 +1806,7 @@ const docTemplate = `{
                     "example": "0x..."
                 },
                 "details": {
-                    "$ref": "#/definitions/backendutils.Details"
+                    "$ref": "#/definitions/response.Details"
                 },
                 "nonce": {
                     "type": "string",
@@ -1821,33 +1878,6 @@ const docTemplate = `{
                 "wallet": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                }
-            }
-        },
-        "backendutils.Details": {
-            "type": "object",
-            "properties": {
-                "service": {
-                    "type": "integer",
-                    "example": 0
-                },
-                "tx_type": {
-                    "type": "integer",
-                    "example": 10
-                }
-            }
-        },
-        "backendutils.Response": {
-            "type": "object",
-            "properties": {
-                "errors": {
-                    "type": "string",
-                    "example": "No Error Message"
-                },
-                "returned": {},
-                "success": {
-                    "type": "boolean",
-                    "example": true
                 }
             }
         },
@@ -2274,7 +2304,7 @@ const docTemplate = `{
                     "example": "0x..."
                 },
                 "details": {
-                    "$ref": "#/definitions/backendutils.Details"
+                    "$ref": "#/definitions/response.Details"
                 },
                 "nonce": {
                     "type": "string",
@@ -2283,6 +2313,33 @@ const docTemplate = `{
                 "target": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                }
+            }
+        },
+        "response.BlockchainResponse": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "string",
+                    "example": "No Error Message"
+                },
+                "returned": {},
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "response.Details": {
+            "type": "object",
+            "properties": {
+                "service": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "tx_type": {
+                    "type": "integer",
+                    "example": 10
                 }
             }
         },

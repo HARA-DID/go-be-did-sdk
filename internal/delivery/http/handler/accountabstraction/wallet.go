@@ -3,10 +3,10 @@ package accountabstractionhandler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
-	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dto/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
+	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dto/accountabstraction"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 

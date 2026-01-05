@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
 	aado "github.com/meQlause/go-be-did/internal/domain/entities/accountabstraction"
 	backendutils "github.com/meQlause/go-be-did/utils"
+
+	"github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/network"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/wallet"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
@@ -67,4 +68,19 @@ func (s *AccountAbstractionSDK) HandleOps(
 	return &backendutils.TxHash{
 		TxHash: hashes,
 	}, nil
+}
+
+func (s *AccountAbstractionSDK) IsValidWallet(
+	ctx context.Context,
+	input aado.IsValidWalletInput,
+) (bool, error) {
+	resp, err := s.EntryPoint.IsValidWallet(
+		ctx,
+		input.Wallet,
+	)
+	if err != nil {
+		return false, fmt.Errorf("Error : %w", err)
+	}
+
+	return resp, nil
 }

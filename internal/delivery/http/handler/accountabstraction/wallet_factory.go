@@ -56,11 +56,11 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request body accountabstractiondto.CreateWalletInputDTO true "Wallet creation payload with deployer address and optional salt value"
-// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Transaction(s) processed successfully - check individual transaction results" example(SuccessfulWalletCreation)
-// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Transaction failed on blockchain - returned in 200 response with error details" example(TransactionFailed)
-// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Multiple transactions with mixed results" example(MultipleTxMixedResults)
-// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Transaction succeeded but event decoding failed" example(EventDecodeFailed)
-// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "No events emitted" example(EmptyResponse)
+// @Success      200 {object} response.Response{data=map[string]response.BlockchainResponse} "Transaction(s) processed successfully - check individual transaction results" example(SuccessfulWalletCreation)
+// @Success      200 {object} response.Response{data=map[string]response.BlockchainResponse} "Transaction failed on blockchain - returned in 200 response with error details" example(TransactionFailed)
+// @Success      200 {object} response.Response{data=map[string]response.BlockchainResponse} "Multiple transactions with mixed results" example(MultipleTxMixedResults)
+// @Success      200 {object} response.Response{data=map[string]response.BlockchainResponse} "Transaction succeeded but event decoding failed" example(EventDecodeFailed)
+// @Success      200 {object} response.Response{data=map[string]response.BlockchainResponse} "No events emitted" example(EmptyResponse)
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid Ethereum address format" example(BadRequest)
 // @Failure      500 {object} response.Response "Internal server error - wallet creation use case failed, network connectivity issues, RPC node errors, or smart contract deployment failure" example(InternalServerError)
 // @Router       /account-abstraction/create [post]

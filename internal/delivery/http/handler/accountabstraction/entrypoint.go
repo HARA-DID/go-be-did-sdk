@@ -44,7 +44,7 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        request body accountabstractiondto.HandleOpsDTO true "HandleOps payload with private key, wallet address, target address, data, and nonce"
-// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Transaction(s) processed successfully - check individual transaction results"
+// @Success      200 {object} response.Response{data=map[string]response.BlockchainResponse} "Transaction(s) processed successfully - check individual transaction results"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid address format"
 // @Failure      500 {object} response.Response "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure"
 // @Router       /account-abstraction/handle-ops [post]
@@ -91,6 +91,60 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 			Errors:   txErr.Error(),
 			Returned: nil,
 		}
+	}
+
+	return response.Success(c, resp)
+}
+
+// IsValidWallet godoc
+// @Summary      Validate Smart Wallet
+// @Description  Checks whether a given wallet address is a valid Account Abstraction smart wallet.
+// @Description
+// @Description  This endpoint verifies:
+// @Description  - The wallet contract exists on-chain
+// @Description  - The wallet conforms to the expected smart wallet implementation
+// @Description  - The wallet can be used with the Account Abstraction entry point
+// @Description
+// @Description  ## Response Structure
+// @Description  Success responses (HTTP 200) contain:
+// @Description  - `success` (boolean): Always true if request is processed correctly
+// @Description  - `data` (object): Validation result returned from the blockchain
+// @Description  - `meta` (object): Contains timestamp and API version
+// @Description
+// @Description  ## Important Notes
+// @Description  - HTTP 200 does NOT guarantee the wallet is valid
+// @Description  - Always check the `data` field for validation result
+// @Description  - This endpoint does NOT modify blockchain state (read-only)
+// @Tags         account-abstraction
+// @Accept       json
+// @Produce      json
+// @Param        wallet query string true "Smart wallet address to validate" example(0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb)
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Wallet validation result"
+// @Failure      400 {object} response.Response "Invalid request or invalid wallet address format"
+// @Failure      500 {object} response.Response "Internal server error - blockchain call failed or RPC error"
+// @Router       /account-abstraction/is-valid-wallet [get]
+func (ah *AccountAbstractionHandler) IsValidWallet(c *fiber.Ctx) error {
+	var input accountabstractiondto.IsValidWalletDTO
+	if err := c.QueryParser(&input); err != nil {
+		return response.Error(c, fiber.StatusBadRequest, err.Error())
+	}
+
+	if err := validator.Validate.Struct(&input); err != nil {
+		validationErrors := validator.FormatError(err)
+		return response.Error(c, fiber.StatusBadRequest, validationErrors)
+	}
+
+	IsValidWalletInput := input.Into()
+
+	result, err := ah.uc.IsValidWallet(c.Context(), IsValidWalletInput)
+	if err != nil {
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	resp := response.BlockchainResponse{
+		Success:  true,
+		Errors:   "No Error Message",
+		Returned: result,
 	}
 
 	return response.Success(c, resp)

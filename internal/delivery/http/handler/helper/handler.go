@@ -494,7 +494,7 @@ func (hh *HelperHandler) parseAndValidate(c *fiber.Ctx, input any) any {
 func (hh *HelperHandler) buildHelperResponse(address string, encodedData string, details response.Details) (HelperResponse, error) {
 	walletAddress := utils.HexToAddress(address)
 
-	key := new(big.Int).SetInt64(0)
+	key := new(big.Int).SetUint64(0)
 	nonce, err := accountabstractionsdk.GetAccountAbstractionSDK().EntryPoint.GetNonce(
 		context.Background(),
 		walletAddress,
@@ -504,8 +504,7 @@ func (hh *HelperHandler) buildHelperResponse(address string, encodedData string,
 		return HelperResponse{}, err
 	}
 
-	nonceValue := nonce.Uint64() & ((1 << 64) - 1)
-	nonceStr := strconv.FormatUint(nonceValue, 10)
+	nonceStr := strconv.FormatUint(nonce.Uint64(), 10)
 
 	return HelperResponse{
 		Data:    encodedData,

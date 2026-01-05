@@ -15,5 +15,5 @@ func SetupEntryPointRoutes(aa fiber.Router, aaRepo repository.AccountAbstraction
 	aaHandler := aahandler.NewAccountAbstractionHandler(aaUC)
 
 	aa.Post("/handle-ops", aaHandler.HandleOps)
-	// aa.Get("/:address", aaHandler.GetAccountInfo)
+	aa.Get("/is-valid-wallet", aaHandler.IsValidWallet)
 }

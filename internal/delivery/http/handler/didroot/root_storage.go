@@ -16,7 +16,7 @@ import (
 // @Produce      json
 // @Param        did_hash query string true "Data hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
 // @Param        key query string true "key string" example(email)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Data retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Data retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing or malformed hash parameter"
 // @Failure      500 {object} response.Response "Internal server error - contract call failed or network issues"
 // @Router       /did-root/get-data [get]
@@ -54,7 +54,7 @@ func (drh *DIDRootHandler) GetData(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
-// @Success      200 {object} response.Response{data=backendutils.Response} "DID resolved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "DID resolved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing or malformed did_hash parameter"
 // @Failure      500 {object} response.Response "Internal server error - DID resolution failed or not found"
 // @Router       /did-root/resolve-did [get]
@@ -93,7 +93,7 @@ func (drh *DIDRootHandler) ResolveDID(c *fiber.Ctx) error {
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
 // @Param        owner query string true "Ethereum address to verify ownership (with 0x prefix)" example(0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Ownership verification completed - check returned data for result"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Ownership verification completed - check returned data for result"
 // @Failure      400 {object} response.Response "Invalid request - missing parameters or invalid address format"
 // @Failure      500 {object} response.Response "Internal server error - verification failed"
 // @Router       /did-root/verify-did-ownership [get]
@@ -132,7 +132,7 @@ func (drh *DIDRootHandler) VerifyDIDOwnership(c *fiber.Ctx) error {
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
 // @Param        key_data_hashed query string true "Hashed key data (32-byte hex string with 0x prefix)" example(0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Key retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Key retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing parameters or invalid hash format"
 // @Failure      500 {object} response.Response "Internal server error - key retrieval failed or not found"
 // @Router       /did-root/get-key [get]
@@ -170,7 +170,7 @@ func (drh *DIDRootHandler) GetKey(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Keys retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Keys retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing or malformed did_hash parameter"
 // @Failure      500 {object} response.Response "Internal server error - keys retrieval failed"
 // @Router       /did-root/get-keys-by-did [get]
@@ -209,7 +209,7 @@ func (drh *DIDRootHandler) GetKeysByDID(c *fiber.Ctx) error {
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
 // @Param        claim_id query string true "Claim identifier (32-byte hex string with 0x prefix)" example(0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Claim retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Claim retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing parameters or invalid hash format"
 // @Failure      500 {object} response.Response "Internal server error - claim retrieval failed or not found"
 // @Router       /did-root/get-claim [get]
@@ -247,7 +247,7 @@ func (drh *DIDRootHandler) GetClaim(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Claims retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Claims retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing or malformed did_hash parameter"
 // @Failure      500 {object} response.Response "Internal server error - claims retrieval failed"
 // @Router       /did-root/get-claims-by-did [get]
@@ -287,7 +287,7 @@ func (drh *DIDRootHandler) GetClaimsByDID(c *fiber.Ctx) error {
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
 // @Param        claim_id query string true "Claim identifier (32-byte hex string with 0x prefix)" example(0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890)
 // @Param        to_verify query string true "Ethereum address to verify claim authority (with 0x prefix)" example(0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Claim verification completed - check returned data for result"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Claim verification completed - check returned data for result"
 // @Failure      400 {object} response.Response "Invalid request - missing parameters or invalid address/hash format"
 // @Failure      500 {object} response.Response "Internal server error - verification failed"
 // @Router       /did-root/verify-claim [get]
@@ -325,7 +325,7 @@ func (drh *DIDRootHandler) VerifyClaim(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Key count retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Key count retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing or malformed did_hash parameter"
 // @Failure      500 {object} response.Response "Internal server error - count retrieval failed"
 // @Router       /did-root/get-did-key-data-count [get]
@@ -364,7 +364,7 @@ func (drh *DIDRootHandler) GetDIDKeyDataCount(c *fiber.Ctx) error {
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
 // @Param        index query string true "Key index (unsigned integer as string)" example(0)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Key retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Key retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing parameters, invalid hash format, or invalid index"
 // @Failure      500 {object} response.Response "Internal server error - key retrieval failed or index out of bounds"
 // @Router       /did-root/get-did-key-data-by-index [get]
@@ -402,7 +402,7 @@ func (drh *DIDRootHandler) GetDIDKeyDataByIndex(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        key_code query string true "Key code identifier (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
-// @Success      200 {object} response.Response{data=backendutils.Response} "Original key retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "Original key retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing or malformed key_code parameter"
 // @Failure      500 {object} response.Response "Internal server error - key retrieval failed or not found"
 // @Router       /did-root/get-original-key [get]
@@ -440,7 +440,7 @@ func (drh *DIDRootHandler) GetOriginalKey(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        did_index query string true "DID index (hex-encoded big integer with 0x prefix)" example(0x1)
-// @Success      200 {object} response.Response{data=backendutils.Response} "DID hash retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "DID hash retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing or malformed did_index parameter"
 // @Failure      500 {object} response.Response "Internal server error - mapping retrieval failed or index not found"
 // @Router       /did-root/did-index-map [get]
@@ -478,7 +478,7 @@ func (drh *DIDRootHandler) DIDIndexMap(c *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
-// @Success      200 {object} response.Response{data=backendutils.Response} "DID index retrieved successfully"
+// @Success      200 {object} response.Response{data=response.BlockchainResponse} "DID index retrieved successfully"
 // @Failure      400 {object} response.Response "Invalid request - missing or malformed did_hash parameter"
 // @Failure      500 {object} response.Response "Internal server error - reverse mapping retrieval failed or hash not found"
 // @Router       /did-root/did-index-map-reverse [get]

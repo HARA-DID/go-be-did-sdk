@@ -18,6 +18,8 @@ type HandleOpsDTO struct {
 	Wallet  string           `json:"wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 }
 
+// IsValidWalletDTO represents the request payload for wallet validation
+// @Description Wallet validation request payload
 func (dto *HandleOpsDTO) Into() accountabstraction.HandleOpsInput {
 	return accountabstraction.HandleOpsInput{
 		PrivKey: dto.PrivKey,
@@ -25,5 +27,15 @@ func (dto *HandleOpsDTO) Into() accountabstraction.HandleOpsInput {
 		Target:  utils.HexToAddress(dto.Target),
 		Nonce:   utils.StringToBigInt(dto.Nonce),
 		Wallet:  utils.HexToAddress(dto.Wallet),
+	}
+}
+
+type IsValidWalletDTO struct {
+	Wallet string `json:"wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+}
+
+func (dto *IsValidWalletDTO) Into() accountabstraction.IsValidWalletInput {
+	return accountabstraction.IsValidWalletInput{
+		Wallet: utils.HexToAddress(dto.Wallet),
 	}
 }

@@ -13,3 +13,7 @@ type HandleOpsInput struct {
 	Nonce   *big.Int
 	Wallet  utils.Address
 }
+
+type IsValidWalletInput struct {
+	Wallet utils.Address
+}
