@@ -6,7 +6,8 @@ import (
 	"math/big"
 
 	"github.com/meQlause/account-abstraction-sdk/pkg/entrypoint"
-	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
+	aado "github.com/meQlause/go-be-did/internal/domain/entities/accountabstraction"
+	backendutils "github.com/meQlause/go-be-did/utils"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/network"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/wallet"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
@@ -16,7 +17,7 @@ func (s *AccountAbstractionSDK) HandleOps(
 	ctx context.Context,
 	input aado.HandleOpsInput,
 	net *network.Network,
-) (*aado.TxHash, error) {
+) (*backendutils.TxHash, error) {
 	relayerWallet := wallet.NewWallet(input.PrivKey)
 
 	latestBlock, err := net.LatestBlock(context.Background())
@@ -63,7 +64,7 @@ func (s *AccountAbstractionSDK) HandleOps(
 		return nil, fmt.Errorf("handle ops failed: %w", err)
 	}
 
-	return &aado.TxHash{
+	return &backendutils.TxHash{
 		TxHash: hashes,
 	}, nil
 }

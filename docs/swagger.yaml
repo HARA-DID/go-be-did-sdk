@@ -1,68 +1,24 @@
 basePath: /api/v1
 definitions:
-  accountabstractionhandler.Response:
-    properties:
-      errors:
-        example: No Error Message
-        type: string
-      returned: {}
-      success:
-        example: true
-        type: boolean
-    type: object
-  backendutils.Details:
-    properties:
-      service:
-        example: 0
-        maximum: 1
-        minimum: 0
-        type: integer
-      tx_type:
-        example: 10
-        maximum: 11
-        minimum: 0
-        type: integer
-    required:
-    - service
-    - tx_type
-    type: object
-  dto.CreateDIDDTO:
-    properties:
-      did:
-        example: did:example:123456789
-        type: string
-    type: object
-  dto.CreateWalletInputDTO:
+  accountabstractiondto.CreateWalletInputDTO:
     description: Wallet creation payload with deployer address and optional salt value
     properties:
       input:
-        $ref: '#/definitions/dto.DeployWalletParamsDTO'
+        $ref: "#/definitions/accountabstractiondto.DeployWalletParamsDTO"
       priv_key:
         example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
         type: string
     required:
-    - input
-    - priv_key
+      - input
+      - priv_key
     type: object
-  dto.DeleteDataDTO:
-    properties:
-      did_index:
-        example: "1"
-        type: string
-      key:
-        example: email
-        type: string
-    required:
-    - did_index
-    - key
-    type: object
-  dto.DeployWalletParamsDTO:
+  accountabstractiondto.DeployWalletParamsDTO:
     description: Wallet deployment parameters with owners and salt
     properties:
       owners:
         example:
-        - 0x111...
-        - 0x222...
+          - 0x111...
+          - 0x222...
         items:
           type: string
         minItems: 1
@@ -71,165 +27,19 @@ definitions:
         example: 0xabc123... (32 bytes hex)
         type: string
     required:
-    - owners
-    - salt
+      - owners
+      - salt
     type: object
-  dto.EncodeAddClaimDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.StoreClaimDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.EncodeAddKeyDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.StoreKeyDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.EncodeCreateDIDDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.CreateDIDDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.EncodeDeactiveDIDDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_index:
-        example: "1"
-        type: string
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    - did_index
-    type: object
-  dto.EncodeDeleteDataDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.DeleteDataDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.EncodeReactiveDIDDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_index:
-        example: "1"
-        type: string
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    - did_index
-    type: object
-  dto.EncodeRemoveClaimDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.RemoveClaimDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.EncodeRemoveKeyDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.RemoveKeyDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.EncodeStoreDataDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.StoreDataDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.EncodeTransferDIDOwnerDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.TransferDIDOwnershipDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.EncodeUpdateDIDDTO:
-    properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      did_param:
-        $ref: '#/definitions/dto.UpdateDIDDTO'
-      key_identifier:
-        example: key1
-        type: string
-    required:
-    - address
-    type: object
-  dto.HandleOpsDTO:
-    description: HandleOps request payload with private key, wallet address, target
+  accountabstractiondto.HandleOpsDTO:
+    description:
+      HandleOps request payload with private key, wallet address, target
       address, data, and nonce
     properties:
       data:
         example: 0x...
         type: string
       details:
-        $ref: '#/definitions/backendutils.Details'
+        $ref: "#/definitions/backendutils.Details"
       nonce:
         example: "0"
         type: string
@@ -243,143 +53,16 @@ definitions:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
     required:
-    - data
-    - details
-    - nonce
-    - priv_key
-    - target
-    - wallet
+      - data
+      - details
+      - nonce
+      - priv_key
+      - target
+      - wallet
     type: object
-  dto.RemoveClaimDTO:
-    properties:
-      claim_id:
-        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
-        type: string
-      did_index:
-        example: "1"
-        type: string
-    required:
-    - claim_id
-    - did_index
-    type: object
-  dto.RemoveKeyDTO:
-    properties:
-      did_index:
-        example: "1"
-        type: string
-      key_data:
-        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
-        type: string
-    required:
-    - did_index
-    - key_data
-    type: object
-  dto.StoreClaimDTO:
-    properties:
-      claim_id:
-        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
-        type: string
-      data:
-        example: "0x1234567890"
-        type: string
-      did_index:
-        example: "1"
-        type: string
-      issuer:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-      signature:
-        example: "0xabcdef"
-        type: string
-      topic:
-        example: 1
-        type: integer
-      uri:
-        example: https://example.com/claims/1
-        type: string
-    required:
-    - claim_id
-    - data
-    - did_index
-    - issuer
-    - signature
-    - topic
-    - uri
-    type: object
-  dto.StoreDataDTO:
-    properties:
-      did_index:
-        example: "1"
-        type: string
-      key:
-        example: email
-        type: string
-      value:
-        example: user@example.com
-        type: string
-    required:
-    - did_index
-    - key
-    - value
-    type: object
-  dto.StoreKeyDTO:
-    properties:
-      did_index:
-        example: "1"
-        type: string
-      key_data_hashed:
-        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
-        type: string
-      key_type:
-        example: 1
-        type: integer
-      purpose:
-        example: 1
-        type: integer
-    required:
-    - did_index
-    - key_data_hashed
-    - key_type
-    - purpose
-    type: object
-  dto.StringToHex32DTO:
-    properties:
-      input:
-        example: example_string
-        type: string
-    required:
-    - input
-    type: object
-  dto.TransferDIDOwnershipDTO:
-    properties:
-      did_index:
-        example: "1"
-        type: string
-      new_owner:
-        example: 0x8ba1f109551bD432803012645Ac136ddd64DBA72
-        type: string
-      old_owner:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
-    required:
-    - did_index
-    - new_owner
-    - old_owner
-    type: object
-  dto.UpdateDIDDTO:
-    properties:
-      did_index:
-        example: "1"
-        type: string
-      uri:
-        example: https://example.com/did/metadata
-        type: string
-    required:
-    - did_index
-    - uri
-    type: object
-  dto.UserOpDTO:
-    description: UserOp object containing target address, value, data, client block
+  accountabstractiondto.UserOpDTO:
+    description:
+      UserOp object containing target address, value, data, client block
       number, user nonce, and signature
     properties:
       client_block_number:
@@ -401,24 +84,336 @@ definitions:
         example: "0"
         type: string
     required:
-    - client_block_number
-    - data
-    - signature
-    - target
-    - user_nonce
-    - value
+      - client_block_number
+      - data
+      - signature
+      - target
+      - user_nonce
+      - value
     type: object
-  dto.ValidateUserOpsDTO:
+  accountabstractiondto.ValidateUserOpsDTO:
     description: Validation payload with wallet address and UserOp object
     properties:
       input:
-        $ref: '#/definitions/dto.UserOpDTO'
+        $ref: "#/definitions/accountabstractiondto.UserOpDTO"
       wallet:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
     required:
-    - input
-    - wallet
+      - input
+      - wallet
+    type: object
+  backendutils.Details:
+    properties:
+      service:
+        example: 0
+        type: integer
+      tx_type:
+        example: 10
+        type: integer
+    type: object
+  backendutils.Response:
+    properties:
+      errors:
+        example: No Error Message
+        type: string
+      returned: {}
+      success:
+        example: true
+        type: boolean
+    type: object
+  helperdto.CreateDIDDTO:
+    properties:
+      did:
+        example: did:example:123456789
+        type: string
+    type: object
+  helperdto.DeleteDataDTO:
+    properties:
+      did_index:
+        example: "1"
+        type: string
+      key:
+        example: email
+        type: string
+    required:
+      - did_index
+      - key
+    type: object
+  helperdto.EncodeAddClaimDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.StoreClaimDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.EncodeAddKeyDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.StoreKeyDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.EncodeCreateDIDDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.CreateDIDDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.EncodeDeactiveDIDDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_index:
+        example: "1"
+        type: string
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+      - did_index
+    type: object
+  helperdto.EncodeDeleteDataDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.DeleteDataDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.EncodeReactiveDIDDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_index:
+        example: "1"
+        type: string
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+      - did_index
+    type: object
+  helperdto.EncodeRemoveClaimDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.RemoveClaimDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.EncodeRemoveKeyDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.RemoveKeyDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.EncodeStoreDataDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.StoreDataDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.EncodeTransferDIDOwnerDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.TransferDIDOwnershipDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.EncodeUpdateDIDDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      did_param:
+        $ref: "#/definitions/helperdto.UpdateDIDDTO"
+      key_identifier:
+        example: key1
+        type: string
+    required:
+      - address
+    type: object
+  helperdto.RemoveClaimDTO:
+    properties:
+      claim_id:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      did_index:
+        example: "1"
+        type: string
+    required:
+      - claim_id
+      - did_index
+    type: object
+  helperdto.RemoveKeyDTO:
+    properties:
+      did_index:
+        example: "1"
+        type: string
+      key_data:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+    required:
+      - did_index
+      - key_data
+    type: object
+  helperdto.StoreClaimDTO:
+    properties:
+      claim_id:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      data:
+        example: "0x1234567890"
+        type: string
+      did_index:
+        example: "1"
+        type: string
+      issuer:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      signature:
+        example: "0xabcdef"
+        type: string
+      topic:
+        example: "1"
+        type: string
+      uri:
+        example: https://example.com/claims/1
+        type: string
+    required:
+      - claim_id
+      - data
+      - did_index
+      - issuer
+      - signature
+      - topic
+      - uri
+    type: object
+  helperdto.StoreDataDTO:
+    properties:
+      did_index:
+        example: "1"
+        type: string
+      key:
+        example: email
+        type: string
+      value:
+        example: user@example.com
+        type: string
+    required:
+      - did_index
+      - key
+      - value
+    type: object
+  helperdto.StoreKeyDTO:
+    properties:
+      did_index:
+        example: "1"
+        type: string
+      key_data_hashed:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      key_type:
+        example: "1"
+        type: string
+      purpose:
+        example: "1"
+        type: string
+    required:
+      - did_index
+      - key_data_hashed
+      - key_type
+      - purpose
+    type: object
+  helperdto.StringToHex32DTO:
+    properties:
+      input:
+        example: example_string
+        type: string
+    required:
+      - input
+    type: object
+  helperdto.TransferDIDOwnershipDTO:
+    properties:
+      did_index:
+        example: "1"
+        type: string
+      new_owner:
+        example: 0x8ba1f109551bD432803012645Ac136ddd64DBA72
+        type: string
+      old_owner:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+    required:
+      - did_index
+      - new_owner
+      - old_owner
+    type: object
+  helperdto.UpdateDIDDTO:
+    properties:
+      did_index:
+        example: "1"
+        type: string
+      uri:
+        example: https://example.com/did/metadata
+        type: string
+    required:
+      - did_index
+      - uri
     type: object
   helperhandler.HelperResponse:
     properties:
@@ -426,10 +421,10 @@ definitions:
         example: 0x...
         type: string
       details:
-        $ref: '#/definitions/backendutils.Details'
+        $ref: "#/definitions/backendutils.Details"
       nonce:
-        example: 1
-        type: integer
+        example: "1"
+        type: string
       target:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
@@ -446,7 +441,7 @@ definitions:
       data: {}
       error: {}
       meta:
-        $ref: '#/definitions/response.Meta'
+        $ref: "#/definitions/response.Meta"
       success:
         type: boolean
     type: object
@@ -460,7 +455,7 @@ paths:
   /account-abstraction/create:
     post:
       consumes:
-      - application/json
+        - application/json
       description: |-
         Creates a new Account Abstraction wallet by deploying a smart contract wallet on the blockchain.
 
@@ -502,45 +497,48 @@ paths:
         - Empty data object {} indicates no events were emitted
         - Salt must be unique per deployer address to avoid conflicts
       parameters:
-      - description: Wallet creation payload with deployer address and optional salt
-          value
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateWalletInputDTO'
+        - description:
+            Wallet creation payload with deployer address and optional salt
+            value
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/accountabstractiondto.CreateWalletInputDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: No events emitted" example(EmptyResponse)
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  additionalProperties:
-                    $ref: '#/definitions/accountabstractionhandler.Response'
-                  type: object
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    additionalProperties:
+                      $ref: "#/definitions/backendutils.Response"
+                    type: object
+                type: object
         "400":
-          description: Invalid request body - malformed JSON, missing required fields,
+          description:
+            Invalid request body - malformed JSON, missing required fields,
             or invalid Ethereum address format" example(BadRequest)
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
-          description: Internal server error - wallet creation use case failed, network
+          description:
+            Internal server error - wallet creation use case failed, network
             connectivity issues, RPC node errors, or smart contract deployment failure"
             example(InternalServerError)
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Create Account Abstraction Wallet
       tags:
-      - account-abstraction
+        - account-abstraction
   /account-abstraction/handle-ops:
     post:
       consumes:
-      - application/json
+        - application/json
       description: |-
         Executes user operations through the Account Abstraction entry point. This endpoint processes user operations by signing and submitting them to the blockchain via the entry point contract.
 
@@ -570,45 +568,49 @@ paths:
         - Multiple transaction hashes may be returned for batch operations
         - The PrivKey is used by the relayer to sign and submit the transaction
       parameters:
-      - description: HandleOps payload with private key, wallet address, target address,
-          data, and nonce
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.HandleOpsDTO'
+        - description:
+            HandleOps payload with private key, wallet address, target address,
+            data, and nonce
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/accountabstractiondto.HandleOpsDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
-          description: Transaction(s) processed successfully - check individual transaction
+          description:
+            Transaction(s) processed successfully - check individual transaction
             results
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  additionalProperties:
-                    $ref: '#/definitions/accountabstractionhandler.Response'
-                  type: object
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    additionalProperties:
+                      $ref: "#/definitions/backendutils.Response"
+                    type: object
+                type: object
         "400":
-          description: Invalid request body - malformed JSON, missing required fields,
+          description:
+            Invalid request body - malformed JSON, missing required fields,
             or invalid address format
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
-          description: Internal server error - handle ops use case failed, network
+          description:
+            Internal server error - handle ops use case failed, network
             connectivity issues, RPC node errors, or transaction submission failure
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Handle User Operations
       tags:
-      - account-abstraction
+        - account-abstraction
   /account-abstraction/validate-userop:
     post:
       consumes:
-      - application/json
+        - application/json
       description: |-
         Validates a user operation for an Account Abstraction wallet. This endpoint checks if a user operation is valid before execution, ensuring the operation can be processed by the wallet contract.
 
@@ -640,111 +642,632 @@ paths:
         - The wallet implementation address is automatically updated before validation
         - Validation ensures the operation can be safely executed
       parameters:
-      - description: Validation payload with wallet address and UserOp object
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.ValidateUserOpsDTO'
+        - description: Validation payload with wallet address and UserOp object
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/accountabstractiondto.ValidateUserOpsDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: User operation is valid
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    type: string
+                type: object
         "400":
-          description: Invalid request body - malformed JSON, missing required fields,
+          description:
+            Invalid request body - malformed JSON, missing required fields,
             or invalid address format
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
-          description: Internal server error - validation failed, network connectivity
+          description:
+            Internal server error - validation failed, network connectivity
             issues, or RPC node errors
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Validate User Operation
       tags:
-      - account-abstraction
+        - account-abstraction
+  /did-root/did-index-map:
+    get:
+      consumes:
+        - application/json
+      description: Maps a DID index to its corresponding DID hash
+      parameters:
+        - description: DID index (hex-encoded big integer with 0x prefix)
+          example: "0x1"
+          in: query
+          name: did_index
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: DID hash retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing or malformed did_index parameter
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description:
+            Internal server error - mapping retrieval failed or index not
+            found
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get DID Hash by Index
+      tags:
+        - did-root
+  /did-root/did-index-map-reverse:
+    get:
+      consumes:
+        - application/json
+      description: Reverse maps a DID hash to its corresponding DID index
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: DID index retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description:
+            Internal server error - reverse mapping retrieval failed or
+            hash not found
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get DID Index by Hash
+      tags:
+        - did-root
+  /did-root/get-claim:
+    get:
+      consumes:
+        - application/json
+      description: Retrieves a specific verifiable claim associated with a DID
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+        - description: Claim identifier (32-byte hex string with 0x prefix)
+          example: 0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890
+          in: query
+          name: claim_id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Claim retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing parameters or invalid hash format
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - claim retrieval failed or not found
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get Claim by DID and Claim ID
+      tags:
+        - did-root
+  /did-root/get-claims-by-did:
+    get:
+      consumes:
+        - application/json
+      description: Retrieves all verifiable claims associated with a specific DID
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Claims retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - claims retrieval failed
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get All Claims for a DID
+      tags:
+        - did-root
+  /did-root/get-data:
+    get:
+      consumes:
+        - application/json
+      description:
+        Retrieves data associated with a specific hash from the DID Root
+        contract
+      parameters:
+        - description: Data hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+        - description: key string
+          example: email
+          in: query
+          name: key
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Data retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing or malformed hash parameter
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - contract call failed or network issues
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get Data by Hash
+      tags:
+        - did-root
+  /did-root/get-did-key-data-by-index:
+    get:
+      consumes:
+        - application/json
+      description:
+        Retrieves a specific key associated with a DID using its index
+        position
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+        - description: Key index (unsigned integer as string)
+          example: "0"
+          in: query
+          name: index
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Key retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description:
+            Invalid request - missing parameters, invalid hash format,
+            or invalid index
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description:
+            Internal server error - key retrieval failed or index out of
+            bounds
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get DID Key by Index
+      tags:
+        - did-root
+  /did-root/get-did-key-data-count:
+    get:
+      consumes:
+        - application/json
+      description: Returns the total number of keys associated with a specific DID
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Key count retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - count retrieval failed
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get DID Key Data Count
+      tags:
+        - did-root
+  /did-root/get-key:
+    get:
+      consumes:
+        - application/json
+      description:
+        Retrieves a specific cryptographic key associated with a DID using
+        the key's hashed data
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+        - description: Hashed key data (32-byte hex string with 0x prefix)
+          example: 0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890
+          in: query
+          name: key_data_hashed
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Key retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing parameters or invalid hash format
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - key retrieval failed or not found
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get Key by DID and Key Hash
+      tags:
+        - did-root
+  /did-root/get-keys-by-did:
+    get:
+      consumes:
+        - application/json
+      description: Retrieves all cryptographic keys associated with a specific DID
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Keys retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - keys retrieval failed
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get All Keys for a DID
+      tags:
+        - did-root
+  /did-root/get-original-key:
+    get:
+      consumes:
+        - application/json
+      description: Retrieves the original key data using a key code identifier
+      parameters:
+        - description: Key code identifier (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: key_code
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Original key retrieved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing or malformed key_code parameter
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - key retrieval failed or not found
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Get Original Key by Key Code
+      tags:
+        - did-root
+  /did-root/resolve-did:
+    get:
+      consumes:
+        - application/json
+      description:
+        Resolves a Decentralized Identifier (DID) to retrieve its associated
+        document and metadata
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: DID resolved successfully
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - DID resolution failed or not found
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Resolve DID
+      tags:
+        - did-root
+  /did-root/verify-claim:
+    get:
+      consumes:
+        - application/json
+      description:
+        Verifies if a specific address has authority over a claim for a
+        given DID
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+        - description: Claim identifier (32-byte hex string with 0x prefix)
+          example: 0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890
+          in: query
+          name: claim_id
+          required: true
+          type: string
+        - description: Ethereum address to verify claim authority (with 0x prefix)
+          example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+          in: query
+          name: to_verify
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Claim verification completed - check returned data for result
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description:
+            Invalid request - missing parameters or invalid address/hash
+            format
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - verification failed
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Verify Claim
+      tags:
+        - did-root
+  /did-root/verify-did-ownership:
+    get:
+      consumes:
+        - application/json
+      description: Verifies if a specific address is the owner of a given DID
+      parameters:
+        - description: DID hash (32-byte hex string with 0x prefix)
+          example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+          in: query
+          name: did_hash
+          required: true
+          type: string
+        - description: Ethereum address to verify ownership (with 0x prefix)
+          example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+          in: query
+          name: owner
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description:
+            Ownership verification completed - check returned data for
+            result
+          schema:
+            allOf:
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/backendutils.Response"
+                type: object
+        "400":
+          description: Invalid request - missing parameters or invalid address format
+          schema:
+            $ref: "#/definitions/response.Response"
+        "500":
+          description: Internal server error - verification failed
+          schema:
+            $ref: "#/definitions/response.Response"
+      summary: Verify DID Ownership
+      tags:
+        - did-root
   /helper/encode-add-claim-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for adding a claim to a DID
       parameters:
-      - description: Add claim parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeAddClaimDTO'
+        - description: Add claim parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeAddClaimDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Add Claim Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-add-key-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for adding a key to a DID
       parameters:
-      - description: Add key parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeAddKeyDTO'
+        - description: Add key parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeAddKeyDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Add Key Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-create-did-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: |-
         Encodes parameters for creating a DID (Decentralized Identifier) and prepares the transaction data. This endpoint encodes the DID creation parameters, retrieves the current nonce for the wallet, and returns the encoded call data along with the target contract address.
 
@@ -772,322 +1295,325 @@ paths:
         - The KeyIdentifier is used to identify which key will sign the operation
         - The address must be a valid Ethereum address
       parameters:
-      - description: Encode DID creation parameters with wallet address, DID parameter,
-          and key identifier
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeCreateDIDDTO'
+        - description:
+            Encode DID creation parameters with wallet address, DID parameter,
+            and key identifier
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeCreateDIDDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Successfully encoded DID creation parameters
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
-          description: Invalid request body - malformed JSON, missing required fields,
+          description:
+            Invalid request body - malformed JSON, missing required fields,
             or invalid address format
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
-          description: Internal server error - encoding failed, nonce retrieval failed,
+          description:
+            Internal server error - encoding failed, nonce retrieval failed,
             or RPC node errors
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Create DID Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-deactivate-did-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for deactivating a DID
       parameters:
-      - description: Deactivate DID parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeDeactiveDIDDTO'
+        - description: Deactivate DID parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeDeactiveDIDDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Deactivate DID Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-delete-data-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for deleting data from a DID
       parameters:
-      - description: Delete data parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeDeleteDataDTO'
+        - description: Delete data parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeDeleteDataDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Delete Data Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-reactivate-did-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for reactivating a DID
       parameters:
-      - description: Reactivate DID parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeReactiveDIDDTO'
+        - description: Reactivate DID parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeReactiveDIDDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Reactivate DID Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-remove-claim-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for removing a claim from a DID
       parameters:
-      - description: Remove claim parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeRemoveClaimDTO'
+        - description: Remove claim parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeRemoveClaimDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Remove Claim Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-remove-key-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for removing a key from a DID
       parameters:
-      - description: Remove key parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeRemoveKeyDTO'
+        - description: Remove key parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeRemoveKeyDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Remove Key Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-store-data-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for storing data in a DID
       parameters:
-      - description: Store data parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeStoreDataDTO'
+        - description: Store data parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeStoreDataDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Store Data Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-transfer-did-owner-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for transferring DID ownership
       parameters:
-      - description: Transfer DID ownership parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeTransferDIDOwnerDTO'
+        - description: Transfer DID ownership parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeTransferDIDOwnerDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Transfer DID Owner Parameters
       tags:
-      - helper
+        - helper
   /helper/encode-update-did-param:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Encodes parameters for updating a DID's URI
       parameters:
-      - description: Update DID parameters
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EncodeUpdateDIDDTO'
+        - description: Update DID parameters
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.EncodeUpdateDIDDTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/helperhandler.HelperResponse'
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/helperhandler.HelperResponse"
+                type: object
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Encode Update DID Parameters
       tags:
-      - helper
+        - helper
   /helper/string-2-byte32:
     post:
       consumes:
-      - application/json
+        - application/json
       description: |-
         Converts a string input to a 32-byte array (byte32). This is a utility endpoint commonly used for encoding data that needs to fit into a single bytes32 storage slot in smart contracts.
 
@@ -1107,33 +1633,33 @@ paths:
         - Shorter strings will be padded with zeros
         - The result is returned as a hex string with 0x prefix
       parameters:
-      - description: String input to convert to byte32
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.StringToHex32DTO'
+        - description: String input to convert to byte32
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/helperdto.StringToHex32DTO"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: Successfully converted string to byte32
           schema:
             allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  type: string
-              type: object
+              - $ref: "#/definitions/response.Response"
+              - properties:
+                  data:
+                    type: string
+                type: object
         "400":
           description: Invalid request body - malformed JSON or missing required fields
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
         "500":
           description: Internal server error - conversion failed
           schema:
-            $ref: '#/definitions/response.Response'
+            $ref: "#/definitions/response.Response"
       summary: Convert String to Byte32
       tags:
-      - helper
+        - helper
 swagger: "2.0"

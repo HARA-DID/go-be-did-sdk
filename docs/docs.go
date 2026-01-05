@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CreateWalletInputDTO"
+                            "$ref": "#/definitions/accountabstractiondto.CreateWalletInputDTO"
                         }
                     }
                 ],
@@ -53,7 +53,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "object",
                                             "additionalProperties": {
-                                                "$ref": "#/definitions/accountabstractionhandler.Response"
+                                                "$ref": "#/definitions/backendutils.Response"
                                             }
                                         }
                                     }
@@ -96,7 +96,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.HandleOpsDTO"
+                            "$ref": "#/definitions/accountabstractiondto.HandleOpsDTO"
                         }
                     }
                 ],
@@ -114,7 +114,7 @@ const docTemplate = `{
                                         "data": {
                                             "type": "object",
                                             "additionalProperties": {
-                                                "$ref": "#/definitions/accountabstractionhandler.Response"
+                                                "$ref": "#/definitions/backendutils.Response"
                                             }
                                         }
                                     }
@@ -157,7 +157,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.ValidateUserOpsDTO"
+                            "$ref": "#/definitions/accountabstractiondto.ValidateUserOpsDTO"
                         }
                     }
                 ],
@@ -195,6 +195,803 @@ const docTemplate = `{
                 }
             }
         },
+        "/did-root/did-index-map": {
+            "get": {
+                "description": "Maps a DID index to its corresponding DID hash",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get DID Hash by Index",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1",
+                        "description": "DID index (hex-encoded big integer with 0x prefix)",
+                        "name": "did_index",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DID hash retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_index parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - mapping retrieval failed or index not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/did-index-map-reverse": {
+            "get": {
+                "description": "Reverse maps a DID hash to its corresponding DID index",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get DID Index by Hash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DID index retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - reverse mapping retrieval failed or hash not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/get-claim": {
+            "get": {
+                "description": "Retrieves a specific verifiable claim associated with a DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get Claim by DID and Claim ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+                        "description": "Claim identifier (32-byte hex string with 0x prefix)",
+                        "name": "claim_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Claim retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid hash format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - claim retrieval failed or not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/get-claims-by-did": {
+            "get": {
+                "description": "Retrieves all verifiable claims associated with a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get All Claims for a DID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Claims retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - claims retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/get-data": {
+            "get": {
+                "description": "Retrieves data associated with a specific hash from the DID Root contract",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get Data by Hash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "Data hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "email",
+                        "description": "key string",
+                        "name": "key",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Data retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - contract call failed or network issues",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/get-did-key-data-by-index": {
+            "get": {
+                "description": "Retrieves a specific key associated with a DID using its index position",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get DID Key by Index",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Key index (unsigned integer as string)",
+                        "name": "index",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Key retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters, invalid hash format, or invalid index",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - key retrieval failed or index out of bounds",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/get-did-key-data-count": {
+            "get": {
+                "description": "Returns the total number of keys associated with a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get DID Key Data Count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Key count retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - count retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/get-key": {
+            "get": {
+                "description": "Retrieves a specific cryptographic key associated with a DID using the key's hashed data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get Key by DID and Key Hash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+                        "description": "Hashed key data (32-byte hex string with 0x prefix)",
+                        "name": "key_data_hashed",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Key retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid hash format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - key retrieval failed or not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/get-keys-by-did": {
+            "get": {
+                "description": "Retrieves all cryptographic keys associated with a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get All Keys for a DID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Keys retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - keys retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/get-original-key": {
+            "get": {
+                "description": "Retrieves the original key data using a key code identifier",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Get Original Key by Key Code",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "Key code identifier (32-byte hex string with 0x prefix)",
+                        "name": "key_code",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Original key retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed key_code parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - key retrieval failed or not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/resolve-did": {
+            "get": {
+                "description": "Resolves a Decentralized Identifier (DID) to retrieve its associated document and metadata",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Resolve DID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DID resolved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - DID resolution failed or not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/verify-claim": {
+            "get": {
+                "description": "Verifies if a specific address has authority over a claim for a given DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Verify Claim",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+                        "description": "Claim identifier (32-byte hex string with 0x prefix)",
+                        "name": "claim_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+                        "description": "Ethereum address to verify claim authority (with 0x prefix)",
+                        "name": "to_verify",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Claim verification completed - check returned data for result",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid address/hash format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - verification failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-root/verify-did-ownership": {
+            "get": {
+                "description": "Verifies if a specific address is the owner of a given DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-root"
+                ],
+                "summary": "Verify DID Ownership",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+                        "description": "Ethereum address to verify ownership (with 0x prefix)",
+                        "name": "owner",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ownership verification completed - check returned data for result",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/backendutils.Response"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid address format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - verification failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/helper/encode-add-claim-param": {
             "post": {
                 "description": "Encodes parameters for adding a claim to a DID",
@@ -215,7 +1012,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeAddClaimDTO"
+                            "$ref": "#/definitions/helperdto.EncodeAddClaimDTO"
                         }
                     }
                 ],
@@ -273,7 +1070,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeAddKeyDTO"
+                            "$ref": "#/definitions/helperdto.EncodeAddKeyDTO"
                         }
                     }
                 ],
@@ -331,7 +1128,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeCreateDIDDTO"
+                            "$ref": "#/definitions/helperdto.EncodeCreateDIDDTO"
                         }
                     }
                 ],
@@ -389,7 +1186,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeDeactiveDIDDTO"
+                            "$ref": "#/definitions/helperdto.EncodeDeactiveDIDDTO"
                         }
                     }
                 ],
@@ -447,7 +1244,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeDeleteDataDTO"
+                            "$ref": "#/definitions/helperdto.EncodeDeleteDataDTO"
                         }
                     }
                 ],
@@ -505,7 +1302,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeReactiveDIDDTO"
+                            "$ref": "#/definitions/helperdto.EncodeReactiveDIDDTO"
                         }
                     }
                 ],
@@ -563,7 +1360,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeRemoveClaimDTO"
+                            "$ref": "#/definitions/helperdto.EncodeRemoveClaimDTO"
                         }
                     }
                 ],
@@ -621,7 +1418,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeRemoveKeyDTO"
+                            "$ref": "#/definitions/helperdto.EncodeRemoveKeyDTO"
                         }
                     }
                 ],
@@ -679,7 +1476,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeStoreDataDTO"
+                            "$ref": "#/definitions/helperdto.EncodeStoreDataDTO"
                         }
                     }
                 ],
@@ -737,7 +1534,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeTransferDIDOwnerDTO"
+                            "$ref": "#/definitions/helperdto.EncodeTransferDIDOwnerDTO"
                         }
                     }
                 ],
@@ -795,7 +1592,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EncodeUpdateDIDDTO"
+                            "$ref": "#/definitions/helperdto.EncodeUpdateDIDDTO"
                         }
                     }
                 ],
@@ -853,7 +1650,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.StringToHex32DTO"
+                            "$ref": "#/definitions/helperdto.StringToHex32DTO"
                         }
                     }
                 ],
@@ -893,51 +1690,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "accountabstractionhandler.Response": {
-            "type": "object",
-            "properties": {
-                "errors": {
-                    "type": "string",
-                    "example": "No Error Message"
-                },
-                "returned": {},
-                "success": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "backendutils.Details": {
-            "type": "object",
-            "required": [
-                "service",
-                "tx_type"
-            ],
-            "properties": {
-                "service": {
-                    "type": "integer",
-                    "maximum": 1,
-                    "minimum": 0,
-                    "example": 0
-                },
-                "tx_type": {
-                    "type": "integer",
-                    "maximum": 11,
-                    "minimum": 0,
-                    "example": 10
-                }
-            }
-        },
-        "dto.CreateDIDDTO": {
-            "type": "object",
-            "properties": {
-                "did": {
-                    "type": "string",
-                    "example": "did:example:123456789"
-                }
-            }
-        },
-        "dto.CreateWalletInputDTO": {
+        "accountabstractiondto.CreateWalletInputDTO": {
             "description": "Wallet creation payload with deployer address and optional salt value",
             "type": "object",
             "required": [
@@ -946,7 +1699,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "input": {
-                    "$ref": "#/definitions/dto.DeployWalletParamsDTO"
+                    "$ref": "#/definitions/accountabstractiondto.DeployWalletParamsDTO"
                 },
                 "priv_key": {
                     "type": "string",
@@ -954,24 +1707,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.DeleteDataDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "key"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key": {
-                    "type": "string",
-                    "example": "email"
-                }
-            }
-        },
-        "dto.DeployWalletParamsDTO": {
+        "accountabstractiondto.DeployWalletParamsDTO": {
             "description": "Wallet deployment parameters with owners and salt",
             "type": "object",
             "required": [
@@ -996,220 +1732,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.EncodeAddClaimDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.StoreClaimDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeAddKeyDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.StoreKeyDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeCreateDIDDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.CreateDIDDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeDeactiveDIDDTO": {
-            "type": "object",
-            "required": [
-                "address",
-                "did_index"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeDeleteDataDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.DeleteDataDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeReactiveDIDDTO": {
-            "type": "object",
-            "required": [
-                "address",
-                "did_index"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeRemoveClaimDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.RemoveClaimDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeRemoveKeyDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.RemoveKeyDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeStoreDataDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.StoreDataDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeTransferDIDOwnerDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.TransferDIDOwnershipDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeUpdateDIDDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.UpdateDIDDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.HandleOpsDTO": {
+        "accountabstractiondto.HandleOpsDTO": {
             "description": "HandleOps request payload with private key, wallet address, target address, data, and nonce",
             "type": "object",
             "required": [
@@ -1246,183 +1769,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.RemoveClaimDTO": {
-            "type": "object",
-            "required": [
-                "claim_id",
-                "did_index"
-            ],
-            "properties": {
-                "claim_id": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                },
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                }
-            }
-        },
-        "dto.RemoveKeyDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "key_data"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key_data": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                }
-            }
-        },
-        "dto.StoreClaimDTO": {
-            "type": "object",
-            "required": [
-                "claim_id",
-                "data",
-                "did_index",
-                "issuer",
-                "signature",
-                "topic",
-                "uri"
-            ],
-            "properties": {
-                "claim_id": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                },
-                "data": {
-                    "type": "string",
-                    "example": "0x1234567890"
-                },
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "issuer": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "signature": {
-                    "type": "string",
-                    "example": "0xabcdef"
-                },
-                "topic": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "uri": {
-                    "type": "string",
-                    "example": "https://example.com/claims/1"
-                }
-            }
-        },
-        "dto.StoreDataDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "key",
-                "value"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key": {
-                    "type": "string",
-                    "example": "email"
-                },
-                "value": {
-                    "type": "string",
-                    "example": "user@example.com"
-                }
-            }
-        },
-        "dto.StoreKeyDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "key_data_hashed",
-                "key_type",
-                "purpose"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key_data_hashed": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                },
-                "key_type": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "purpose": {
-                    "type": "integer",
-                    "example": 1
-                }
-            }
-        },
-        "dto.StringToHex32DTO": {
-            "type": "object",
-            "required": [
-                "input"
-            ],
-            "properties": {
-                "input": {
-                    "type": "string",
-                    "example": "example_string"
-                }
-            }
-        },
-        "dto.TransferDIDOwnershipDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "new_owner",
-                "old_owner"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "new_owner": {
-                    "type": "string",
-                    "example": "0x8ba1f109551bD432803012645Ac136ddd64DBA72"
-                },
-                "old_owner": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                }
-            }
-        },
-        "dto.UpdateDIDDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "uri"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "uri": {
-                    "type": "string",
-                    "example": "https://example.com/did/metadata"
-                }
-            }
-        },
-        "dto.UserOpDTO": {
+        "accountabstractiondto.UserOpDTO": {
             "description": "UserOp object containing target address, value, data, client block number, user nonce, and signature",
             "type": "object",
             "required": [
@@ -1460,7 +1807,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.ValidateUserOpsDTO": {
+        "accountabstractiondto.ValidateUserOpsDTO": {
             "description": "Validation payload with wallet address and UserOp object",
             "type": "object",
             "required": [
@@ -1469,11 +1816,453 @@ const docTemplate = `{
             ],
             "properties": {
                 "input": {
-                    "$ref": "#/definitions/dto.UserOpDTO"
+                    "$ref": "#/definitions/accountabstractiondto.UserOpDTO"
                 },
                 "wallet": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                }
+            }
+        },
+        "backendutils.Details": {
+            "type": "object",
+            "properties": {
+                "service": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "tx_type": {
+                    "type": "integer",
+                    "example": 10
+                }
+            }
+        },
+        "backendutils.Response": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "string",
+                    "example": "No Error Message"
+                },
+                "returned": {},
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "helperdto.CreateDIDDTO": {
+            "type": "object",
+            "properties": {
+                "did": {
+                    "type": "string",
+                    "example": "did:example:123456789"
+                }
+            }
+        },
+        "helperdto.DeleteDataDTO": {
+            "type": "object",
+            "required": [
+                "did_index",
+                "key"
+            ],
+            "properties": {
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "key": {
+                    "type": "string",
+                    "example": "email"
+                }
+            }
+        },
+        "helperdto.EncodeAddClaimDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.StoreClaimDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeAddKeyDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.StoreKeyDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeCreateDIDDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.CreateDIDDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeDeactiveDIDDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_index"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeDeleteDataDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.DeleteDataDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeReactiveDIDDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_index"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeRemoveClaimDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.RemoveClaimDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeRemoveKeyDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.RemoveKeyDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeStoreDataDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.StoreDataDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeTransferDIDOwnerDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.TransferDIDOwnershipDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeUpdateDIDDTO": {
+            "type": "object",
+            "required": [
+                "address"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.UpdateDIDDTO"
+                },
+                "key_identifier": {
+                    "type": "string",
+                    "example": "key1"
+                }
+            }
+        },
+        "helperdto.RemoveClaimDTO": {
+            "type": "object",
+            "required": [
+                "claim_id",
+                "did_index"
+            ],
+            "properties": {
+                "claim_id": {
+                    "type": "string",
+                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                }
+            }
+        },
+        "helperdto.RemoveKeyDTO": {
+            "type": "object",
+            "required": [
+                "did_index",
+                "key_data"
+            ],
+            "properties": {
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "key_data": {
+                    "type": "string",
+                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                }
+            }
+        },
+        "helperdto.StoreClaimDTO": {
+            "type": "object",
+            "required": [
+                "claim_id",
+                "data",
+                "did_index",
+                "issuer",
+                "signature",
+                "topic",
+                "uri"
+            ],
+            "properties": {
+                "claim_id": {
+                    "type": "string",
+                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "data": {
+                    "type": "string",
+                    "example": "0x1234567890"
+                },
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "issuer": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "signature": {
+                    "type": "string",
+                    "example": "0xabcdef"
+                },
+                "topic": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "uri": {
+                    "type": "string",
+                    "example": "https://example.com/claims/1"
+                }
+            }
+        },
+        "helperdto.StoreDataDTO": {
+            "type": "object",
+            "required": [
+                "did_index",
+                "key",
+                "value"
+            ],
+            "properties": {
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "key": {
+                    "type": "string",
+                    "example": "email"
+                },
+                "value": {
+                    "type": "string",
+                    "example": "user@example.com"
+                }
+            }
+        },
+        "helperdto.StoreKeyDTO": {
+            "type": "object",
+            "required": [
+                "did_index",
+                "key_data_hashed",
+                "key_type",
+                "purpose"
+            ],
+            "properties": {
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "key_data_hashed": {
+                    "type": "string",
+                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "key_type": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "purpose": {
+                    "type": "string",
+                    "example": "1"
+                }
+            }
+        },
+        "helperdto.StringToHex32DTO": {
+            "type": "object",
+            "required": [
+                "input"
+            ],
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "example": "example_string"
+                }
+            }
+        },
+        "helperdto.TransferDIDOwnershipDTO": {
+            "type": "object",
+            "required": [
+                "did_index",
+                "new_owner",
+                "old_owner"
+            ],
+            "properties": {
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "new_owner": {
+                    "type": "string",
+                    "example": "0x8ba1f109551bD432803012645Ac136ddd64DBA72"
+                },
+                "old_owner": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                }
+            }
+        },
+        "helperdto.UpdateDIDDTO": {
+            "type": "object",
+            "required": [
+                "did_index",
+                "uri"
+            ],
+            "properties": {
+                "did_index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "uri": {
+                    "type": "string",
+                    "example": "https://example.com/did/metadata"
                 }
             }
         },
@@ -1488,8 +2277,8 @@ const docTemplate = `{
                     "$ref": "#/definitions/backendutils.Details"
                 },
                 "nonce": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "string",
+                    "example": "1"
                 },
                 "target": {
                     "type": "string",

@@ -1,7 +1,7 @@
-package dto
+package accountabstractiondto
 
 import (
-	accountabstraction "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
+	accountabstraction "github.com/meQlause/go-be-did/internal/domain/entities/accountabstraction"
 	backendutils "github.com/meQlause/go-be-did/utils"
 
 	"github.com/meQlause/hara-core-blockchain-lib/utils"

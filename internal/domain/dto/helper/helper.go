@@ -1,10 +1,10 @@
-package dto
+package helperdto
 
 import (
 	"strconv"
 
+	helperdomain "github.com/meQlause/go-be-did/internal/domain/entities/helper"
 	"github.com/meQlause/did-root-sdk/pkg/rootfactory"
-	helperdomain "github.com/meQlause/go-be-did/internal/domain/helper"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
 

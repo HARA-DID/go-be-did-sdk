@@ -3,7 +3,7 @@ package internalhelper
 import (
 	"fmt"
 
-	helperdo "github.com/meQlause/go-be-did/internal/domain/helper"
+	helperdo "github.com/meQlause/go-be-did/internal/domain/entities/helper"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 	backendutils "github.com/meQlause/go-be-did/utils"
 

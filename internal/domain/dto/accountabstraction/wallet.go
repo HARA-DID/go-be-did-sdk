@@ -1,8 +1,8 @@
-package dto
+package accountabstractiondto
 
 import (
 	WalletSDK "github.com/meQlause/account-abstraction-sdk/pkg/wallet"
-	accountabstractiondomain "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
+	accountabstractiondomain "github.com/meQlause/go-be-did/internal/domain/entities/accountabstraction"
 
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )

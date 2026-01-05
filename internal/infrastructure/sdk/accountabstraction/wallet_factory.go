@@ -4,14 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	aado "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
+	aado "github.com/meQlause/go-be-did/internal/domain/entities/accountabstraction"
+	backendutils "github.com/meQlause/go-be-did/utils"
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/wallet"
 )
 
 func (s *AccountAbstractionSDK) CreateWallet(
 	ctx context.Context,
 	input aado.CreateWalletInput,
-) (*aado.TxHash, error) {
+) (*backendutils.TxHash, error) {
 	wallet := wallet.NewWallet(input.PrivKey)
 
 	txHashes, err := s.WalletFactory.DeployWallet(
@@ -24,7 +25,7 @@ func (s *AccountAbstractionSDK) CreateWallet(
 		return nil, fmt.Errorf("create wallet failed: %w", err)
 	}
 
-	return &aado.TxHash{
+	return &backendutils.TxHash{
 		TxHash: txHashes,
 	}, nil
 }

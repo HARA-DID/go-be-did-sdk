@@ -3,11 +3,12 @@ package accountabstractionhandler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
-	didrootevent "github.com/meQlause/go-be-did/internal/delivery/event/handleops"
-	"github.com/meQlause/go-be-did/internal/domain/dto"
+	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dto/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
+	backendutils "github.com/meQlause/go-be-did/utils"
 
+	didrootevent "github.com/meQlause/go-be-did/internal/delivery/event/handleops"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 
@@ -43,15 +44,15 @@ import (
 // @Tags         account-abstraction
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.HandleOpsDTO true "HandleOps payload with private key, wallet address, target address, data, and nonce"
-// @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Transaction(s) processed successfully - check individual transaction results"
+// @Param        request body accountabstractiondto.HandleOpsDTO true "HandleOps payload with private key, wallet address, target address, data, and nonce"
+// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Transaction(s) processed successfully - check individual transaction results"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid address format"
 // @Failure      500 {object} response.Response "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure"
 // @Router       /account-abstraction/handle-ops [post]
 func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
-	var input dto.HandleOpsDTO
+	var input accountabstractiondto.HandleOpsDTO
 	if err := c.BodyParser(&input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
+		return response.Error(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	if err := validator.Validate.Struct(&input); err != nil {
@@ -69,7 +70,7 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 
 	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
 
-	resp := make(map[string]Response)
+	resp := make(map[string]backendutils.Response)
 	decodeEventFunc, _ := didrootevent.Registry[input.Details.Service][input.Details.TxType]
 
 	for txHash, ok := range txSuccess {
@@ -78,7 +79,7 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 			continue
 		}
 
-		resp[txHash.Hex()] = Response{
+		resp[txHash.Hex()] = backendutils.Response{
 			Success:  ok,
 			Errors:   "No Error Message",
 			Returned: eventData,
@@ -86,7 +87,7 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 	}
 
 	for txHash, txErr := range txErrors {
-		resp[txHash.Hex()] = Response{
+		resp[txHash.Hex()] = backendutils.Response{
 			Success:  false,
 			Errors:   txErr.Error(),
 			Returned: nil,

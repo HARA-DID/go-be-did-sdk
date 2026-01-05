@@ -1,1519 +1,2070 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "description": "DID Backend API",
-        "title": "DID API",
-        "contact": {},
-        "version": "1.0"
-    },
-    "host": "localhost:8080",
-    "basePath": "/api/v1",
-    "paths": {
-        "/account-abstraction/create": {
-            "post": {
-                "description": "Creates a new Account Abstraction wallet by deploying a smart contract wallet on the blockchain.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): Map where each key is a transaction hash and value contains transaction result\n- `meta` (object): Contains timestamp and API version\n\n## Transaction Result Object\nEach transaction hash in the data map contains:\n- `success` (boolean): Indicates if the transaction was successful on the blockchain\n- `errors` (string): Error message if failed, or \"No Error Message\" if successful\n- `returned` (object|null): WalletDeployedEvent object containing wallet details, or null if transaction failed or event decoding failed\n\n## WalletDeployedEvent Object\n- `wallet_address` (string): The deployed smart contract wallet address\n- `deployer_address` (string): The Ethereum address that deployed the wallet\n- `salt` (string): The salt value used for deterministic wallet address generation\n\n## Common Error Scenarios\n### Transaction Errors (success: false in transaction result):\n- \"execution reverted: insufficient funds for gas * price + value\" - Deployer lacks ETH for gas fees\n- \"execution reverted: wallet already exists\" - Wallet with same salt already deployed\n- \"execution reverted: invalid deployer\" - Deployer address not authorized\n- \"nonce too low\" - Transaction nonce conflict\n- \"transaction underpriced\" - Gas price below network minimum\n- \"invalid signature\" - Transaction signing failed\n\n### Event Decode Failures (transaction success: true, returned: null):\n- Transaction succeeded but event parsing failed\n- Event signature mismatch or unexpected contract behavior\n- Wrong contract address in logs or insufficient log topics\n\n## Important Notes\n- HTTP 200 status does NOT guarantee wallet creation success\n- Always check the `success` field within each transaction result in the data map\n- Multiple transaction hashes may be returned for batch operations\n- Empty data object {} indicates no events were emitted\n- Salt must be unique per deployer address to avoid conflicts",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "account-abstraction"
-                ],
-                "summary": "Create Account Abstraction Wallet",
-                "parameters": [
-                    {
-                        "description": "Wallet creation payload with deployer address and optional salt value",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.CreateWalletInputDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "No events emitted\" example(EmptyResponse)",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "additionalProperties": {
-                                                "$ref": "#/definitions/accountabstractionhandler.Response"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body - malformed JSON, missing required fields, or invalid Ethereum address format\" example(BadRequest)",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error - wallet creation use case failed, network connectivity issues, RPC node errors, or smart contract deployment failure\" example(InternalServerError)",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/account-abstraction/handle-ops": {
-            "post": {
-                "description": "Executes user operations through the Account Abstraction entry point. This endpoint processes user operations by signing and submitting them to the blockchain via the entry point contract.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): Map where each key is a transaction hash and value contains transaction result\n- `meta` (object): Contains timestamp and API version\n\n## Transaction Result Object\nEach transaction hash in the data map contains:\n- `success` (boolean): Indicates if the transaction was successful on the blockchain\n- `errors` (string): Error message if failed, or \"No Error Message\" if successful\n- `returned` (object|null): CreateDIDEvent object containing DID creation details, or null if transaction failed or event decoding failed\n\n## Common Error Scenarios\n### Transaction Errors (success: false in transaction result):\n- \"execution reverted\" - Transaction reverted on the blockchain\n- \"nonce too low\" - Transaction nonce conflict\n- \"transaction underpriced\" - Gas price below network minimum\n- \"invalid signature\" - Transaction signing failed\n- \"insufficient funds\" - Relayer lacks funds for gas fees\n\n## Important Notes\n- HTTP 200 status does NOT guarantee operation success\n- Always check the `success` field within each transaction result in the data map\n- Multiple transaction hashes may be returned for batch operations\n- The PrivKey is used by the relayer to sign and submit the transaction",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "account-abstraction"
-                ],
-                "summary": "Handle User Operations",
-                "parameters": [
-                    {
-                        "description": "HandleOps payload with private key, wallet address, target address, data, and nonce",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.HandleOpsDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Transaction(s) processed successfully - check individual transaction results",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "additionalProperties": {
-                                                "$ref": "#/definitions/accountabstractionhandler.Response"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/account-abstraction/validate-userop": {
-            "post": {
-                "description": "Validates a user operation for an Account Abstraction wallet. This endpoint checks if a user operation is valid before execution, ensuring the operation can be processed by the wallet contract.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (string): Validation result message (\"UserOp Valid\")\n- `meta` (object): Contains timestamp and API version\n\n## UserOp Structure\nThe UserOp object contains:\n- `Target` (string): The target contract address for the operation\n- `Value` (string): The amount of ETH to send (in wei, as hex string)\n- `Data` (string): The encoded function call data (hex string)\n- `ClientBlockNumber` (string): The client block number (as hex string)\n- `UserNonce` (string): The user operation nonce (as hex string)\n- `Signature` (string): The signature for the user operation (hex string)\n\n## Common Error Scenarios\n### Validation Errors:\n- \"invalid user operation\" - UserOp structure is invalid\n- \"signature verification failed\" - Signature does not match the operation\n- \"nonce mismatch\" - UserNonce does not match expected value\n- \"insufficient balance\" - Wallet lacks sufficient funds\n- \"invalid target address\" - Target contract address is invalid\n\n## Important Notes\n- This endpoint only validates the operation, it does not execute it\n- The wallet implementation address is automatically updated before validation\n- Validation ensures the operation can be safely executed",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "account-abstraction"
-                ],
-                "summary": "Validate User Operation",
-                "parameters": [
-                    {
-                        "description": "Validation payload with wallet address and UserOp object",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.ValidateUserOpsDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User operation is valid",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error - validation failed, network connectivity issues, or RPC node errors",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-add-claim-param": {
-            "post": {
-                "description": "Encodes parameters for adding a claim to a DID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Add Claim Parameters",
-                "parameters": [
-                    {
-                        "description": "Add claim parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeAddClaimDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-add-key-param": {
-            "post": {
-                "description": "Encodes parameters for adding a key to a DID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Add Key Parameters",
-                "parameters": [
-                    {
-                        "description": "Add key parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeAddKeyDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-create-did-param": {
-            "post": {
-                "description": "Encodes parameters for creating a DID (Decentralized Identifier) and prepares the transaction data. This endpoint encodes the DID creation parameters, retrieves the current nonce for the wallet, and returns the encoded call data along with the target contract address.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): EncodeCreateDIDParamResponse containing:\n- `Data` (string): The hex-encoded call data for the DID creation transaction\n- `Target` (string): The target contract address (DID Root Factory address)\n- `Nonce` (uint64): The current nonce for the wallet address\n- `meta` (object): Contains timestamp and API version\n\n## CreateDIDParam Structure\nThe DIDParam object contains:\n- `DID` (string): The Decentralized Identifier string to create\n\n## Common Error Scenarios\n- \"Can Not Get Nonce\" - Failed to retrieve nonce from the blockchain\n- \"failed to encode DID\" - Failed to encode the DID parameter\n- \"failed to pack\" - Failed to pack the function call data\n\n## Important Notes\n- The nonce is retrieved from the EntryPoint contract for the specified wallet address\n- The encoded data is ready to be used in a user operation\n- The KeyIdentifier is used to identify which key will sign the operation\n- The address must be a valid Ethereum address",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Create DID Parameters",
-                "parameters": [
-                    {
-                        "description": "Encode DID creation parameters with wallet address, DID parameter, and key identifier",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeCreateDIDDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully encoded DID creation parameters",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error - encoding failed, nonce retrieval failed, or RPC node errors",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-deactivate-did-param": {
-            "post": {
-                "description": "Encodes parameters for deactivating a DID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Deactivate DID Parameters",
-                "parameters": [
-                    {
-                        "description": "Deactivate DID parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeDeactiveDIDDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-delete-data-param": {
-            "post": {
-                "description": "Encodes parameters for deleting data from a DID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Delete Data Parameters",
-                "parameters": [
-                    {
-                        "description": "Delete data parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeDeleteDataDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-reactivate-did-param": {
-            "post": {
-                "description": "Encodes parameters for reactivating a DID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Reactivate DID Parameters",
-                "parameters": [
-                    {
-                        "description": "Reactivate DID parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeReactiveDIDDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-remove-claim-param": {
-            "post": {
-                "description": "Encodes parameters for removing a claim from a DID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Remove Claim Parameters",
-                "parameters": [
-                    {
-                        "description": "Remove claim parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeRemoveClaimDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-remove-key-param": {
-            "post": {
-                "description": "Encodes parameters for removing a key from a DID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Remove Key Parameters",
-                "parameters": [
-                    {
-                        "description": "Remove key parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeRemoveKeyDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-store-data-param": {
-            "post": {
-                "description": "Encodes parameters for storing data in a DID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Store Data Parameters",
-                "parameters": [
-                    {
-                        "description": "Store data parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeStoreDataDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-transfer-did-owner-param": {
-            "post": {
-                "description": "Encodes parameters for transferring DID ownership",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Transfer DID Owner Parameters",
-                "parameters": [
-                    {
-                        "description": "Transfer DID ownership parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeTransferDIDOwnerDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/encode-update-did-param": {
-            "post": {
-                "description": "Encodes parameters for updating a DID's URI",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Encode Update DID Parameters",
-                "parameters": [
-                    {
-                        "description": "Update DID parameters",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.EncodeUpdateDIDDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/helperhandler.HelperResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/helper/string-2-byte32": {
-            "post": {
-                "description": "Converts a string input to a 32-byte array (byte32). This is a utility endpoint commonly used for encoding data that needs to fit into a single bytes32 storage slot in smart contracts.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (string): The hex-encoded 32-byte array result\n- `meta` (object): Contains timestamp and API version\n\n## Common Use Cases\n- Encoding strings for smart contract storage\n- Preparing data for keccak256 hashing\n- Converting identifiers to fixed-size byte arrays\n\n## Important Notes\n- Input strings longer than 32 bytes will be truncated\n- Shorter strings will be padded with zeros\n- The result is returned as a hex string with 0x prefix",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "helper"
-                ],
-                "summary": "Convert String to Byte32",
-                "parameters": [
-                    {
-                        "description": "String input to convert to byte32",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.StringToHex32DTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully converted string to byte32",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/response.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid request body - malformed JSON or missing required fields",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error - conversion failed",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "accountabstractionhandler.Response": {
-            "type": "object",
-            "properties": {
-                "errors": {
-                    "type": "string",
-                    "example": "No Error Message"
-                },
-                "returned": {},
-                "success": {
-                    "type": "boolean",
-                    "example": true
-                }
-            }
-        },
-        "backendutils.Details": {
-            "type": "object",
-            "required": [
-                "service",
-                "tx_type"
-            ],
-            "properties": {
-                "service": {
-                    "type": "integer",
-                    "maximum": 1,
-                    "minimum": 0,
-                    "example": 0
-                },
-                "tx_type": {
-                    "type": "integer",
-                    "maximum": 11,
-                    "minimum": 0,
-                    "example": 10
-                }
-            }
-        },
-        "dto.CreateDIDDTO": {
-            "type": "object",
-            "properties": {
-                "did": {
-                    "type": "string",
-                    "example": "did:example:123456789"
-                }
-            }
-        },
-        "dto.CreateWalletInputDTO": {
+  "swagger": "2.0",
+  "info": {
+    "description": "DID Backend API",
+    "title": "DID API",
+    "contact": {},
+    "version": "1.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/api/v1",
+  "paths": {
+    "/account-abstraction/create": {
+      "post": {
+        "description": "Creates a new Account Abstraction wallet by deploying a smart contract wallet on the blockchain.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): Map where each key is a transaction hash and value contains transaction result\n- `meta` (object): Contains timestamp and API version\n\n## Transaction Result Object\nEach transaction hash in the data map contains:\n- `success` (boolean): Indicates if the transaction was successful on the blockchain\n- `errors` (string): Error message if failed, or \"No Error Message\" if successful\n- `returned` (object|null): WalletDeployedEvent object containing wallet details, or null if transaction failed or event decoding failed\n\n## WalletDeployedEvent Object\n- `wallet_address` (string): The deployed smart contract wallet address\n- `deployer_address` (string): The Ethereum address that deployed the wallet\n- `salt` (string): The salt value used for deterministic wallet address generation\n\n## Common Error Scenarios\n### Transaction Errors (success: false in transaction result):\n- \"execution reverted: insufficient funds for gas * price + value\" - Deployer lacks ETH for gas fees\n- \"execution reverted: wallet already exists\" - Wallet with same salt already deployed\n- \"execution reverted: invalid deployer\" - Deployer address not authorized\n- \"nonce too low\" - Transaction nonce conflict\n- \"transaction underpriced\" - Gas price below network minimum\n- \"invalid signature\" - Transaction signing failed\n\n### Event Decode Failures (transaction success: true, returned: null):\n- Transaction succeeded but event parsing failed\n- Event signature mismatch or unexpected contract behavior\n- Wrong contract address in logs or insufficient log topics\n\n## Important Notes\n- HTTP 200 status does NOT guarantee wallet creation success\n- Always check the `success` field within each transaction result in the data map\n- Multiple transaction hashes may be returned for batch operations\n- Empty data object {} indicates no events were emitted\n- Salt must be unique per deployer address to avoid conflicts",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["account-abstraction"],
+        "summary": "Create Account Abstraction Wallet",
+        "parameters": [
+          {
             "description": "Wallet creation payload with deployer address and optional salt value",
-            "type": "object",
-            "required": [
-                "input",
-                "priv_key"
-            ],
-            "properties": {
-                "input": {
-                    "$ref": "#/definitions/dto.DeployWalletParamsDTO"
-                },
-                "priv_key": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                }
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/accountabstractiondto.CreateWalletInputDTO"
             }
-        },
-        "dto.DeleteDataDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "key"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No events emitted\" example(EmptyResponse)",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
                 },
-                "key": {
-                    "type": "string",
-                    "example": "email"
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/definitions/backendutils.Response"
+                      }
+                    }
+                  }
                 }
+              ]
             }
-        },
-        "dto.DeployWalletParamsDTO": {
-            "description": "Wallet deployment parameters with owners and salt",
-            "type": "object",
-            "required": [
-                "owners",
-                "salt"
-            ],
-            "properties": {
-                "owners": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                        "type": "string"
-                    },
-                    "example": [
-                        "0x111...",
-                        "0x222..."
-                    ]
-                },
-                "salt": {
-                    "type": "string",
-                    "example": "0xabc123... (32 bytes hex)"
-                }
+          },
+          "400": {
+            "description": "Invalid request body - malformed JSON, missing required fields, or invalid Ethereum address format\" example(BadRequest)",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
             }
-        },
-        "dto.EncodeAddClaimDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.StoreClaimDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
+          },
+          "500": {
+            "description": "Internal server error - wallet creation use case failed, network connectivity issues, RPC node errors, or smart contract deployment failure\" example(InternalServerError)",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
             }
-        },
-        "dto.EncodeAddKeyDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.StoreKeyDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeCreateDIDDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.CreateDIDDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeDeactiveDIDDTO": {
-            "type": "object",
-            "required": [
-                "address",
-                "did_index"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeDeleteDataDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.DeleteDataDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeReactiveDIDDTO": {
-            "type": "object",
-            "required": [
-                "address",
-                "did_index"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeRemoveClaimDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.RemoveClaimDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeRemoveKeyDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.RemoveKeyDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeStoreDataDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.StoreDataDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeTransferDIDOwnerDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.TransferDIDOwnershipDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.EncodeUpdateDIDDTO": {
-            "type": "object",
-            "required": [
-                "address"
-            ],
-            "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "did_param": {
-                    "$ref": "#/definitions/dto.UpdateDIDDTO"
-                },
-                "key_identifier": {
-                    "type": "string",
-                    "example": "key1"
-                }
-            }
-        },
-        "dto.HandleOpsDTO": {
-            "description": "HandleOps request payload with private key, wallet address, target address, data, and nonce",
-            "type": "object",
-            "required": [
-                "data",
-                "details",
-                "nonce",
-                "priv_key",
-                "target",
-                "wallet"
-            ],
-            "properties": {
-                "data": {
-                    "type": "string",
-                    "example": "0x..."
-                },
-                "details": {
-                    "$ref": "#/definitions/backendutils.Details"
-                },
-                "nonce": {
-                    "type": "string",
-                    "example": "0"
-                },
-                "priv_key": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                },
-                "target": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "wallet": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                }
-            }
-        },
-        "dto.RemoveClaimDTO": {
-            "type": "object",
-            "required": [
-                "claim_id",
-                "did_index"
-            ],
-            "properties": {
-                "claim_id": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                },
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                }
-            }
-        },
-        "dto.RemoveKeyDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "key_data"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key_data": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                }
-            }
-        },
-        "dto.StoreClaimDTO": {
-            "type": "object",
-            "required": [
-                "claim_id",
-                "data",
-                "did_index",
-                "issuer",
-                "signature",
-                "topic",
-                "uri"
-            ],
-            "properties": {
-                "claim_id": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                },
-                "data": {
-                    "type": "string",
-                    "example": "0x1234567890"
-                },
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "issuer": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "signature": {
-                    "type": "string",
-                    "example": "0xabcdef"
-                },
-                "topic": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "uri": {
-                    "type": "string",
-                    "example": "https://example.com/claims/1"
-                }
-            }
-        },
-        "dto.StoreDataDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "key",
-                "value"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key": {
-                    "type": "string",
-                    "example": "email"
-                },
-                "value": {
-                    "type": "string",
-                    "example": "user@example.com"
-                }
-            }
-        },
-        "dto.StoreKeyDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "key_data_hashed",
-                "key_type",
-                "purpose"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "key_data_hashed": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-                },
-                "key_type": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "purpose": {
-                    "type": "integer",
-                    "example": 1
-                }
-            }
-        },
-        "dto.StringToHex32DTO": {
-            "type": "object",
-            "required": [
-                "input"
-            ],
-            "properties": {
-                "input": {
-                    "type": "string",
-                    "example": "example_string"
-                }
-            }
-        },
-        "dto.TransferDIDOwnershipDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "new_owner",
-                "old_owner"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "new_owner": {
-                    "type": "string",
-                    "example": "0x8ba1f109551bD432803012645Ac136ddd64DBA72"
-                },
-                "old_owner": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                }
-            }
-        },
-        "dto.UpdateDIDDTO": {
-            "type": "object",
-            "required": [
-                "did_index",
-                "uri"
-            ],
-            "properties": {
-                "did_index": {
-                    "type": "string",
-                    "example": "1"
-                },
-                "uri": {
-                    "type": "string",
-                    "example": "https://example.com/did/metadata"
-                }
-            }
-        },
-        "dto.UserOpDTO": {
-            "description": "UserOp object containing target address, value, data, client block number, user nonce, and signature",
-            "type": "object",
-            "required": [
-                "client_block_number",
-                "data",
-                "signature",
-                "target",
-                "user_nonce",
-                "value"
-            ],
-            "properties": {
-                "client_block_number": {
-                    "type": "string",
-                    "example": "12345"
-                },
-                "data": {
-                    "type": "string",
-                    "example": "0x..."
-                },
-                "signature": {
-                    "type": "string",
-                    "example": "0x..."
-                },
-                "target": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
-                "user_nonce": {
-                    "type": "string",
-                    "example": "0"
-                },
-                "value": {
-                    "type": "string",
-                    "example": "0"
-                }
-            }
-        },
-        "dto.ValidateUserOpsDTO": {
-            "description": "Validation payload with wallet address and UserOp object",
-            "type": "object",
-            "required": [
-                "input",
-                "wallet"
-            ],
-            "properties": {
-                "input": {
-                    "$ref": "#/definitions/dto.UserOpDTO"
-                },
-                "wallet": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                }
-            }
-        },
-        "helperhandler.HelperResponse": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "string",
-                    "example": "0x..."
-                },
-                "details": {
-                    "$ref": "#/definitions/backendutils.Details"
-                },
-                "nonce": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "target": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                }
-            }
-        },
-        "response.Meta": {
-            "type": "object",
-            "properties": {
-                "timestamp": {
-                    "type": "string"
-                },
-                "version": {
-                    "type": "string"
-                }
-            }
-        },
-        "response.Response": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "error": {},
-                "meta": {
-                    "$ref": "#/definitions/response.Meta"
-                },
-                "success": {
-                    "type": "boolean"
-                }
-            }
+          }
         }
+      }
+    },
+    "/account-abstraction/handle-ops": {
+      "post": {
+        "description": "Executes user operations through the Account Abstraction entry point. This endpoint processes user operations by signing and submitting them to the blockchain via the entry point contract.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): Map where each key is a transaction hash and value contains transaction result\n- `meta` (object): Contains timestamp and API version\n\n## Transaction Result Object\nEach transaction hash in the data map contains:\n- `success` (boolean): Indicates if the transaction was successful on the blockchain\n- `errors` (string): Error message if failed, or \"No Error Message\" if successful\n- `returned` (object|null): CreateDIDEvent object containing DID creation details, or null if transaction failed or event decoding failed\n\n## Common Error Scenarios\n### Transaction Errors (success: false in transaction result):\n- \"execution reverted\" - Transaction reverted on the blockchain\n- \"nonce too low\" - Transaction nonce conflict\n- \"transaction underpriced\" - Gas price below network minimum\n- \"invalid signature\" - Transaction signing failed\n- \"insufficient funds\" - Relayer lacks funds for gas fees\n\n## Important Notes\n- HTTP 200 status does NOT guarantee operation success\n- Always check the `success` field within each transaction result in the data map\n- Multiple transaction hashes may be returned for batch operations\n- The PrivKey is used by the relayer to sign and submit the transaction",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["account-abstraction"],
+        "summary": "Handle User Operations",
+        "parameters": [
+          {
+            "description": "HandleOps payload with private key, wallet address, target address, data, and nonce",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/accountabstractiondto.HandleOpsDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction(s) processed successfully - check individual transaction results",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/definitions/backendutils.Response"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - handle ops use case failed, network connectivity issues, RPC node errors, or transaction submission failure",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/account-abstraction/validate-userop": {
+      "post": {
+        "description": "Validates a user operation for an Account Abstraction wallet. This endpoint checks if a user operation is valid before execution, ensuring the operation can be processed by the wallet contract.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (string): Validation result message (\"UserOp Valid\")\n- `meta` (object): Contains timestamp and API version\n\n## UserOp Structure\nThe UserOp object contains:\n- `Target` (string): The target contract address for the operation\n- `Value` (string): The amount of ETH to send (in wei, as hex string)\n- `Data` (string): The encoded function call data (hex string)\n- `ClientBlockNumber` (string): The client block number (as hex string)\n- `UserNonce` (string): The user operation nonce (as hex string)\n- `Signature` (string): The signature for the user operation (hex string)\n\n## Common Error Scenarios\n### Validation Errors:\n- \"invalid user operation\" - UserOp structure is invalid\n- \"signature verification failed\" - Signature does not match the operation\n- \"nonce mismatch\" - UserNonce does not match expected value\n- \"insufficient balance\" - Wallet lacks sufficient funds\n- \"invalid target address\" - Target contract address is invalid\n\n## Important Notes\n- This endpoint only validates the operation, it does not execute it\n- The wallet implementation address is automatically updated before validation\n- Validation ensures the operation can be safely executed",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["account-abstraction"],
+        "summary": "Validate User Operation",
+        "parameters": [
+          {
+            "description": "Validation payload with wallet address and UserOp object",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/accountabstractiondto.ValidateUserOpsDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User operation is valid",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - validation failed, network connectivity issues, or RPC node errors",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/did-index-map": {
+      "get": {
+        "description": "Maps a DID index to its corresponding DID hash",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get DID Hash by Index",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1",
+            "description": "DID index (hex-encoded big integer with 0x prefix)",
+            "name": "did_index",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "DID hash retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or malformed did_index parameter",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - mapping retrieval failed or index not found",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/did-index-map-reverse": {
+      "get": {
+        "description": "Reverse maps a DID hash to its corresponding DID index",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get DID Index by Hash",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "DID index retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or malformed did_hash parameter",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - reverse mapping retrieval failed or hash not found",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/get-claim": {
+      "get": {
+        "description": "Retrieves a specific verifiable claim associated with a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get Claim by DID and Claim ID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+            "description": "Claim identifier (32-byte hex string with 0x prefix)",
+            "name": "claim_id",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing parameters or invalid hash format",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - claim retrieval failed or not found",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/get-claims-by-did": {
+      "get": {
+        "description": "Retrieves all verifiable claims associated with a specific DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get All Claims for a DID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claims retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or malformed did_hash parameter",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - claims retrieval failed",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/get-data": {
+      "get": {
+        "description": "Retrieves data associated with a specific hash from the DID Root contract",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get Data by Hash",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "Data hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "email",
+            "description": "key string",
+            "name": "key",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or malformed hash parameter",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - contract call failed or network issues",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/get-did-key-data-by-index": {
+      "get": {
+        "description": "Retrieves a specific key associated with a DID using its index position",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get DID Key by Index",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "0",
+            "description": "Key index (unsigned integer as string)",
+            "name": "index",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing parameters, invalid hash format, or invalid index",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - key retrieval failed or index out of bounds",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/get-did-key-data-count": {
+      "get": {
+        "description": "Returns the total number of keys associated with a specific DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get DID Key Data Count",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key count retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or malformed did_hash parameter",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - count retrieval failed",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/get-key": {
+      "get": {
+        "description": "Retrieves a specific cryptographic key associated with a DID using the key's hashed data",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get Key by DID and Key Hash",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+            "description": "Hashed key data (32-byte hex string with 0x prefix)",
+            "name": "key_data_hashed",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Key retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing parameters or invalid hash format",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - key retrieval failed or not found",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/get-keys-by-did": {
+      "get": {
+        "description": "Retrieves all cryptographic keys associated with a specific DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get All Keys for a DID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Keys retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or malformed did_hash parameter",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - keys retrieval failed",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/get-original-key": {
+      "get": {
+        "description": "Retrieves the original key data using a key code identifier",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Get Original Key by Key Code",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "Key code identifier (32-byte hex string with 0x prefix)",
+            "name": "key_code",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Original key retrieved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or malformed key_code parameter",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - key retrieval failed or not found",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/resolve-did": {
+      "get": {
+        "description": "Resolves a Decentralized Identifier (DID) to retrieve its associated document and metadata",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Resolve DID",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "DID resolved successfully",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing or malformed did_hash parameter",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - DID resolution failed or not found",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/verify-claim": {
+      "get": {
+        "description": "Verifies if a specific address has authority over a claim for a given DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Verify Claim",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+            "description": "Claim identifier (32-byte hex string with 0x prefix)",
+            "name": "claim_id",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+            "description": "Ethereum address to verify claim authority (with 0x prefix)",
+            "name": "to_verify",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Claim verification completed - check returned data for result",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing parameters or invalid address/hash format",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - verification failed",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/did-root/verify-did-ownership": {
+      "get": {
+        "description": "Verifies if a specific address is the owner of a given DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["did-root"],
+        "summary": "Verify DID Ownership",
+        "parameters": [
+          {
+            "type": "string",
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            "description": "DID hash (32-byte hex string with 0x prefix)",
+            "name": "did_hash",
+            "in": "query",
+            "required": true
+          },
+          {
+            "type": "string",
+            "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+            "description": "Ethereum address to verify ownership (with 0x prefix)",
+            "name": "owner",
+            "in": "query",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ownership verification completed - check returned data for result",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/backendutils.Response"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing parameters or invalid address format",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - verification failed",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-add-claim-param": {
+      "post": {
+        "description": "Encodes parameters for adding a claim to a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Add Claim Parameters",
+        "parameters": [
+          {
+            "description": "Add claim parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeAddClaimDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-add-key-param": {
+      "post": {
+        "description": "Encodes parameters for adding a key to a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Add Key Parameters",
+        "parameters": [
+          {
+            "description": "Add key parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeAddKeyDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-create-did-param": {
+      "post": {
+        "description": "Encodes parameters for creating a DID (Decentralized Identifier) and prepares the transaction data. This endpoint encodes the DID creation parameters, retrieves the current nonce for the wallet, and returns the encoded call data along with the target contract address.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (object): EncodeCreateDIDParamResponse containing:\n- `Data` (string): The hex-encoded call data for the DID creation transaction\n- `Target` (string): The target contract address (DID Root Factory address)\n- `Nonce` (uint64): The current nonce for the wallet address\n- `meta` (object): Contains timestamp and API version\n\n## CreateDIDParam Structure\nThe DIDParam object contains:\n- `DID` (string): The Decentralized Identifier string to create\n\n## Common Error Scenarios\n- \"Can Not Get Nonce\" - Failed to retrieve nonce from the blockchain\n- \"failed to encode DID\" - Failed to encode the DID parameter\n- \"failed to pack\" - Failed to pack the function call data\n\n## Important Notes\n- The nonce is retrieved from the EntryPoint contract for the specified wallet address\n- The encoded data is ready to be used in a user operation\n- The KeyIdentifier is used to identify which key will sign the operation\n- The address must be a valid Ethereum address",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Create DID Parameters",
+        "parameters": [
+          {
+            "description": "Encode DID creation parameters with wallet address, DID parameter, and key identifier",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeCreateDIDDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully encoded DID creation parameters",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request body - malformed JSON, missing required fields, or invalid address format",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - encoding failed, nonce retrieval failed, or RPC node errors",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-deactivate-did-param": {
+      "post": {
+        "description": "Encodes parameters for deactivating a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Deactivate DID Parameters",
+        "parameters": [
+          {
+            "description": "Deactivate DID parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeDeactiveDIDDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-delete-data-param": {
+      "post": {
+        "description": "Encodes parameters for deleting data from a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Delete Data Parameters",
+        "parameters": [
+          {
+            "description": "Delete data parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeDeleteDataDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-reactivate-did-param": {
+      "post": {
+        "description": "Encodes parameters for reactivating a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Reactivate DID Parameters",
+        "parameters": [
+          {
+            "description": "Reactivate DID parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeReactiveDIDDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-remove-claim-param": {
+      "post": {
+        "description": "Encodes parameters for removing a claim from a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Remove Claim Parameters",
+        "parameters": [
+          {
+            "description": "Remove claim parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeRemoveClaimDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-remove-key-param": {
+      "post": {
+        "description": "Encodes parameters for removing a key from a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Remove Key Parameters",
+        "parameters": [
+          {
+            "description": "Remove key parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeRemoveKeyDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-store-data-param": {
+      "post": {
+        "description": "Encodes parameters for storing data in a DID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Store Data Parameters",
+        "parameters": [
+          {
+            "description": "Store data parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeStoreDataDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-transfer-did-owner-param": {
+      "post": {
+        "description": "Encodes parameters for transferring DID ownership",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Transfer DID Owner Parameters",
+        "parameters": [
+          {
+            "description": "Transfer DID ownership parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeTransferDIDOwnerDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/encode-update-did-param": {
+      "post": {
+        "description": "Encodes parameters for updating a DID's URI",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Encode Update DID Parameters",
+        "parameters": [
+          {
+            "description": "Update DID parameters",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.EncodeUpdateDIDDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/definitions/helperhandler.HelperResponse"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
+    },
+    "/helper/string-2-byte32": {
+      "post": {
+        "description": "Converts a string input to a 32-byte array (byte32). This is a utility endpoint commonly used for encoding data that needs to fit into a single bytes32 storage slot in smart contracts.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- `success` (boolean): Always true for HTTP 200\n- `data` (string): The hex-encoded 32-byte array result\n- `meta` (object): Contains timestamp and API version\n\n## Common Use Cases\n- Encoding strings for smart contract storage\n- Preparing data for keccak256 hashing\n- Converting identifiers to fixed-size byte arrays\n\n## Important Notes\n- Input strings longer than 32 bytes will be truncated\n- Shorter strings will be padded with zeros\n- The result is returned as a hex string with 0x prefix",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "tags": ["helper"],
+        "summary": "Convert String to Byte32",
+        "parameters": [
+          {
+            "description": "String input to convert to byte32",
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/helperdto.StringToHex32DTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully converted string to byte32",
+            "schema": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/response.Response"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "400": {
+            "description": "Invalid request body - malformed JSON or missing required fields",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          },
+          "500": {
+            "description": "Internal server error - conversion failed",
+            "schema": {
+              "$ref": "#/definitions/response.Response"
+            }
+          }
+        }
+      }
     }
+  },
+  "definitions": {
+    "accountabstractiondto.CreateWalletInputDTO": {
+      "description": "Wallet creation payload with deployer address and optional salt value",
+      "type": "object",
+      "required": ["input", "priv_key"],
+      "properties": {
+        "input": {
+          "$ref": "#/definitions/accountabstractiondto.DeployWalletParamsDTO"
+        },
+        "priv_key": {
+          "type": "string",
+          "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        }
+      }
+    },
+    "accountabstractiondto.DeployWalletParamsDTO": {
+      "description": "Wallet deployment parameters with owners and salt",
+      "type": "object",
+      "required": ["owners", "salt"],
+      "properties": {
+        "owners": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "example": ["0x111...", "0x222..."]
+        },
+        "salt": {
+          "type": "string",
+          "example": "0xabc123... (32 bytes hex)"
+        }
+      }
+    },
+    "accountabstractiondto.HandleOpsDTO": {
+      "description": "HandleOps request payload with private key, wallet address, target address, data, and nonce",
+      "type": "object",
+      "required": ["data", "details", "nonce", "priv_key", "target", "wallet"],
+      "properties": {
+        "data": {
+          "type": "string",
+          "example": "0x..."
+        },
+        "details": {
+          "$ref": "#/definitions/backendutils.Details"
+        },
+        "nonce": {
+          "type": "string",
+          "example": "0"
+        },
+        "priv_key": {
+          "type": "string",
+          "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        },
+        "target": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "wallet": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        }
+      }
+    },
+    "accountabstractiondto.UserOpDTO": {
+      "description": "UserOp object containing target address, value, data, client block number, user nonce, and signature",
+      "type": "object",
+      "required": [
+        "client_block_number",
+        "data",
+        "signature",
+        "target",
+        "user_nonce",
+        "value"
+      ],
+      "properties": {
+        "client_block_number": {
+          "type": "string",
+          "example": "12345"
+        },
+        "data": {
+          "type": "string",
+          "example": "0x..."
+        },
+        "signature": {
+          "type": "string",
+          "example": "0x..."
+        },
+        "target": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "user_nonce": {
+          "type": "string",
+          "example": "0"
+        },
+        "value": {
+          "type": "string",
+          "example": "0"
+        }
+      }
+    },
+    "accountabstractiondto.ValidateUserOpsDTO": {
+      "description": "Validation payload with wallet address and UserOp object",
+      "type": "object",
+      "required": ["input", "wallet"],
+      "properties": {
+        "input": {
+          "$ref": "#/definitions/accountabstractiondto.UserOpDTO"
+        },
+        "wallet": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        }
+      }
+    },
+    "backendutils.Details": {
+      "type": "object",
+      "properties": {
+        "service": {
+          "type": "integer",
+          "example": 0
+        },
+        "tx_type": {
+          "type": "integer",
+          "example": 10
+        }
+      }
+    },
+    "backendutils.Response": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "string",
+          "example": "No Error Message"
+        },
+        "returned": {},
+        "success": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "helperdto.CreateDIDDTO": {
+      "type": "object",
+      "properties": {
+        "did": {
+          "type": "string",
+          "example": "did:example:123456789"
+        }
+      }
+    },
+    "helperdto.DeleteDataDTO": {
+      "type": "object",
+      "required": ["did_index", "key"],
+      "properties": {
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "key": {
+          "type": "string",
+          "example": "email"
+        }
+      }
+    },
+    "helperdto.EncodeAddClaimDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.StoreClaimDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeAddKeyDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.StoreKeyDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeCreateDIDDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.CreateDIDDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeDeactiveDIDDTO": {
+      "type": "object",
+      "required": ["address", "did_index"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeDeleteDataDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.DeleteDataDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeReactiveDIDDTO": {
+      "type": "object",
+      "required": ["address", "did_index"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeRemoveClaimDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.RemoveClaimDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeRemoveKeyDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.RemoveKeyDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeStoreDataDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.StoreDataDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeTransferDIDOwnerDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.TransferDIDOwnershipDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.EncodeUpdateDIDDTO": {
+      "type": "object",
+      "required": ["address"],
+      "properties": {
+        "address": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "did_param": {
+          "$ref": "#/definitions/helperdto.UpdateDIDDTO"
+        },
+        "key_identifier": {
+          "type": "string",
+          "example": "key1"
+        }
+      }
+    },
+    "helperdto.RemoveClaimDTO": {
+      "type": "object",
+      "required": ["claim_id", "did_index"],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        },
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        }
+      }
+    },
+    "helperdto.RemoveKeyDTO": {
+      "type": "object",
+      "required": ["did_index", "key_data"],
+      "properties": {
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "key_data": {
+          "type": "string",
+          "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        }
+      }
+    },
+    "helperdto.StoreClaimDTO": {
+      "type": "object",
+      "required": [
+        "claim_id",
+        "data",
+        "did_index",
+        "issuer",
+        "signature",
+        "topic",
+        "uri"
+      ],
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        },
+        "data": {
+          "type": "string",
+          "example": "0x1234567890"
+        },
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "issuer": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        },
+        "signature": {
+          "type": "string",
+          "example": "0xabcdef"
+        },
+        "topic": {
+          "type": "string",
+          "example": "1"
+        },
+        "uri": {
+          "type": "string",
+          "example": "https://example.com/claims/1"
+        }
+      }
+    },
+    "helperdto.StoreDataDTO": {
+      "type": "object",
+      "required": ["did_index", "key", "value"],
+      "properties": {
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "key": {
+          "type": "string",
+          "example": "email"
+        },
+        "value": {
+          "type": "string",
+          "example": "user@example.com"
+        }
+      }
+    },
+    "helperdto.StoreKeyDTO": {
+      "type": "object",
+      "required": ["did_index", "key_data_hashed", "key_type", "purpose"],
+      "properties": {
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "key_data_hashed": {
+          "type": "string",
+          "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        },
+        "key_type": {
+          "type": "string",
+          "example": "1"
+        },
+        "purpose": {
+          "type": "string",
+          "example": "1"
+        }
+      }
+    },
+    "helperdto.StringToHex32DTO": {
+      "type": "object",
+      "required": ["input"],
+      "properties": {
+        "input": {
+          "type": "string",
+          "example": "example_string"
+        }
+      }
+    },
+    "helperdto.TransferDIDOwnershipDTO": {
+      "type": "object",
+      "required": ["did_index", "new_owner", "old_owner"],
+      "properties": {
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "new_owner": {
+          "type": "string",
+          "example": "0x8ba1f109551bD432803012645Ac136ddd64DBA72"
+        },
+        "old_owner": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        }
+      }
+    },
+    "helperdto.UpdateDIDDTO": {
+      "type": "object",
+      "required": ["did_index", "uri"],
+      "properties": {
+        "did_index": {
+          "type": "string",
+          "example": "1"
+        },
+        "uri": {
+          "type": "string",
+          "example": "https://example.com/did/metadata"
+        }
+      }
+    },
+    "helperhandler.HelperResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "example": "0x..."
+        },
+        "details": {
+          "$ref": "#/definitions/backendutils.Details"
+        },
+        "nonce": {
+          "type": "string",
+          "example": "1"
+        },
+        "target": {
+          "type": "string",
+          "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+        }
+      }
+    },
+    "response.Meta": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "response.Response": {
+      "type": "object",
+      "properties": {
+        "data": {},
+        "error": {},
+        "meta": {
+          "$ref": "#/definitions/response.Meta"
+        },
+        "success": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
 }

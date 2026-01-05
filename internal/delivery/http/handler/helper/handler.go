@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/meQlause/go-be-did/internal/domain/dto"
+	helperdto "github.com/meQlause/go-be-did/internal/domain/dto/helper"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 	backendutils "github.com/meQlause/go-be-did/utils"
@@ -47,13 +47,13 @@ func NewHelperHandler(uc *helperuc.HelperUseCase) *HelperHandler {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.StringToHex32DTO true "String input to convert to byte32"
+// @Param        request body helperdto.StringToHex32DTO true "String input to convert to byte32"
 // @Success      200 {object} response.Response{data=string} "Successfully converted string to byte32"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON or missing required fields"
 // @Failure      500 {object} response.Response "Internal server error - conversion failed"
 // @Router       /helper/string-2-byte32 [post]
 func (hh *HelperHandler) StringToHex32(c *fiber.Ctx) error {
-	var input dto.StringToHex32DTO
+	var input helperdto.StringToHex32DTO
 	if err := c.BodyParser(&input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
 	}
@@ -98,13 +98,13 @@ func (hh *HelperHandler) StringToHex32(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeCreateDIDDTO true "Encode DID creation parameters with wallet address, DID parameter, and key identifier"
+// @Param        request body helperdto.EncodeCreateDIDDTO true "Encode DID creation parameters with wallet address, DID parameter, and key identifier"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse} "Successfully encoded DID creation parameters"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid address format"
 // @Failure      500 {object} response.Response "Internal server error - encoding failed, nonce retrieval failed, or RPC node errors"
 // @Router       /helper/encode-create-did-param [post]
 func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
-	var input dto.EncodeCreateDIDDTO
+	var input helperdto.EncodeCreateDIDDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 
@@ -134,13 +134,13 @@ func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeUpdateDIDDTO true "Update DID parameters"
+// @Param        request body helperdto.EncodeUpdateDIDDTO true "Update DID parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-update-did-param [post]
 func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
-	var input dto.EncodeUpdateDIDDTO
+	var input helperdto.EncodeUpdateDIDDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -169,13 +169,13 @@ func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeDeactiveDIDDTO true "Deactivate DID parameters"
+// @Param        request body helperdto.EncodeDeactiveDIDDTO true "Deactivate DID parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-deactivate-did-param [post]
 func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
-	var input dto.EncodeDeactiveDIDDTO
+	var input helperdto.EncodeDeactiveDIDDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -204,13 +204,13 @@ func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeReactiveDIDDTO true "Reactivate DID parameters"
+// @Param        request body helperdto.EncodeReactiveDIDDTO true "Reactivate DID parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-reactivate-did-param [post]
 func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
-	var input dto.EncodeReactiveDIDDTO
+	var input helperdto.EncodeReactiveDIDDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -239,13 +239,13 @@ func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeTransferDIDOwnerDTO true "Transfer DID ownership parameters"
+// @Param        request body helperdto.EncodeTransferDIDOwnerDTO true "Transfer DID ownership parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-transfer-did-owner-param [post]
 func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
-	var input dto.EncodeTransferDIDOwnerDTO
+	var input helperdto.EncodeTransferDIDOwnerDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -274,13 +274,13 @@ func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeStoreDataDTO true "Store data parameters"
+// @Param        request body helperdto.EncodeStoreDataDTO true "Store data parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-store-data-param [post]
 func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
-	var input dto.EncodeStoreDataDTO
+	var input helperdto.EncodeStoreDataDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -309,13 +309,13 @@ func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeDeleteDataDTO true "Delete data parameters"
+// @Param        request body helperdto.EncodeDeleteDataDTO true "Delete data parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-delete-data-param [post]
 func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
-	var input dto.EncodeDeleteDataDTO
+	var input helperdto.EncodeDeleteDataDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -344,13 +344,13 @@ func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeAddKeyDTO true "Add key parameters"
+// @Param        request body helperdto.EncodeAddKeyDTO true "Add key parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-add-key-param [post]
 func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
-	var input dto.EncodeAddKeyDTO
+	var input helperdto.EncodeAddKeyDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -379,13 +379,13 @@ func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeRemoveKeyDTO true "Remove key parameters"
+// @Param        request body helperdto.EncodeRemoveKeyDTO true "Remove key parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-remove-key-param [post]
 func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
-	var input dto.EncodeRemoveKeyDTO
+	var input helperdto.EncodeRemoveKeyDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -414,13 +414,13 @@ func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeAddClaimDTO true "Add claim parameters"
+// @Param        request body helperdto.EncodeAddClaimDTO true "Add claim parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-add-claim-param [post]
 func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
-	var input dto.EncodeAddClaimDTO
+	var input helperdto.EncodeAddClaimDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -449,13 +449,13 @@ func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
 // @Tags         helper
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.EncodeRemoveClaimDTO true "Remove claim parameters"
+// @Param        request body helperdto.EncodeRemoveClaimDTO true "Remove claim parameters"
 // @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
 // @Failure      400 {object} response.Response
 // @Failure      500 {object} response.Response
 // @Router       /helper/encode-remove-claim-param [post]
 func (hh *HelperHandler) EncodeRemoveClaimParam(c *fiber.Ctx) error {
-	var input dto.EncodeRemoveClaimDTO
+	var input helperdto.EncodeRemoveClaimDTO
 	if err := hh.parseAndValidate(c, &input); err != nil {
 		return response.Error(c, fiber.StatusBadRequest, err)
 	}
@@ -480,7 +480,7 @@ func (hh *HelperHandler) EncodeRemoveClaimParam(c *fiber.Ctx) error {
 
 func (hh *HelperHandler) parseAndValidate(c *fiber.Ctx, input any) any {
 	if err := c.BodyParser(&input); err != nil {
-		return "Invalid request body"
+		return err.Error()
 	}
 
 	if err := validator.Validate.Struct(input); err != nil {

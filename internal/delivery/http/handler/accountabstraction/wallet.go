@@ -3,7 +3,7 @@ package accountabstractionhandler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
-	"github.com/meQlause/go-be-did/internal/domain/dto"
+	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dto/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
@@ -44,15 +44,15 @@ import (
 // @Tags         account-abstraction
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.ValidateUserOpsDTO true "Validation payload with wallet address and UserOp object"
+// @Param        request body accountabstractiondto.ValidateUserOpsDTO true "Validation payload with wallet address and UserOp object"
 // @Success      200 {object} response.Response{data=string} "User operation is valid"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid address format"
 // @Failure      500 {object} response.Response "Internal server error - validation failed, network connectivity issues, or RPC node errors"
 // @Router       /account-abstraction/validate-userop [post]
 func (ah *AccountAbstractionHandler) ValidateUserOps(c *fiber.Ctx) error {
-	var input dto.ValidateUserOpsDTO
+	var input accountabstractiondto.ValidateUserOpsDTO
 	if err := c.BodyParser(&input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
+		return response.Error(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	if err := validator.Validate.Struct(&input); err != nil {

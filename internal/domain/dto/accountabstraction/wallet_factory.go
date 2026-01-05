@@ -1,9 +1,9 @@
-package dto
+package accountabstractiondto
 
 import (
 	"strings"
 
-	accountabstractiondomain "github.com/meQlause/go-be-did/internal/domain/accountabstraction"
+	accountabstractiondomain "github.com/meQlause/go-be-did/internal/domain/entities/accountabstraction"
 
 	"github.com/meQlause/account-abstraction-sdk/pkg/walletfactory"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"

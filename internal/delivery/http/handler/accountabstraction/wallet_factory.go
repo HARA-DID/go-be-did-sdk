@@ -4,11 +4,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	"github.com/meQlause/go-be-did/internal/config"
-	"github.com/meQlause/go-be-did/internal/domain/dto"
+	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dto/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
 	aaevent "github.com/meQlause/go-be-did/internal/delivery/event/accountabstraction"
+	backendutils "github.com/meQlause/go-be-did/utils"
 )
 
 // CreateWallet godoc
@@ -55,19 +56,19 @@ import (
 // @Tags         account-abstraction
 // @Accept       json
 // @Produce      json
-// @Param        request body dto.CreateWalletInputDTO true "Wallet creation payload with deployer address and optional salt value"
-// @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Transaction(s) processed successfully - check individual transaction results" example(SuccessfulWalletCreation)
-// @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Transaction failed on blockchain - returned in 200 response with error details" example(TransactionFailed)
-// @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Multiple transactions with mixed results" example(MultipleTxMixedResults)
-// @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "Transaction succeeded but event decoding failed" example(EventDecodeFailed)
-// @Success      200 {object} response.Response{data=map[string]accountabstractionhandler.Response} "No events emitted" example(EmptyResponse)
+// @Param        request body accountabstractiondto.CreateWalletInputDTO true "Wallet creation payload with deployer address and optional salt value"
+// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Transaction(s) processed successfully - check individual transaction results" example(SuccessfulWalletCreation)
+// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Transaction failed on blockchain - returned in 200 response with error details" example(TransactionFailed)
+// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Multiple transactions with mixed results" example(MultipleTxMixedResults)
+// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "Transaction succeeded but event decoding failed" example(EventDecodeFailed)
+// @Success      200 {object} response.Response{data=map[string]backendutils.Response} "No events emitted" example(EmptyResponse)
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid Ethereum address format" example(BadRequest)
 // @Failure      500 {object} response.Response "Internal server error - wallet creation use case failed, network connectivity issues, RPC node errors, or smart contract deployment failure" example(InternalServerError)
 // @Router       /account-abstraction/create [post]
 func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
-	var input dto.CreateWalletInputDTO
+	var input accountabstractiondto.CreateWalletInputDTO
 	if err := c.BodyParser(&input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, "Invalid request body")
+		return response.Error(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	if err := validator.Validate.Struct(&input); err != nil {
@@ -82,7 +83,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 	}
 
 	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
-	resp := make(map[string]Response)
+	resp := make(map[string]backendutils.Response)
 
 	for txHash, ok := range txSuccess {
 		eventData, err := aaevent.DecodeWalletDeployedEvent(c.Context(), txHash)
@@ -91,7 +92,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 		}
 
 		if eventData != nil {
-			resp[txHash.Hex()] = Response{
+			resp[txHash.Hex()] = backendutils.Response{
 				Success:  ok,
 				Errors:   "No Error Message",
 				Returned: eventData,
@@ -100,7 +101,7 @@ func (ah *AccountAbstractionHandler) CreateWallet(c *fiber.Ctx) error {
 	}
 
 	for h, err := range txErrors {
-		resp[h.Hex()] = Response{
+		resp[h.Hex()] = backendutils.Response{
 			Success:  false,
 			Errors:   err.Error(),
 			Returned: nil,

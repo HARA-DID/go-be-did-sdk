@@ -1,7 +1,7 @@
 package repository
 
 import (
-	helperdo "github.com/meQlause/go-be-did/internal/domain/helper"
+	helperdo "github.com/meQlause/go-be-did/internal/domain/entities/helper"
 )
 
 type HelperRepository interface {

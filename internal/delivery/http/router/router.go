@@ -10,6 +10,7 @@ import (
 	"github.com/meQlause/hara-core-blockchain-lib/pkg/blockchain"
 
 	aarouter "github.com/meQlause/go-be-did/internal/delivery/http/router/accountabstraction"
+	didrootrouter "github.com/meQlause/go-be-did/internal/delivery/http/router/didroot"
 	helperrouter "github.com/meQlause/go-be-did/internal/delivery/http/router/helper"
 )
 
@@ -20,10 +21,11 @@ func Setup(app *fiber.App, cfg *config.Config, bc *blockchain.Blockchain) {
 
 	api := app.Group("/api/" + config.GetApp().Version)
 
-	api.Get("/swagger/*", swagger.HandlerDefault)
-
 	aarouter.SetupAccountAbstractionRoutes(api, cfg, bc)
+	didrootrouter.SetupDIDRootRoutes(api, cfg, bc)
 	helperrouter.SetupHelperRoutes(api)
+
+	api.Get("/swagger/*", swagger.HandlerDefault)
 
 	// Health godoc
 	// @Summary      Health Check
