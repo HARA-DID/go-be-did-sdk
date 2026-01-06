@@ -1,0 +1,156 @@
+name: Build & Release Go Binaries
+on:
+  push:
+    tags:
+      - "v*"
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+      
+      - name: Setup SSH for submodules
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+      
+      - name: Configure Git for SSH
+        run: |
+          git config --global url."git@ssh.dev.azure.com:".insteadOf "https://dev.azure.com/"
+          mkdir -p ~/.ssh
+          ssh-keyscan ssh.dev.azure.com >> ~/.ssh/known_hosts
+      
+      - name: Initialize and update submodules
+        run: |
+          git submodule init
+          git submodule update --recursive
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+      
+      - name: Create .env file
+        run: |
+          cat <<EOF > .env
+          PORT=${{ secrets.PORT }}
+          LOG_LEVEL=${{ secrets.LOG_LEVEL }}
+          RPC_TIMEOUT=${{ secrets.RPC_TIMEOUT }}
+          VERSION=${{ secrets.VERSION }}
+          AA_ENTRYPOINT_HNS=${{ secrets.AA_ENTRYPOINT_HNS }}
+          AA_GAS_MANAGER_HNS=${{ secrets.AA_GAS_MANAGER_HNS }}
+          AA_WALLET_HNS=${{ secrets.AA_WALLET_HNS }}
+          AA_WALLET_FACTORY_HNS=${{ secrets.AA_WALLET_FACTORY_HNS }}
+          DID_ROOT_FACTORY_HNS=${{ secrets.DID_ROOT_FACTORY_HNS }}
+          DID_ROOT_STORAGE_HNS=${{ secrets.DID_ROOT_STORAGE_HNS }}
+          EOF
+      
+      - name: Build Linux binary
+        run: |
+          GOOS=linux GOARCH=amd64 \
+          go build -o dist/did-be-sdk-linux-amd64 ./cmd/server
+      
+      - name: Build Windows binary
+        run: |
+          GOOS=windows GOARCH=amd64 \
+          go build -o dist/did-be-sdk-windows-amd64.exe ./cmd/server
+      
+      - name: Create .deb package
+        run: |
+          mkdir -p pkg/did-be-sdk/DEBIAN
+          mkdir -p pkg/did-be-sdk/usr/local/bin
+          mkdir -p pkg/did-be-sdk/etc/did-be-sdk
+          
+          # Copy binary
+          cp dist/did-be-sdk-linux-amd64 pkg/did-be-sdk/usr/local/bin/did-be-sdk
+          chmod +x pkg/did-be-sdk/usr/local/bin/did-be-sdk
+          
+          # Copy .env file
+          cp .env pkg/did-be-sdk/etc/did-be-sdk/.env
+          
+          # Create control file
+          cat <<EOF > pkg/did-be-sdk/DEBIAN/control
+          Package: did-be-sdk
+          Version: ${GITHUB_REF_NAME#v}
+          Section: base
+          Priority: optional
+          Architecture: amd64
+          Maintainer: Your Name <you@email.com>
+          Description: DID Backend SDK
+           A Go application for DID Backend SDK with environment configuration
+          EOF
+          
+          # Build .deb package
+          dpkg-deb --build pkg/did-be-sdk dist/did-be-sdk_${GITHUB_REF_NAME#v}_amd64.deb
+      
+      - name: Create Windows ZIP with .env
+        run: |
+          mkdir -p dist/windows-package
+          cp dist/did-be-sdk-windows-amd64.exe dist/windows-package/did-be-sdk.exe
+          cp .env dist/windows-package/.env
+          cd dist/windows-package
+          zip ../did-be-sdk-windows-amd64-${GITHUB_REF_NAME#v}.zip did-be-sdk.exe .env
+      
+      - name: Create Linux tarball with .env
+        run: |
+          mkdir -p dist/linux-package
+          cp dist/did-be-sdk-linux-amd64 dist/linux-package/did-be-sdk
+          chmod +x dist/linux-package/did-be-sdk
+          cp .env dist/linux-package/.env
+          cd dist/linux-package
+          tar -czf ../did-be-sdk-linux-amd64-${GITHUB_REF_NAME#v}.tar.gz did-be-sdk .env
+      
+      - name: Generate release notes
+        run: |
+          cat <<EOF > RELEASE_NOTES.md
+          ## Release ${GITHUB_REF_NAME}
+          
+          ### Installation
+          
+          #### Debian/Ubuntu (.deb)
+          \`\`\`bash
+          wget https://github.com/${{ github.repository }}/releases/download/${GITHUB_REF_NAME}/did-be-sdk_${GITHUB_REF_NAME#v}_amd64.deb
+          sudo dpkg -i did-be-sdk_${GITHUB_REF_NAME#v}_amd64.deb
+          # Configuration will be in /etc/did-be-sdk/.env
+          \`\`\`
+          
+          #### Linux (tarball)
+          \`\`\`bash
+          wget https://github.com/${{ github.repository }}/releases/download/${GITHUB_REF_NAME}/did-be-sdk-linux-amd64-${GITHUB_REF_NAME#v}.tar.gz
+          tar -xzf did-be-sdk-linux-amd64-${GITHUB_REF_NAME#v}.tar.gz
+          chmod +x did-be-sdk
+          # Edit .env file with your configuration
+          ./did-be-sdk
+          \`\`\`
+          
+          #### Windows (ZIP)
+          1. Download \`did-be-sdk-windows-amd64-${GITHUB_REF_NAME#v}.zip\`
+          2. Extract the ZIP file
+          3. Edit \`.env\` file with your configuration
+          4. Run \`did-be-sdk.exe\`
+          
+          ### Files Included
+          - Linux binary (standalone)
+          - Windows binary (standalone)
+          - Linux tarball (with .env)
+          - Windows ZIP (with .env)
+          - Debian package (with .env in /etc/did-be-sdk/)
+          EOF
+      
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/did-be-sdk-linux-amd64
+            dist/did-be-sdk-windows-amd64.exe
+            dist/did-be-sdk_*.deb
+            dist/did-be-sdk-linux-amd64-*.tar.gz
+            dist/did-be-sdk-windows-amd64-*.zip
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
