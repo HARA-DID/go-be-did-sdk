@@ -25,18 +25,26 @@ jobs:
           cat <<EOF > ~/.ssh/config
           Host ssh.dev.azure.com
             HostName ssh.dev.azure.com
+            User git
             IdentityFile ~/.ssh/id_ed25519
             IdentitiesOnly yes
+            StrictHostKeyChecking no
           EOF
           chmod 600 ~/.ssh/config
           
           # Start ssh-agent and add key
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_ed25519
+          
+          # Test SSH connection
+          ssh -T git@ssh.dev.azure.com || echo "SSH test completed"
       
       - name: Configure Git for SSH
         run: |
           git config --global url."git@ssh.dev.azure.com:".insteadOf "https://dev.azure.com/"
+          
+          # Set GIT_SSH_COMMAND to use our SSH config
+          echo "GIT_SSH_COMMAND=ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no" >> $GITHUB_ENV
       
       - name: Initialize and update submodules
         run: |
