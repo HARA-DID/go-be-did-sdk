@@ -15,15 +15,8 @@ var (
 
 func InitBlockchain() {
 	onceBlockchain.Do(func() {
-
 		netInstance = network.NewNetwork(
-			[]string{
-				"http://20.198.228.24:5625",
-				"http://13.214.26.197:5625",
-				"http://70.153.16.221:5628",
-				"http://70.153.192.125:5625",
-				"http://70.153.16.216:5625",
-			},
+			config.RPC.Endpoints,
 			"2.0",
 			1,
 			utils.DefaultLogConfig(),

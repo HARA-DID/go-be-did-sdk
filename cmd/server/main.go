@@ -11,6 +11,7 @@ import (
 	"github.com/meQlause/go-be-did/pkg/logger"
 
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
+	didaliassdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/did-alias"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 
 	_ "github.com/meQlause/go-be-did/docs"
@@ -26,8 +27,10 @@ func main() {
 	config.InitConfig()
 	config.InitBlockchain()
 	logger.Init(config.GetApp().LogLevel)
+
 	aasdk.InitializeAccountAbstractionSDK(context.Background(), config.GetConfig().HNS.AccountAbstraction, config.Blockchain())
 	didrootsdk.InitializeDIDRootSDK(context.Background(), config.GetConfig().HNS.DIDRoot, config.Blockchain())
+	didaliassdk.InitializeDIDAliasSDK(context.Background(), config.GetConfig().HNS.DIDAlias, config.Blockchain())
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: customErrorHandler,

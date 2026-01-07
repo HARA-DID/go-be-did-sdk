@@ -7,7 +7,9 @@ import (
 
 	"github.com/joho/godotenv"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
+	didaliassdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/did-alias"
 	drsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
+	// didvcsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didvc"
 )
 
 var (
@@ -17,6 +19,11 @@ var (
 type Config struct {
 	App AppConfig
 	HNS HNSConfig
+	RPC RPCConfig
+}
+
+type RPCConfig struct {
+	Endpoints []string
 }
 
 type AppConfig struct {
@@ -29,6 +36,8 @@ type AppConfig struct {
 type HNSConfig struct {
 	AccountAbstraction aasdk.AccountAbstractionHNS
 	DIDRoot            drsdk.DIDRootHNS
+	// DIDVC              didvcsdk.DIDVCHNS
+	DIDAlias didaliassdk.DIDAliasHNS
 }
 
 func InitConfig() {
@@ -62,6 +71,19 @@ func Load() (*Config, error) {
 				RootFactory: getEnv("DID_ROOT_FACTORY_HNS", ""),
 				RootStorage: getEnv("DID_ROOT_STORAGE_HNS", ""),
 			},
+			// DIDVC: didvcsdk.DIDVCHNS{
+			// 	VCFactory:      getEnv("DID_VC_FACTORY_HNS", ""),
+			// 	VCStorage:      getEnv("DID_VC_STORAGE_HNS", ""),
+			// 	CertificateNFT: getEnv("DID_VC_CERTIFICATE_NFT_HNS", ""),
+			// 	IdentityNFT:    getEnv("DID_VC_IDENTITY_NFT_HNS", ""),
+			// },
+			DIDAlias: didaliassdk.DIDAliasHNS{
+				AliasFactory: getEnv("DID_ALIAS_FACTORY_HNS", ""),
+				AliasStorage: getEnv("DID_ALIAS_STORAGE_HNS", ""),
+			},
+		},
+		RPC: RPCConfig{
+			Endpoints: getRPCs(),
 		},
 	}
 
@@ -72,9 +94,24 @@ func Load() (*Config, error) {
 	return cfg, nil
 }
 
+func getRPCs() []string {
+	var rpcs []string
+	for i := 1; i <= 4; i++ {
+		key := "RPC" + strconv.Itoa(i)
+		if v := os.Getenv(key); v != "" {
+			rpcs = append(rpcs, v)
+		}
+	}
+	return rpcs
+}
+
 func (c *Config) Validate() error {
 	if c.App.Port == "" {
 		return errors.New("PORT is required")
+	}
+
+	if len(c.RPC.Endpoints) == 0 {
+		return errors.New("at least one RPC endpoint is required")
 	}
 
 	if err := c.HNS.AccountAbstraction.Validate(); err != nil {
@@ -82,6 +119,14 @@ func (c *Config) Validate() error {
 	}
 
 	if err := c.HNS.DIDRoot.Validate(); err != nil {
+		return err
+	}
+
+	// if err := c.HNS.DIDVC.Validate(); err != nil {
+	// 	return err
+	// }
+
+	if err := c.HNS.DIDAlias.Validate(); err != nil {
 		return err
 	}
 

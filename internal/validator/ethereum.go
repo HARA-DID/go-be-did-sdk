@@ -20,53 +20,57 @@ func registerEthereum(v *validator.Validate) {
 	v.RegisterValidation("hex_data", hexData)
 	v.RegisterValidation("uint64", uint64String)
 	v.RegisterValidation("uint8", uint8String)
+	v.RegisterValidation("registration_period", registrationPeriod)
 }
 
 func ethPrivateKey(fl validator.FieldLevel) bool {
 	key := strings.TrimPrefix(fl.Field().String(), "0x")
-
 	if len(key) != 64 {
 		return false
 	}
-
 	bytes, err := utils.DecodeString(key)
 	if err != nil {
 		return false
 	}
-
 	_, err = crypto.ToECDSA(bytes)
 	return err == nil
 }
 
 func uint8String(fl validator.FieldLevel) bool {
 	value := strings.TrimSpace(fl.Field().String())
-
 	if value == "" {
 		return false
 	}
-
 	n, err := strconv.ParseUint(value, 10, 8)
 	if err != nil {
 		return false
 	}
-
 	return n <= 255
 }
 
 func uint64String(fl validator.FieldLevel) bool {
 	value := strings.TrimSpace(fl.Field().String())
-
 	if value == "" {
 		return false
 	}
-
 	_, err := strconv.ParseUint(value, 10, 64)
 	return err == nil
 }
 
+func registrationPeriod(fl validator.FieldLevel) bool {
+	value := strings.TrimSpace(fl.Field().String())
+	if value == "" {
+		return false
+	}
+	n, err := strconv.ParseUint(value, 10, 8)
+	if err != nil {
+		return false
+	}
+	return n <= 2
+}
+
 func ethPublicKey(fl validator.FieldLevel) bool {
 	key := strings.TrimPrefix(fl.Field().String(), "0x")
-
 	bytes, err := utils.DecodeString(key)
 	return err == nil && len(bytes) == 64
 }
@@ -78,26 +82,18 @@ func ethAddress(fl validator.FieldLevel) bool {
 
 func hex32Bytes(fl validator.FieldLevel) bool {
 	value := strings.TrimPrefix(fl.Field().String(), "0x")
-
-	// Must be exactly 64 hex characters (32 bytes)
 	if len(value) != 64 {
 		return false
 	}
-
-	// Must be valid hex
 	_, err := utils.DecodeString(value)
 	return err == nil
 }
 
 func hexBigInt(fl validator.FieldLevel) bool {
 	value := strings.TrimPrefix(fl.Field().String(), "0x")
-
-	// Must be valid hex
 	if _, err := utils.DecodeString(value); err != nil {
 		return false
 	}
-
-	// Try to parse as big.Int
 	bigInt := new(big.Int)
 	_, ok := bigInt.SetString(value, 16)
 	return ok
@@ -105,18 +101,12 @@ func hexBigInt(fl validator.FieldLevel) bool {
 
 func hexData(fl validator.FieldLevel) bool {
 	value := strings.TrimPrefix(fl.Field().String(), "0x")
-
-	// Empty hex is valid (represents empty bytes)
 	if value == "" {
 		return true
 	}
-
-	// Must be even length (each byte is 2 hex chars)
 	if len(value)%2 != 0 {
 		return false
 	}
-
-	// Must be valid hex
 	_, err := utils.DecodeString(value)
 	return err == nil
 }
