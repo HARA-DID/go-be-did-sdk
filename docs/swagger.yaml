@@ -716,6 +716,467 @@ paths:
       summary: Validate User Operation
       tags:
       - account-abstraction
+  /did-alias/did:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the DID hash associated with a node.
+
+        This endpoint returns:
+        - The DID hash linked to the node
+        - Returns empty hash if no DID is set
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with DID hash
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Node hash (32 bytes hex)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: node
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: DID hash
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - malformed node hash
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get DID by Node
+      tags:
+      - did-alias
+  /did-alias/did-from-string:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the DID hash using a domain name.
+
+        This endpoint:
+        - Computes the namehash of the domain name
+        - Returns the associated DID hash
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with DID hash
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Domain name
+        example: example.tld
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: DID hash
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - empty name
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get DID by Domain Name
+      tags:
+      - did-alias
+  /did-alias/namehash:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Computes the namehash of a domain name according to ENS specification.
+
+        This endpoint:
+        - Takes a domain name string
+        - Returns its namehash (used as node identifier)
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with namehash
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Domain name
+        example: example.tld
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Namehash result
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - empty name
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Compute Namehash
+      tags:
+      - did-alias
+  /did-alias/owner:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the owner address of a node.
+
+        This endpoint returns:
+        - The Ethereum address that owns the node/alias
+        - Returns zero address if node doesn't exist
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with owner address
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Node hash (32 bytes hex)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: node
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Owner address
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - malformed node hash
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Node Owner
+      tags:
+      - did-alias
+  /did-alias/owner-from-string:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the owner address using a domain name.
+
+        This endpoint:
+        - Computes the namehash of the domain name
+        - Returns the owner's Ethereum address
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with owner address
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Domain name
+        example: example.tld
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Owner address
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - empty name
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Owner by Domain Name
+      tags:
+      - did-alias
+  /did-alias/registration-period:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the duration (in seconds) for a given registration period type.
+
+        This endpoint returns:
+        - Duration in seconds for the specified period
+        - Period types: 0 (ONE_YEAR), 1 (TWO_YEARS), 2 (THREE_YEARS)
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with duration in seconds
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Registration period (0, 1, or 2)
+        example: "0"
+        in: query
+        name: period
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Registration period duration
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - period must be 0, 1, or 2
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Registration Period Duration
+      tags:
+      - did-alias
+  /did-alias/resolve:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the DID associated with a specific node hash.
+
+        This endpoint returns:
+        - The DID hash associated with the given node
+        - Returns empty hash if node doesn't exist or has no DID set
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with the DID hash
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Node hash (32 bytes hex)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: node
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: DID resolution result
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - malformed node hash or validation error
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Resolve Node to DID
+      tags:
+      - did-alias
+  /did-alias/resolve-from-string:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the DID associated with a domain name string.
+
+        This endpoint:
+        - Computes the namehash of the domain name
+        - Returns the DID associated with that domain
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with the DID hash
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Domain name
+        example: example.tld
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: DID resolution result
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - empty name or validation error
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Resolve Domain Name to DID
+      tags:
+      - did-alias
+  /did-alias/status:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the status of an alias including expiry time, revocation status, and validity.
+
+        This endpoint returns:
+        - Expiry timestamp (Unix timestamp)
+        - Whether the alias is revoked
+        - Whether the alias is currently valid (not expired and not revoked)
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with status details
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Node hash (32 bytes hex)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: node
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Alias status
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - malformed node hash
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Alias Status by Node
+      tags:
+      - did-alias
+  /did-alias/status-from-string:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the status of an alias using its domain name.
+
+        This endpoint:
+        - Computes the namehash of the domain name
+        - Returns expiry, revocation status, and validity
+
+        ## Response Structure
+        Success responses (HTTP 200) contain:
+        - `success` (boolean): Always true if request is processed correctly
+        - `data` (object): BlockchainResponse with status details
+        - `meta` (object): Contains timestamp and API version
+      parameters:
+      - description: Domain name
+        example: example.tld
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Alias status
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - empty name
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - blockchain call failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Alias Status by Domain Name
+      tags:
+      - did-alias
   /did-root/did-index-map:
     get:
       consumes:

@@ -252,6 +252,576 @@ const docTemplate = `{
                 }
             }
         },
+        "/did-alias/did": {
+            "get": {
+                "description": "Retrieves the DID hash associated with a node.\n\nThis endpoint returns:\n- The DID hash linked to the node\n- Returns empty hash if no DID is set\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with DID hash\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Get DID by Node",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "Node hash (32 bytes hex)",
+                        "name": "node",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DID hash",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - malformed node hash",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/did-from-string": {
+            "get": {
+                "description": "Retrieves the DID hash using a domain name.\n\nThis endpoint:\n- Computes the namehash of the domain name\n- Returns the associated DID hash\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with DID hash\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Get DID by Domain Name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "example.tld",
+                        "description": "Domain name",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DID hash",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - empty name",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/namehash": {
+            "get": {
+                "description": "Computes the namehash of a domain name according to ENS specification.\n\nThis endpoint:\n- Takes a domain name string\n- Returns its namehash (used as node identifier)\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with namehash\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Compute Namehash",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "example.tld",
+                        "description": "Domain name",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Namehash result",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - empty name",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/owner": {
+            "get": {
+                "description": "Retrieves the owner address of a node.\n\nThis endpoint returns:\n- The Ethereum address that owns the node/alias\n- Returns zero address if node doesn't exist\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with owner address\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Get Node Owner",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "Node hash (32 bytes hex)",
+                        "name": "node",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Owner address",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - malformed node hash",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/owner-from-string": {
+            "get": {
+                "description": "Retrieves the owner address using a domain name.\n\nThis endpoint:\n- Computes the namehash of the domain name\n- Returns the owner's Ethereum address\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with owner address\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Get Owner by Domain Name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "example.tld",
+                        "description": "Domain name",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Owner address",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - empty name",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/registration-period": {
+            "get": {
+                "description": "Retrieves the duration (in seconds) for a given registration period type.\n\nThis endpoint returns:\n- Duration in seconds for the specified period\n- Period types: 0 (ONE_YEAR), 1 (TWO_YEARS), 2 (THREE_YEARS)\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with duration in seconds\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Get Registration Period Duration",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Registration period (0, 1, or 2)",
+                        "name": "period",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registration period duration",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - period must be 0, 1, or 2",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/resolve": {
+            "get": {
+                "description": "Retrieves the DID associated with a specific node hash.\n\nThis endpoint returns:\n- The DID hash associated with the given node\n- Returns empty hash if node doesn't exist or has no DID set\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with the DID hash\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Resolve Node to DID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "Node hash (32 bytes hex)",
+                        "name": "node",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DID resolution result",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - malformed node hash or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/resolve-from-string": {
+            "get": {
+                "description": "Retrieves the DID associated with a domain name string.\n\nThis endpoint:\n- Computes the namehash of the domain name\n- Returns the DID associated with that domain\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with the DID hash\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Resolve Domain Name to DID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "example.tld",
+                        "description": "Domain name",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "DID resolution result",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - empty name or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/status": {
+            "get": {
+                "description": "Retrieves the status of an alias including expiry time, revocation status, and validity.\n\nThis endpoint returns:\n- Expiry timestamp (Unix timestamp)\n- Whether the alias is revoked\n- Whether the alias is currently valid (not expired and not revoked)\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with status details\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Get Alias Status by Node",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "Node hash (32 bytes hex)",
+                        "name": "node",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alias status",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - malformed node hash",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-alias/status-from-string": {
+            "get": {
+                "description": "Retrieves the status of an alias using its domain name.\n\nThis endpoint:\n- Computes the namehash of the domain name\n- Returns expiry, revocation status, and validity\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with status details\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "did-alias"
+                ],
+                "summary": "Get Alias Status by Domain Name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "example.tld",
+                        "description": "Domain name",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Alias status",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - empty name",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - blockchain call failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/did-root/did-index-map": {
             "get": {
                 "description": "Maps a DID index to its corresponding DID hash",
