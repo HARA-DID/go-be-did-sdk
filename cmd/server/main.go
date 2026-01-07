@@ -11,7 +11,7 @@ import (
 	"github.com/meQlause/go-be-did/pkg/logger"
 
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
-	didaliassdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/did-alias"
+	didaliassdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didalias"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 
 	_ "github.com/meQlause/go-be-did/docs"

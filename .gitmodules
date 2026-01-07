@@ -7,6 +7,4 @@
 [submodule "internal/infrastructure/lib/did-root-sdk"]
 	path = internal/infrastructure/lib/did-root-sdk
 	url = git@ssh.dev.azure.com:v3/dattabot/Blockchain%202024/did-root-sdk
-[submodule "internal/infrastructure/lib/did-alias-sdk"]
-	path = internal/infrastructure/lib/did-alias-sdk
-	url = git@ssh.dev.azure.com:v3/dattabot/Blockchain 2024/did-alias-sdk
+e

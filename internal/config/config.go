@@ -7,7 +7,7 @@ import (
 
 	"github.com/joho/godotenv"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
-	didaliassdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/did-alias"
+	dasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didalias"
 	drsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 	// didvcsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didvc"
 )
@@ -37,7 +37,7 @@ type HNSConfig struct {
 	AccountAbstraction aasdk.AccountAbstractionHNS
 	DIDRoot            drsdk.DIDRootHNS
 	// DIDVC              didvcsdk.DIDVCHNS
-	DIDAlias didaliassdk.DIDAliasHNS
+	DIDAlias dasdk.DIDAliasHNS
 }
 
 func InitConfig() {
@@ -77,7 +77,7 @@ func Load() (*Config, error) {
 			// 	CertificateNFT: getEnv("DID_VC_CERTIFICATE_NFT_HNS", ""),
 			// 	IdentityNFT:    getEnv("DID_VC_IDENTITY_NFT_HNS", ""),
 			// },
-			DIDAlias: didaliassdk.DIDAliasHNS{
+			DIDAlias: dasdk.DIDAliasHNS{
 				AliasFactory: getEnv("DID_ALIAS_FACTORY_HNS", ""),
 				AliasStorage: getEnv("DID_ALIAS_STORAGE_HNS", ""),
 			},
