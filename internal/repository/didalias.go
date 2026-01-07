@@ -4,6 +4,7 @@ import (
 	"context"
 	"math/big"
 
+	"github.com/meQlause/alias-root-sdk/pkg/aliasfactory"
 	didaliasdomain "github.com/meQlause/go-be-did/internal/domain/entities/didalias"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
@@ -11,8 +12,8 @@ import (
 type DIDAliasRepository interface {
 	Resolve(ctx context.Context, input didaliasdomain.ResolveInput) (utils.Hash, error)
 	ResolveFromString(ctx context.Context, input didaliasdomain.ResolveFromStringInput) (utils.Hash, error)
-	GetAliasStatus(ctx context.Context, input didaliasdomain.GetAliasStatusInput) (*didaliasdomain.AliasStatus, error)
-	GetAliasStatusFromString(ctx context.Context, input didaliasdomain.GetAliasStatusFromStringInput) (*didaliasdomain.AliasStatus, error)
+	GetAliasStatus(ctx context.Context, input didaliasdomain.GetAliasStatusInput) (*aliasfactory.AliasStatus, error)
+	GetAliasStatusFromString(ctx context.Context, input didaliasdomain.GetAliasStatusFromStringInput) (*aliasfactory.AliasStatus, error)
 	GetOwner(ctx context.Context, input didaliasdomain.GetOwnerInput) (string, error)
 	GetOwnerFromString(ctx context.Context, input didaliasdomain.GetOwnerFromStringInput) (string, error)
 	GetDID(ctx context.Context, input didaliasdomain.GetDIDInput) (utils.Hash, error)

@@ -8,7 +8,7 @@ import (
 )
 
 func SetupDIDAliasRoutes(api fiber.Router, cfg *config.Config, bc *blockchain.Blockchain) {
-	dr := api.Group("/did-root")
+	da := api.Group("/did-alias")
 
-	SetupAliasFactoryRoutes(dr, didaliassdk.GetDIDAliasSDK(), cfg, bc)
+	SetupAliasFactoryRoutes(da, didaliassdk.GetDIDAliasSDK(), cfg, bc)
 }

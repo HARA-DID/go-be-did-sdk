@@ -10,21 +10,21 @@ import (
 	dauc "github.com/meQlause/go-be-did/internal/usecase/didalias"
 )
 
-func SetupAliasFactoryRoutes(aa fiber.Router, daRepo repository.DIDAliasRepository, cfg *config.Config, bc *blockchain.Blockchain) {
+func SetupAliasFactoryRoutes(da fiber.Router, daRepo repository.DIDAliasRepository, cfg *config.Config, bc *blockchain.Blockchain) {
 	daUC := dauc.New(daRepo)
 	daHandler := dahandler.NewDIDAliasHandler(daUC)
 
 	// Read operations (GET methods)
-	aa.Get("/resolve", daHandler.Resolve)
-	aa.Get("/resolve-from-string", daHandler.ResolveFromString)
-	aa.Get("/status", daHandler.GetAliasStatus)
-	aa.Get("/status-from-string", daHandler.GetAliasStatusFromString)
-	aa.Get("/owner", daHandler.GetOwner)
-	aa.Get("/owner-from-string", daHandler.GetOwnerFromString)
-	aa.Get("/did", daHandler.GetDID)
-	aa.Get("/did-from-string", daHandler.GetDIDFromString)
-	aa.Get("/namehash", daHandler.Namehash)
-	aa.Get("/registration-period", daHandler.GetRegistrationPeriod)
+	da.Get("/resolve", daHandler.Resolve)
+	da.Get("/resolve-from-string", daHandler.ResolveFromString)
+	da.Get("/status", daHandler.GetAliasStatus)
+	da.Get("/status-from-string", daHandler.GetAliasStatusFromString)
+	da.Get("/owner", daHandler.GetOwner)
+	da.Get("/owner-from-string", daHandler.GetOwnerFromString)
+	da.Get("/did", daHandler.GetDID)
+	da.Get("/did-from-string", daHandler.GetDIDFromString)
+	da.Get("/namehash", daHandler.Namehash)
+	da.Get("/registration-period", daHandler.GetRegistrationPeriod)
 
 	// Write operations (POST methods)
 	// aa.Post("/set-did-root-storage", daHandler.SetDIDRootStorage)
