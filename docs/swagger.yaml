@@ -101,6 +101,27 @@ definitions:
     - input
     - wallet
     type: object
+  didaliasdto.RegisterTLDDIDParam:
+    description: Data Transfer Object for registering a new top-level domain
+    properties:
+      owner:
+        type: string
+      tld:
+        type: string
+    required:
+    - owner
+    - tld
+    type: object
+  didaliasdto.RegisterTLDDTO:
+    properties:
+      did_param:
+        $ref: '#/definitions/didaliasdto.RegisterTLDDIDParam'
+      priv_key:
+        type: string
+    required:
+    - did_param
+    - priv_key
+    type: object
   helperdto.CreateDIDDTO:
     properties:
       did:
@@ -186,6 +207,16 @@ definitions:
     required:
     - address
     type: object
+  helperdto.EncodeExtendRegistrationDTO:
+    properties:
+      address:
+        type: string
+      did_param:
+        $ref: '#/definitions/helperdto.ExtendRegistrationDIDParam'
+    required:
+    - address
+    - did_param
+    type: object
   helperdto.EncodeReactiveDIDDTO:
     properties:
       address:
@@ -200,6 +231,26 @@ definitions:
     required:
     - address
     - did_index
+    type: object
+  helperdto.EncodeRegisterDomainDTO:
+    properties:
+      address:
+        type: string
+      did_param:
+        $ref: '#/definitions/helperdto.RegisterDomainDIDParam'
+    required:
+    - address
+    - did_param
+    type: object
+  helperdto.EncodeRegisterSubdomainDTO:
+    properties:
+      address:
+        type: string
+      did_param:
+        $ref: '#/definitions/helperdto.RegisterSubdomainDIDParam'
+    required:
+    - address
+    - did_param
     type: object
   helperdto.EncodeRemoveClaimDTO:
     properties:
@@ -227,6 +278,36 @@ definitions:
     required:
     - address
     type: object
+  helperdto.EncodeRevokeAliasDTO:
+    properties:
+      address:
+        type: string
+      did_param:
+        $ref: '#/definitions/helperdto.RevokeAliasDIDParam'
+    required:
+    - address
+    - did_param
+    type: object
+  helperdto.EncodeSetDIDDTO:
+    properties:
+      address:
+        type: string
+      did_param:
+        $ref: '#/definitions/helperdto.SetDIDDIDParam'
+    required:
+    - address
+    - did_param
+    type: object
+  helperdto.EncodeSetDIDRootStorageDTO:
+    properties:
+      address:
+        type: string
+      did_param:
+        $ref: '#/definitions/helperdto.SetDIDRootStorageDIDParam'
+    required:
+    - address
+    - did_param
+    type: object
   helperdto.EncodeStoreDataDTO:
     properties:
       address:
@@ -239,6 +320,16 @@ definitions:
         type: string
     required:
     - address
+    type: object
+  helperdto.EncodeTransferAliasOwnershipDTO:
+    properties:
+      address:
+        type: string
+      did_param:
+        $ref: '#/definitions/helperdto.TransferAliasOwnershipDIDParam'
+    required:
+    - address
+    - did_param
     type: object
   helperdto.EncodeTransferDIDOwnerDTO:
     properties:
@@ -253,6 +344,16 @@ definitions:
     required:
     - address
     type: object
+  helperdto.EncodeUnrevokeAliasDTO:
+    properties:
+      address:
+        type: string
+      did_param:
+        $ref: '#/definitions/helperdto.UnrevokeAliasDIDParam'
+    required:
+    - address
+    - did_param
+    type: object
   helperdto.EncodeUpdateDIDDTO:
     properties:
       address:
@@ -265,6 +366,50 @@ definitions:
         type: string
     required:
     - address
+    type: object
+  helperdto.ExtendRegistrationDIDParam:
+    description: Data Transfer Object for extending the registration period of an
+      alias
+    properties:
+      node:
+        type: string
+      period:
+        type: string
+    required:
+    - node
+    - period
+    type: object
+  helperdto.RegisterDomainDIDParam:
+    description: Data Transfer Object for registering a new domain under a TLD
+    properties:
+      label:
+        type: string
+      owner:
+        type: string
+      period:
+        type: string
+      tld:
+        type: string
+    required:
+    - label
+    - owner
+    - period
+    - tld
+    type: object
+  helperdto.RegisterSubdomainDIDParam:
+    description: Data Transfer Object for registering a new subdomain under a parent
+      domain
+    properties:
+      label:
+        type: string
+      parent_domain:
+        type: string
+      period:
+        type: string
+    required:
+    - label
+    - parent_domain
+    - period
     type: object
   helperdto.RemoveClaimDTO:
     properties:
@@ -289,6 +434,34 @@ definitions:
     required:
     - did_index
     - key_data
+    type: object
+  helperdto.RevokeAliasDIDParam:
+    description: Data Transfer Object for revoking an alias
+    properties:
+      node:
+        type: string
+    required:
+    - node
+    type: object
+  helperdto.SetDIDDIDParam:
+    description: Data Transfer Object for setting a DID (Decentralized Identifier)
+      to a node
+    properties:
+      did:
+        type: string
+      node:
+        type: string
+    required:
+    - did
+    - node
+    type: object
+  helperdto.SetDIDRootStorageDIDParam:
+    description: Data Transfer Object for setting the DID root storage address
+    properties:
+      did_root_storage:
+        type: string
+    required:
+    - did_root_storage
     type: object
   helperdto.StoreClaimDTO:
     properties:
@@ -366,6 +539,18 @@ definitions:
     required:
     - input
     type: object
+  helperdto.TransferAliasOwnershipDIDParam:
+    description: Data Transfer Object for transferring ownership of an alias to a
+      new owner
+    properties:
+      new_owner:
+        type: string
+      node:
+        type: string
+    required:
+    - new_owner
+    - node
+    type: object
   helperdto.TransferDIDOwnershipDTO:
     properties:
       did_index:
@@ -381,6 +566,14 @@ definitions:
     - did_index
     - new_owner
     - old_owner
+    type: object
+  helperdto.UnrevokeAliasDIDParam:
+    description: Data Transfer Object for unrevoking a previously revoked alias
+    properties:
+      node:
+        type: string
+    required:
+    - node
     type: object
   helperdto.UpdateDIDDTO:
     properties:
@@ -946,6 +1139,44 @@ paths:
       summary: Get Owner by Domain Name
       tags:
       - did-alias
+  /did-alias/register-tld:
+    post:
+      consumes:
+      - application/json
+      description: Register a new top-level domain in the alias system. Only admins
+        can register TLDs.
+      parameters:
+      - description: Register TLD Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/didaliasdto.RegisterTLDDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully registered TLD
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties:
+                    $ref: '#/definitions/response.BlockchainResponse'
+                  type: object
+              type: object
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Register a new Top-Level Domain (TLD)
+      tags:
+      - DID Alias
   /did-alias/registration-period:
     get:
       consumes:
@@ -1888,6 +2119,42 @@ paths:
       summary: Encode Delete Data Parameters
       tags:
       - helper
+  /helper/encode-extend-registration-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for extending the registration period of an
+        alias
+      parameters:
+      - description: Extend Registration parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeExtendRegistrationDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Extend Registration parameters
+      tags:
+      - Helper - DID Alias
   /helper/encode-reactivate-did-param:
     post:
       consumes:
@@ -1923,6 +2190,77 @@ paths:
       summary: Encode Reactivate DID Parameters
       tags:
       - helper
+  /helper/encode-register-domain-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for registering a new domain under a TLD
+      parameters:
+      - description: Register Domain parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeRegisterDomainDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Register Domain parameters
+      tags:
+      - Helper - DID Alias
+  /helper/encode-register-subdomain-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for registering a new subdomain under a parent
+        domain
+      parameters:
+      - description: Register Subdomain parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeRegisterSubdomainDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Register Subdomain parameters
+      tags:
+      - Helper - DID Alias
   /helper/encode-remove-claim-param:
     post:
       consumes:
@@ -1993,6 +2331,112 @@ paths:
       summary: Encode Remove Key Parameters
       tags:
       - helper
+  /helper/encode-revoke-alias-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for revoking an alias
+      parameters:
+      - description: Revoke Alias parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeRevokeAliasDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Revoke Alias parameters
+      tags:
+      - Helper - DID Alias
+  /helper/encode-set-did-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for setting a DID (Decentralized Identifier)
+        to a node
+      parameters:
+      - description: Set DID parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeSetDIDDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Set DID parameters
+      tags:
+      - Helper - DID Alias
+  /helper/encode-set-did-root-storage-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for setting the DID root storage address
+      parameters:
+      - description: Set DID Root Storage parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeSetDIDRootStorageDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Set DID Root Storage parameters
+      tags:
+      - Helper - DID Alias
   /helper/encode-store-data-param:
     post:
       consumes:
@@ -2028,6 +2472,42 @@ paths:
       summary: Encode Store Data Parameters
       tags:
       - helper
+  /helper/encode-transfer-alias-ownership-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for transferring ownership of an alias to a
+        new owner
+      parameters:
+      - description: Transfer Alias Ownership parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeTransferAliasOwnershipDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Transfer Alias Ownership parameters
+      tags:
+      - Helper - DID Alias
   /helper/encode-transfer-did-owner-param:
     post:
       consumes:
@@ -2063,6 +2543,41 @@ paths:
       summary: Encode Transfer DID Owner Parameters
       tags:
       - helper
+  /helper/encode-unrevoke-alias-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for unrevoking a previously revoked alias
+      parameters:
+      - description: Unrevoke Alias parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeUnrevokeAliasDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Unrevoke Alias parameters
+      tags:
+      - Helper - DID Alias
   /helper/encode-update-did-param:
     post:
       consumes:

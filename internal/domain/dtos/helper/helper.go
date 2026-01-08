@@ -3,8 +3,9 @@ package helperdto
 import (
 	"strconv"
 
-	helperdomain "github.com/meQlause/go-be-did/internal/domain/entities/helper"
+	"github.com/meQlause/alias-root-sdk/pkg/aliasfactory"
 	"github.com/meQlause/did-root-sdk/pkg/rootfactory"
+	helperdomain "github.com/meQlause/go-be-did/internal/domain/entities/helper"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
 
@@ -30,7 +31,7 @@ type CreateDIDDTO struct {
 
 func (dto EncodeCreateDIDDTO) Into() helperdomain.EncodeCreateDIDParamInput {
 	return helperdomain.EncodeCreateDIDParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.CreateDIDParam{
 			DID: dto.DIDParam.DID,
 		},
@@ -51,7 +52,7 @@ type UpdateDIDDTO struct {
 
 func (dto EncodeUpdateDIDDTO) Into() helperdomain.EncodeUpdateDIDParamInput {
 	return helperdomain.EncodeUpdateDIDParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.UpdateDIDParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
 			URI:      dto.DIDParam.URI,
@@ -68,7 +69,7 @@ type EncodeDeactiveDIDDTO struct {
 
 func (dto EncodeDeactiveDIDDTO) Into() helperdomain.EncodeDeactiveDIDParamInput {
 	return helperdomain.EncodeDeactiveDIDParamInput{
-		Address:       dto.Address,
+		Address:       utils.HexToAddress(dto.Address),
 		DIDIndex:      utils.StringToBigInt(dto.DIDIndex),
 		KeyIdentifier: dto.KeyIdentifier,
 	}
@@ -82,7 +83,7 @@ type EncodeReactiveDIDDTO struct {
 
 func (dto EncodeReactiveDIDDTO) Into() helperdomain.EncodeReactiveDIDParamInput {
 	return helperdomain.EncodeReactiveDIDParamInput{
-		Address:       dto.Address,
+		Address:       utils.HexToAddress(dto.Address),
 		DIDIndex:      utils.StringToBigInt(dto.DIDIndex),
 		KeyIdentifier: dto.KeyIdentifier,
 	}
@@ -102,7 +103,7 @@ type TransferDIDOwnershipDTO struct {
 
 func (dto EncodeTransferDIDOwnerDTO) Into() helperdomain.EncodeTransferDIDOwnerParamInput {
 	return helperdomain.EncodeTransferDIDOwnerParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.TransferDIDOwnershipParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
 			NewOwner: utils.HexToAddress(dto.DIDParam.NewOwner),
@@ -125,7 +126,7 @@ type StoreDataDTO struct {
 
 func (dto EncodeStoreDataDTO) Into() helperdomain.EncodeStoreDataParamInput {
 	return helperdomain.EncodeStoreDataParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.StoreDataParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
 			Key:      dto.DIDParam.Key,
@@ -148,7 +149,7 @@ type DeleteDataDTO struct {
 
 func (dto EncodeDeleteDataDTO) Into() helperdomain.EncodeDeleteDataParamInput {
 	return helperdomain.EncodeDeleteDataParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.DeleteDataParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
 			Key:      dto.DIDParam.Key,
@@ -177,7 +178,7 @@ func (dto EncodeAddKeyDTO) Into() helperdomain.EncodeAddKeyParamInput {
 	purpose, _ := strconv.ParseUint(dto.DIDParam.Purpose, 10, 8)
 
 	return helperdomain.EncodeAddKeyParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.StoreKeyParams{
 			DIDIndex:      utils.StringToBigInt(dto.DIDParam.DIDIndex),
 			KeyDataHashed: keyDataHashed,
@@ -204,7 +205,7 @@ func (dto EncodeRemoveKeyDTO) Into() helperdomain.EncodeRemoveKeyParamInput {
 	copy(keyData[:], dto.DIDParam.KeyData)
 
 	return helperdomain.EncodeRemoveKeyParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.RemoveKeyParams{
 			DIDIndex:      utils.StringToBigInt(dto.DIDParam.DIDIndex),
 			KeyDataHashed: keyData,
@@ -235,7 +236,7 @@ func (dto EncodeAddClaimDTO) Into() helperdomain.EncodeAddClaimParamInput {
 	topic, _ := strconv.ParseUint(dto.DIDParam.Topic, 10, 8)
 
 	return helperdomain.EncodeAddClaimParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.StoreClaimParams{
 			DIDIndex:  utils.StringToBigInt(dto.DIDParam.DIDIndex),
 			ClaimID:   claimID,
@@ -265,11 +266,190 @@ func (dto EncodeRemoveClaimDTO) Into() helperdomain.EncodeRemoveClaimParamInput 
 	copy(claimID[:], dto.DIDParam.ClaimID)
 
 	return helperdomain.EncodeRemoveClaimParamInput{
-		Address: dto.Address,
+		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.RemoveClaimParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
 			ClaimID:  claimID,
 		},
 		KeyIdentifier: dto.KeyIdentifier,
+	}
+}
+
+// SetDIDRootStorageDTO represents the request to set DID root storage
+// @Description Data Transfer Object for setting the DID root storage address
+type SetDIDRootStorageDIDParam struct {
+	DIDRootStorage string `json:"did_root_storage" validate:"required,eth_address"`
+}
+
+type EncodeSetDIDRootStorageDTO struct {
+	Address  string                    `json:"address" validate:"required,eth_address"`
+	DIDParam SetDIDRootStorageDIDParam `json:"did_param" validate:"required"`
+}
+
+func (dto *EncodeSetDIDRootStorageDTO) Into() helperdomain.EncodeSetDIDRootStorageParamInput {
+	return helperdomain.EncodeSetDIDRootStorageParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		DIDParam: aliasfactory.SetDIDRootStorageParams{
+			DIDRootStorage: dto.DIDParam.DIDRootStorage,
+		},
+	}
+}
+
+// RegisterDomainDTO represents the request to register a domain
+// @Description Data Transfer Object for registering a new domain under a TLD
+type RegisterDomainDIDParam struct {
+	Label  string `json:"label" validate:"required,domain_label"`
+	TLD    string `json:"tld" validate:"required,domain_label"`
+	Owner  string `json:"owner" validate:"required,eth_address"`
+	Period string `json:"period" validate:"required,registration_period"`
+}
+
+type EncodeRegisterDomainDTO struct {
+	Address  string                 `json:"address" validate:"required,eth_address"`
+	DIDParam RegisterDomainDIDParam `json:"did_param" validate:"required"`
+}
+
+func (dto *EncodeRegisterDomainDTO) Into() helperdomain.EncodeRegisterDomainParamInput {
+	period, _ := strconv.ParseUint(dto.DIDParam.Period, 10, 8)
+	return helperdomain.EncodeRegisterDomainParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		DIDParam: aliasfactory.RegisterDomainParams{
+			Label:  dto.DIDParam.Label,
+			TLD:    dto.DIDParam.TLD,
+			Owner:  dto.DIDParam.Owner,
+			Period: aliasfactory.RegistrationPeriod(period),
+		},
+	}
+}
+
+// RegisterSubdomainDTO represents the request to register a subdomain
+// @Description Data Transfer Object for registering a new subdomain under a parent domain
+type RegisterSubdomainDIDParam struct {
+	Label        string `json:"label" validate:"required,domain_label"`
+	ParentDomain string `json:"parent_domain" validate:"required,domain_name"`
+	Period       string `json:"period" validate:"required,registration_period"`
+}
+
+type EncodeRegisterSubdomainDTO struct {
+	Address  string                    `json:"address" validate:"required,eth_address"`
+	DIDParam RegisterSubdomainDIDParam `json:"did_param" validate:"required"`
+}
+
+func (dto *EncodeRegisterSubdomainDTO) Into() helperdomain.EncodeRegisterSubdomainParamInput {
+	period, _ := strconv.ParseUint(dto.DIDParam.Period, 10, 8)
+	return helperdomain.EncodeRegisterSubdomainParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		DIDParam: aliasfactory.RegisterSubdomainParams{
+			Label:        dto.DIDParam.Label,
+			ParentDomain: dto.DIDParam.ParentDomain,
+			Period:       aliasfactory.RegistrationPeriod(period),
+		},
+	}
+}
+
+// SetDIDDTO represents the request to set a DID for a node
+// @Description Data Transfer Object for setting a DID (Decentralized Identifier) to a node
+type SetDIDDIDParam struct {
+	Node string `json:"node" validate:"required,hex32"`
+	DID  string `json:"did" validate:"required,hex32"`
+}
+
+type EncodeSetDIDDTO struct {
+	Address  string         `json:"address" validate:"required,eth_address"`
+	DIDParam SetDIDDIDParam `json:"did_param" validate:"required"`
+}
+
+func (dto *EncodeSetDIDDTO) Into() helperdomain.EncodeSetDIDParamInput {
+	return helperdomain.EncodeSetDIDParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		DIDParam: aliasfactory.SetDIDParams{
+			Node: utils.HexToHash(dto.DIDParam.Node),
+			DID:  utils.HexToHash(dto.DIDParam.DID),
+		},
+	}
+}
+
+// ExtendRegistrationDTO represents the request to extend registration
+// @Description Data Transfer Object for extending the registration period of an alias
+type ExtendRegistrationDIDParam struct {
+	Node   string `json:"node" validate:"required,hex32"`
+	Period string `json:"period" validate:"required,registration_period"`
+}
+
+type EncodeExtendRegistrationDTO struct {
+	Address  string                     `json:"address" validate:"required,eth_address"`
+	DIDParam ExtendRegistrationDIDParam `json:"did_param" validate:"required"`
+}
+
+func (dto *EncodeExtendRegistrationDTO) Into() helperdomain.EncodeExtendRegistrationParamInput {
+	period, _ := strconv.ParseUint(dto.DIDParam.Period, 10, 8)
+	return helperdomain.EncodeExtendRegistrationParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		DIDParam: aliasfactory.ExtendRegistrationParams{
+			Node:   utils.HexToHash(dto.DIDParam.Node),
+			Period: aliasfactory.RegistrationPeriod(period),
+		},
+	}
+}
+
+// RevokeAliasDTO represents the request to revoke an alias
+// @Description Data Transfer Object for revoking an alias
+type RevokeAliasDIDParam struct {
+	Node string `json:"node" validate:"required,hex32"`
+}
+
+type EncodeRevokeAliasDTO struct {
+	Address  string              `json:"address" validate:"required,eth_address"`
+	DIDParam RevokeAliasDIDParam `json:"did_param" validate:"required"`
+}
+
+func (dto *EncodeRevokeAliasDTO) Into() helperdomain.EncodeRevokeAliasParamInput {
+	return helperdomain.EncodeRevokeAliasParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		DIDParam: aliasfactory.NodeOnlyParams{
+			Node: utils.HexToHash(dto.DIDParam.Node),
+		},
+	}
+}
+
+// UnrevokeAliasDTO represents the request to unrevoke an alias
+// @Description Data Transfer Object for unrevoking a previously revoked alias
+type UnrevokeAliasDIDParam struct {
+	Node string `json:"node" validate:"required,hex32"`
+}
+
+type EncodeUnrevokeAliasDTO struct {
+	Address  string                `json:"address" validate:"required,eth_address"`
+	DIDParam UnrevokeAliasDIDParam `json:"did_param" validate:"required"`
+}
+
+func (dto *EncodeUnrevokeAliasDTO) Into() helperdomain.EncodeUnrevokeAliasParamInput {
+	return helperdomain.EncodeUnrevokeAliasParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		DIDParam: aliasfactory.NodeOnlyParams{
+			Node: utils.HexToHash(dto.DIDParam.Node),
+		},
+	}
+}
+
+// TransferAliasOwnershipDTO represents the request to transfer alias ownership
+// @Description Data Transfer Object for transferring ownership of an alias to a new owner
+type TransferAliasOwnershipDIDParam struct {
+	Node     string `json:"node" validate:"required,hex32"`
+	NewOwner string `json:"new_owner" validate:"required,eth_address"`
+}
+
+type EncodeTransferAliasOwnershipDTO struct {
+	Address  string                         `json:"address" validate:"required,eth_address"`
+	DIDParam TransferAliasOwnershipDIDParam `json:"did_param" validate:"required"`
+}
+
+func (dto *EncodeTransferAliasOwnershipDTO) Into() helperdomain.EncodeTransferAliasOwnershipParamInput {
+	return helperdomain.EncodeTransferAliasOwnershipParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		DIDParam: aliasfactory.TransferAliasOwnershipParams{
+			Node:     utils.HexToHash(dto.DIDParam.Node),
+			NewOwner: dto.DIDParam.NewOwner,
+		},
 	}
 }

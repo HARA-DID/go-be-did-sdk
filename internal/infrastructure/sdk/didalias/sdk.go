@@ -61,10 +61,6 @@ func NewDIDAliasSDK(
 		return nil, fmt.Errorf("init gas manager: %w", err)
 	}
 
-	if err != nil {
-		return nil, fmt.Errorf("init wallet factory: %w", err)
-	}
-
 	return &DIDAliasSDK{
 		AliasFactory: aliasFactory,
 		AliasStorage: aliasStorage,

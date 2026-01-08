@@ -5,8 +5,10 @@ import (
 	"math/big"
 
 	"github.com/meQlause/alias-root-sdk/pkg/aliasfactory"
-	didaliasdomain "github.com/meQlause/go-be-did/internal/domain/entities/didalias"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
+
+	didaliasdomain "github.com/meQlause/go-be-did/internal/domain/entities/didalias"
+	backendutils "github.com/meQlause/go-be-did/utils"
 )
 
 type DIDAliasRepository interface {
@@ -20,4 +22,6 @@ type DIDAliasRepository interface {
 	GetDIDFromString(ctx context.Context, input didaliasdomain.GetDIDFromStringInput) (utils.Hash, error)
 	Namehash(ctx context.Context, input didaliasdomain.NamehashInput) (utils.Hash, error)
 	GetRegistrationPeriod(ctx context.Context, input didaliasdomain.GetRegistrationPeriodInput) (*big.Int, error)
+
+	RegisterTLD(ctx context.Context, input didaliasdomain.RegisterTLDInput) (*backendutils.TxHash, error)
 }

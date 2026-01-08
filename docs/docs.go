@@ -537,6 +537,67 @@ const docTemplate = `{
                 }
             }
         },
+        "/did-alias/register-tld": {
+            "post": {
+                "description": "Register a new top-level domain in the alias system. Only admins can register TLDs.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID Alias"
+                ],
+                "summary": "Register a new Top-Level Domain (TLD)",
+                "parameters": [
+                    {
+                        "description": "Register TLD Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/didaliasdto.RegisterTLDDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully registered TLD",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "$ref": "#/definitions/response.BlockchainResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body or validation error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/did-alias/registration-period": {
             "get": {
                 "description": "Retrieves the duration (in seconds) for a given registration period type.\n\nThis endpoint returns:\n- Duration in seconds for the specified period\n- Period types: 0 (ONE_YEAR), 1 (TWO_YEARS), 2 (THREE_YEARS)\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true if request is processed correctly\n- ` + "`" + `data` + "`" + ` (object): BlockchainResponse with duration in seconds\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version",
@@ -1909,6 +1970,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/helper/encode-extend-registration-param": {
+            "post": {
+                "description": "Encodes parameters for extending the registration period of an alias",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID Alias"
+                ],
+                "summary": "Encode Extend Registration parameters",
+                "parameters": [
+                    {
+                        "description": "Extend Registration parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeExtendRegistrationDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/helper/encode-reactivate-did-param": {
             "post": {
                 "description": "Encodes parameters for reactivating a DID",
@@ -1930,6 +2049,122 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/helperdto.EncodeReactiveDIDDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/encode-register-domain-param": {
+            "post": {
+                "description": "Encodes parameters for registering a new domain under a TLD",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID Alias"
+                ],
+                "summary": "Encode Register Domain parameters",
+                "parameters": [
+                    {
+                        "description": "Register Domain parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeRegisterDomainDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/encode-register-subdomain-param": {
+            "post": {
+                "description": "Encodes parameters for registering a new subdomain under a parent domain",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID Alias"
+                ],
+                "summary": "Encode Register Subdomain parameters",
+                "parameters": [
+                    {
+                        "description": "Register Subdomain parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeRegisterSubdomainDTO"
                         }
                     }
                 ],
@@ -2083,6 +2318,180 @@ const docTemplate = `{
                 }
             }
         },
+        "/helper/encode-revoke-alias-param": {
+            "post": {
+                "description": "Encodes parameters for revoking an alias",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID Alias"
+                ],
+                "summary": "Encode Revoke Alias parameters",
+                "parameters": [
+                    {
+                        "description": "Revoke Alias parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeRevokeAliasDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/encode-set-did-param": {
+            "post": {
+                "description": "Encodes parameters for setting a DID (Decentralized Identifier) to a node",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID Alias"
+                ],
+                "summary": "Encode Set DID parameters",
+                "parameters": [
+                    {
+                        "description": "Set DID parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeSetDIDDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/encode-set-did-root-storage-param": {
+            "post": {
+                "description": "Encodes parameters for setting the DID root storage address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID Alias"
+                ],
+                "summary": "Encode Set DID Root Storage parameters",
+                "parameters": [
+                    {
+                        "description": "Set DID Root Storage parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeSetDIDRootStorageDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/helper/encode-store-data-param": {
             "post": {
                 "description": "Encodes parameters for storing data in a DID",
@@ -2141,6 +2550,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/helper/encode-transfer-alias-ownership-param": {
+            "post": {
+                "description": "Encodes parameters for transferring ownership of an alias to a new owner",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID Alias"
+                ],
+                "summary": "Encode Transfer Alias Ownership parameters",
+                "parameters": [
+                    {
+                        "description": "Transfer Alias Ownership parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeTransferAliasOwnershipDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/helper/encode-transfer-did-owner-param": {
             "post": {
                 "description": "Encodes parameters for transferring DID ownership",
@@ -2162,6 +2629,64 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/helperdto.EncodeTransferDIDOwnerDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/encode-unrevoke-alias-param": {
+            "post": {
+                "description": "Encodes parameters for unrevoking a previously revoked alias",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID Alias"
+                ],
+                "summary": "Encode Unrevoke Alias parameters",
+                "parameters": [
+                    {
+                        "description": "Unrevoke Alias parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeUnrevokeAliasDTO"
                         }
                     }
                 ],
@@ -2451,6 +2976,37 @@ const docTemplate = `{
                 }
             }
         },
+        "didaliasdto.RegisterTLDDIDParam": {
+            "description": "Data Transfer Object for registering a new top-level domain",
+            "type": "object",
+            "required": [
+                "owner",
+                "tld"
+            ],
+            "properties": {
+                "owner": {
+                    "type": "string"
+                },
+                "tld": {
+                    "type": "string"
+                }
+            }
+        },
+        "didaliasdto.RegisterTLDDTO": {
+            "type": "object",
+            "required": [
+                "did_param",
+                "priv_key"
+            ],
+            "properties": {
+                "did_param": {
+                    "$ref": "#/definitions/didaliasdto.RegisterTLDDIDParam"
+                },
+                "priv_key": {
+                    "type": "string"
+                }
+            }
+        },
         "helperdto.CreateDIDDTO": {
             "type": "object",
             "properties": {
@@ -2574,6 +3130,21 @@ const docTemplate = `{
                 }
             }
         },
+        "helperdto.EncodeExtendRegistrationDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.ExtendRegistrationDIDParam"
+                }
+            }
+        },
         "helperdto.EncodeReactiveDIDDTO": {
             "type": "object",
             "required": [
@@ -2592,6 +3163,36 @@ const docTemplate = `{
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeRegisterDomainDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.RegisterDomainDIDParam"
+                }
+            }
+        },
+        "helperdto.EncodeRegisterSubdomainDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.RegisterSubdomainDIDParam"
                 }
             }
         },
@@ -2633,6 +3234,51 @@ const docTemplate = `{
                 }
             }
         },
+        "helperdto.EncodeRevokeAliasDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.RevokeAliasDIDParam"
+                }
+            }
+        },
+        "helperdto.EncodeSetDIDDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.SetDIDDIDParam"
+                }
+            }
+        },
+        "helperdto.EncodeSetDIDRootStorageDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.SetDIDRootStorageDIDParam"
+                }
+            }
+        },
         "helperdto.EncodeStoreDataDTO": {
             "type": "object",
             "required": [
@@ -2649,6 +3295,21 @@ const docTemplate = `{
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeTransferAliasOwnershipDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.TransferAliasOwnershipDIDParam"
                 }
             }
         },
@@ -2671,6 +3332,21 @@ const docTemplate = `{
                 }
             }
         },
+        "helperdto.EncodeUnrevokeAliasDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "did_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "did_param": {
+                    "$ref": "#/definitions/helperdto.UnrevokeAliasDIDParam"
+                }
+            }
+        },
         "helperdto.EncodeUpdateDIDDTO": {
             "type": "object",
             "required": [
@@ -2687,6 +3363,66 @@ const docTemplate = `{
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                }
+            }
+        },
+        "helperdto.ExtendRegistrationDIDParam": {
+            "description": "Data Transfer Object for extending the registration period of an alias",
+            "type": "object",
+            "required": [
+                "node",
+                "period"
+            ],
+            "properties": {
+                "node": {
+                    "type": "string"
+                },
+                "period": {
+                    "type": "string"
+                }
+            }
+        },
+        "helperdto.RegisterDomainDIDParam": {
+            "description": "Data Transfer Object for registering a new domain under a TLD",
+            "type": "object",
+            "required": [
+                "label",
+                "owner",
+                "period",
+                "tld"
+            ],
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "period": {
+                    "type": "string"
+                },
+                "tld": {
+                    "type": "string"
+                }
+            }
+        },
+        "helperdto.RegisterSubdomainDIDParam": {
+            "description": "Data Transfer Object for registering a new subdomain under a parent domain",
+            "type": "object",
+            "required": [
+                "label",
+                "parent_domain",
+                "period"
+            ],
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "parent_domain": {
+                    "type": "string"
+                },
+                "period": {
+                    "type": "string"
                 }
             }
         },
@@ -2721,6 +3457,46 @@ const docTemplate = `{
                 "key_data": {
                     "type": "string",
                     "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                }
+            }
+        },
+        "helperdto.RevokeAliasDIDParam": {
+            "description": "Data Transfer Object for revoking an alias",
+            "type": "object",
+            "required": [
+                "node"
+            ],
+            "properties": {
+                "node": {
+                    "type": "string"
+                }
+            }
+        },
+        "helperdto.SetDIDDIDParam": {
+            "description": "Data Transfer Object for setting a DID (Decentralized Identifier) to a node",
+            "type": "object",
+            "required": [
+                "did",
+                "node"
+            ],
+            "properties": {
+                "did": {
+                    "type": "string"
+                },
+                "node": {
+                    "type": "string"
+                }
+            }
+        },
+        "helperdto.SetDIDRootStorageDIDParam": {
+            "description": "Data Transfer Object for setting the DID root storage address",
+            "type": "object",
+            "required": [
+                "did_root_storage"
+            ],
+            "properties": {
+                "did_root_storage": {
+                    "type": "string"
                 }
             }
         },
@@ -2827,6 +3603,22 @@ const docTemplate = `{
                 }
             }
         },
+        "helperdto.TransferAliasOwnershipDIDParam": {
+            "description": "Data Transfer Object for transferring ownership of an alias to a new owner",
+            "type": "object",
+            "required": [
+                "new_owner",
+                "node"
+            ],
+            "properties": {
+                "new_owner": {
+                    "type": "string"
+                },
+                "node": {
+                    "type": "string"
+                }
+            }
+        },
         "helperdto.TransferDIDOwnershipDTO": {
             "type": "object",
             "required": [
@@ -2846,6 +3638,18 @@ const docTemplate = `{
                 "old_owner": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                }
+            }
+        },
+        "helperdto.UnrevokeAliasDIDParam": {
+            "description": "Data Transfer Object for unrevoking a previously revoked alias",
+            "type": "object",
+            "required": [
+                "node"
+            ],
+            "properties": {
+                "node": {
+                    "type": "string"
                 }
             }
         },

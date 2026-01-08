@@ -2,17 +2,20 @@ package helperhandler
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	helperdto "github.com/meQlause/go-be-did/internal/domain/dto/helper"
+	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 	backendutils "github.com/meQlause/go-be-did/utils"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 
+	helperdto "github.com/meQlause/go-be-did/internal/domain/dtos/helper"
 	accountabstractionsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
+	didaliassdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didalias"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
 	helperuc "github.com/meQlause/go-be-did/internal/usecase/helper"
 )
@@ -68,416 +71,6 @@ func (hh *HelperHandler) StringToHex32(c *fiber.Ctx) error {
 	return response.Success(c, resp)
 }
 
-// EncodeCreateDIDParam godoc
-// @Summary      Encode Create DID Parameters
-// @Description  Encodes parameters for creating a DID (Decentralized Identifier) and prepares the transaction data. This endpoint encodes the DID creation parameters, retrieves the current nonce for the wallet, and returns the encoded call data along with the target contract address.
-// @Description
-// @Description  ## Response Structure
-// @Description  Success responses (HTTP 200) contain:
-// @Description  - `success` (boolean): Always true for HTTP 200
-// @Description  - `data` (object): EncodeCreateDIDParamResponse containing:
-// @Description    - `Data` (string): The hex-encoded call data for the DID creation transaction
-// @Description    - `Target` (string): The target contract address (DID Root Factory address)
-// @Description    - `Nonce` (uint64): The current nonce for the wallet address
-// @Description  - `meta` (object): Contains timestamp and API version
-// @Description
-// @Description  ## CreateDIDParam Structure
-// @Description  The DIDParam object contains:
-// @Description  - `DID` (string): The Decentralized Identifier string to create
-// @Description
-// @Description  ## Common Error Scenarios
-// @Description  - "Can Not Get Nonce" - Failed to retrieve nonce from the blockchain
-// @Description  - "failed to encode DID" - Failed to encode the DID parameter
-// @Description  - "failed to pack" - Failed to pack the function call data
-// @Description
-// @Description  ## Important Notes
-// @Description  - The nonce is retrieved from the EntryPoint contract for the specified wallet address
-// @Description  - The encoded data is ready to be used in a user operation
-// @Description  - The KeyIdentifier is used to identify which key will sign the operation
-// @Description  - The address must be a valid Ethereum address
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeCreateDIDDTO true "Encode DID creation parameters with wallet address, DID parameter, and key identifier"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse} "Successfully encoded DID creation parameters"
-// @Failure      400 {object} response.Response "Invalid request body - malformed JSON, missing required fields, or invalid address format"
-// @Failure      500 {object} response.Response "Internal server error - encoding failed, nonce retrieval failed, or RPC node errors"
-// @Router       /helper/encode-create-did-param [post]
-func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeCreateDIDDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-
-	}
-
-	encodedData, err := hh.uc.EncodeCreateDIDParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeCreateDID,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeUpdateDIDParam godoc
-// @Summary      Encode Update DID Parameters
-// @Description  Encodes parameters for updating a DID's URI
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeUpdateDIDDTO true "Update DID parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-update-did-param [post]
-func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeUpdateDIDDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeUpdateDIDParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeUpdateDID,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeDeactiveDIDParam godoc
-// @Summary      Encode Deactivate DID Parameters
-// @Description  Encodes parameters for deactivating a DID
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeDeactiveDIDDTO true "Deactivate DID parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-deactivate-did-param [post]
-func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeDeactiveDIDDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeDeactiveDIDParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeDeactivateDID,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeReactiveDIDParam godoc
-// @Summary      Encode Reactivate DID Parameters
-// @Description  Encodes parameters for reactivating a DID
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeReactiveDIDDTO true "Reactivate DID parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-reactivate-did-param [post]
-func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeReactiveDIDDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeReactiveDIDParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeReactivateDID,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeTransferDIDOwnerParam godoc
-// @Summary      Encode Transfer DID Owner Parameters
-// @Description  Encodes parameters for transferring DID ownership
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeTransferDIDOwnerDTO true "Transfer DID ownership parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-transfer-did-owner-param [post]
-func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeTransferDIDOwnerDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeTransferDIDOwnerParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeTransferDID,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeStoreDataParam godoc
-// @Summary      Encode Store Data Parameters
-// @Description  Encodes parameters for storing data in a DID
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeStoreDataDTO true "Store data parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-store-data-param [post]
-func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeStoreDataDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeStoreDataParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeStoreData,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeDeleteDataParam godoc
-// @Summary      Encode Delete Data Parameters
-// @Description  Encodes parameters for deleting data from a DID
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeDeleteDataDTO true "Delete data parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-delete-data-param [post]
-func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeDeleteDataDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeDeleteDataParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeDeleteData,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeAddKeyParam godoc
-// @Summary      Encode Add Key Parameters
-// @Description  Encodes parameters for adding a key to a DID
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeAddKeyDTO true "Add key parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-add-key-param [post]
-func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeAddKeyDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeAddKeyParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeAddKey,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeRemoveKeyParam godoc
-// @Summary      Encode Remove Key Parameters
-// @Description  Encodes parameters for removing a key from a DID
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeRemoveKeyDTO true "Remove key parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-remove-key-param [post]
-func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeRemoveKeyDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeRemoveKeyParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeRemoveKey,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeAddClaimParam godoc
-// @Summary      Encode Add Claim Parameters
-// @Description  Encodes parameters for adding a claim to a DID
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeAddClaimDTO true "Add claim parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-add-claim-param [post]
-func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeAddClaimDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeAddClaimParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeAddClaim,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
-// EncodeRemoveClaimParam godoc
-// @Summary      Encode Remove Claim Parameters
-// @Description  Encodes parameters for removing a claim from a DID
-// @Tags         helper
-// @Accept       json
-// @Produce      json
-// @Param        request body helperdto.EncodeRemoveClaimDTO true "Remove claim parameters"
-// @Success      200 {object} response.Response{data=helperhandler.HelperResponse}
-// @Failure      400 {object} response.Response
-// @Failure      500 {object} response.Response
-// @Router       /helper/encode-remove-claim-param [post]
-func (hh *HelperHandler) EncodeRemoveClaimParam(c *fiber.Ctx) error {
-	var input helperdto.EncodeRemoveClaimDTO
-	if err := hh.parseAndValidate(c, &input); err != nil {
-		return response.Error(c, fiber.StatusBadRequest, err)
-	}
-
-	encodedData, err := hh.uc.EncodeRemoveClaimParam(input.Into())
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	details := response.Details{
-		Service: backendutils.ServiceDIDRoot,
-		TxType:  backendutils.TypeRemoveClaim,
-	}
-
-	resp, err := hh.buildHelperResponse(input.Address, encodedData, details)
-	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
-	}
-
-	return response.Success(c, resp)
-}
-
 func (hh *HelperHandler) parseAndValidate(c *fiber.Ctx, input any) any {
 	if err := c.BodyParser(&input); err != nil {
 		return err.Error()
@@ -491,24 +84,43 @@ func (hh *HelperHandler) parseAndValidate(c *fiber.Ctx, input any) any {
 	return nil
 }
 
-func (hh *HelperHandler) buildHelperResponse(address string, encodedData string, details response.Details) (HelperResponse, error) {
-	walletAddress := utils.HexToAddress(address)
+func (hh *HelperHandler) buildHelperResponse(address utils.Address, encodedData string, details response.Details) (HelperResponse, error) {
 
 	key := new(big.Int).SetUint64(0)
-	nonce, err := accountabstractionsdk.GetAccountAbstractionSDK().EntryPoint.GetNonce(
-		context.Background(),
-		walletAddress,
-		key,
-	)
-	if err != nil {
-		return HelperResponse{}, err
+
+	var target string
+	var nonce uint64
+	var err error
+
+	switch details.Service {
+	case backendutils.ServiceDIDRoot:
+		nonceBI, err := accountabstractionsdk.GetAccountAbstractionSDK().EntryPoint.GetNonce(
+			context.Background(),
+			address,
+			key,
+		)
+		if err != nil {
+			return HelperResponse{}, err
+		}
+		nonce = nonceBI.Uint64()
+		target = didrootsdk.GetDIDRootSDK().RootFactory.Address.Hex()
+
+	case backendutils.ServiceDIDAlias:
+		nonce, err = config.Network().PendingNonce(context.Background(), address)
+		if err != nil {
+			return HelperResponse{}, err
+		}
+		target = didaliassdk.GetDIDAliasSDK().AliasFactory.Address.Hex()
+
+	default:
+		return HelperResponse{}, fmt.Errorf("invalid service type: %d", details)
 	}
 
-	nonceStr := strconv.FormatUint(nonce.Uint64(), 10)
+	nonceStr := strconv.FormatUint(nonce, 10)
 
 	return HelperResponse{
 		Data:    encodedData,
-		Target:  didrootsdk.GetDIDRootSDK().RootFactory.Address.Hex(),
+		Target:  target,
 		Nonce:   nonceStr,
 		Details: details,
 	}, nil

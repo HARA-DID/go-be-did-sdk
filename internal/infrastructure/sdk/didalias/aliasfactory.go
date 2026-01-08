@@ -7,6 +7,8 @@ import (
 
 	"github.com/meQlause/alias-root-sdk/pkg/aliasfactory"
 	didaliasdomain "github.com/meQlause/go-be-did/internal/domain/entities/didalias"
+	backendutils "github.com/meQlause/go-be-did/utils"
+	"github.com/meQlause/hara-core-blockchain-lib/pkg/wallet"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
 
@@ -126,4 +128,21 @@ func (s *DIDAliasSDK) GetRegistrationPeriod(
 		return nil, fmt.Errorf("get registration period failed: %w", err)
 	}
 	return resp, nil
+}
+
+func (s *DIDAliasSDK) RegisterTLD(ctx context.Context, input didaliasdomain.RegisterTLDInput) (*backendutils.TxHash, error) {
+	wallet := wallet.NewWallet(input.PrivKey)
+	txHashes, err := s.AliasFactory.RegisterTLD(
+		ctx,
+		wallet,
+		input.Input,
+		false,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("register tld failed: %w", err)
+	}
+
+	return &backendutils.TxHash{
+		TxHash: txHashes,
+	}, nil
 }

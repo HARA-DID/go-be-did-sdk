@@ -2,7 +2,9 @@ package didaliashandler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	didaliasdto "github.com/meQlause/go-be-did/internal/domain/dto/didalias"
+	"github.com/meQlause/go-be-did/internal/config"
+	didaliasevent "github.com/meQlause/go-be-did/internal/delivery/event/didalias"
+	didaliasdto "github.com/meQlause/go-be-did/internal/domain/dtos/didalias"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 )
@@ -463,6 +465,61 @@ func (h *DIDAliasHandler) GetRegistrationPeriod(c *fiber.Ctx) error {
 		Success:  true,
 		Errors:   "No Error Message",
 		Returned: result.String(),
+	}
+
+	return response.Success(c, resp)
+}
+
+// RegisterTLD godoc
+// @Summary Register a new Top-Level Domain (TLD)
+// @Description Register a new top-level domain in the alias system. Only admins can register TLDs.
+// @Tags DID Alias
+// @Accept json
+// @Produce json
+// @Param request body didaliasdto.RegisterTLDDTO true "Register TLD Request"
+// @Success 200 {object} response.Response{data=map[string]response.BlockchainResponse} "Successfully registered TLD"
+// @Failure 400 {object} response.Response "Invalid request body or validation error"
+// @Failure 500 {object} response.Response "Internal server error"
+// @Router /did-alias/register-tld [post]
+func (h *DIDAliasHandler) RegisterTLD(c *fiber.Ctx) error {
+	var input didaliasdto.RegisterTLDDTO
+	if err := c.BodyParser(&input); err != nil {
+		return response.Error(c, fiber.StatusBadRequest, err.Error())
+	}
+
+	if err := validator.Validate.Struct(&input); err != nil {
+		validationErrors := validator.FormatError(err)
+		return response.Error(c, fiber.StatusBadRequest, validationErrors)
+	}
+
+	result, err := h.uc.RegisterTLD(c.Context(), input.Into())
+	if err != nil {
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
+	}
+
+	txSuccess, txErrors := config.Blockchain().CheckTxs(c.Context(), result.TxHash)
+
+	resp := make(map[string]response.BlockchainResponse)
+
+	for txHash, ok := range txSuccess {
+		eventData, err := didaliasevent.DecodeRegisterTLDEvents(c.Context(), txHash)
+		if err != nil {
+			continue
+		}
+
+		resp[txHash.Hex()] = response.BlockchainResponse{
+			Success:  ok,
+			Errors:   "No Error Message",
+			Returned: eventData,
+		}
+	}
+
+	for txHash, txErr := range txErrors {
+		resp[txHash.Hex()] = response.BlockchainResponse{
+			Success:  false,
+			Errors:   txErr.Error(),
+			Returned: nil,
+		}
 	}
 
 	return response.Success(c, resp)

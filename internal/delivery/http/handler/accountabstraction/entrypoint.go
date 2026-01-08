@@ -3,7 +3,7 @@ package accountabstractionhandler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/meQlause/go-be-did/internal/config"
-	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dto/accountabstraction"
+	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dtos/accountabstraction"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 

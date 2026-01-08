@@ -6,7 +6,7 @@ import (
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
-	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dto/accountabstraction"
+	accountabstractiondto "github.com/meQlause/go-be-did/internal/domain/dtos/accountabstraction"
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 )
 

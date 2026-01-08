@@ -2,6 +2,7 @@ package validator
 
 import (
 	"math/big"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -21,6 +22,8 @@ func registerEthereum(v *validator.Validate) {
 	v.RegisterValidation("uint64", uint64String)
 	v.RegisterValidation("uint8", uint8String)
 	v.RegisterValidation("registration_period", registrationPeriod)
+	v.RegisterValidation("domain_label", domainLabel)
+	v.RegisterValidation("domain_name", domainName)
 }
 
 func ethPrivateKey(fl validator.FieldLevel) bool {
@@ -109,4 +112,35 @@ func hexData(fl validator.FieldLevel) bool {
 	}
 	_, err := utils.DecodeString(value)
 	return err == nil
+}
+
+func domainLabel(fl validator.FieldLevel) bool {
+	label := fl.Field().String()
+	if len(label) == 0 || len(label) > 63 {
+		return false
+	}
+	// RFC 1123 compliant: alphanumeric and hyphens, cannot start/end with hyphen
+	match, _ := regexp.MatchString(`^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$`, label)
+	return match
+}
+
+func domainName(fl validator.FieldLevel) bool {
+	name := fl.Field().String()
+	if len(name) == 0 || len(name) > 253 {
+		return false
+	}
+	labels := strings.Split(name, ".")
+	if len(labels) < 2 {
+		return false
+	}
+	for _, label := range labels {
+		if len(label) == 0 || len(label) > 63 {
+			return false
+		}
+		match, _ := regexp.MatchString(`^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$`, label)
+		if !match {
+			return false
+		}
+	}
+	return true
 }

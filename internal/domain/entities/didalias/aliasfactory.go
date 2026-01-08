@@ -50,8 +50,8 @@ type SetDIDRootStorageInput struct {
 }
 
 type RegisterTLDInput struct {
-	TLD   string
-	Owner utils.Address
+	PrivKey string
+	Input   aliasfactory.RegisterTLDParams
 }
 
 type RegisterDomainInput struct {

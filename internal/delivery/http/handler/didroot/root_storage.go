@@ -5,7 +5,7 @@ import (
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 
-	didrootdto "github.com/meQlause/go-be-did/internal/domain/dto/didroot"
+	didrootdto "github.com/meQlause/go-be-did/internal/domain/dtos/didroot"
 )
 
 // GetData godoc
