@@ -1,4 +1,4 @@
-package didrootevent
+package didevent
 
 import (
 	"context"
@@ -23,11 +23,22 @@ var Registry = map[uint8]map[uint8]DecodeFunc{
 
 		backendutils.TypeAddClaim:    decodeAddClaim,
 		backendutils.TypeRemoveClaim: decodeRemoveClaim,
+	}, backendutils.ServiceDIDAlias: {
+		backendutils.TypeSetDIDRootStorage:      decodeSetDIDRootStorage,
+		backendutils.TypeRegisterTLD:            decodeRegisterTLD,
+		backendutils.TypeRegisterDomain:         decodeRegisterDomain,
+		backendutils.TypeRegisterSubdomain:      decodeRegisterSubdomain,
+		backendutils.TypeSetDID:                 decodeSetDID,
+		backendutils.TypeExtendRegistration:     decodeExtendRegistration,
+		backendutils.TypeRevokeAlias:            decodeRevokeAlias,
+		backendutils.TypeUnrevokeAlias:          decodeUnrevokeAlias,
+		backendutils.TypeTransferAliasOwnership: decodeTransferAliasOwnership,
 	},
 }
 
 type DecodeFunc func(ctx context.Context, txHash utils.Hash) (any, error)
 
+// DID Root
 func decodeCreateDID(ctx context.Context, txHash utils.Hash) (any, error) {
 	return DecodeCreateDIDEvents(ctx, txHash)
 }
@@ -70,4 +81,42 @@ func decodeAddClaim(ctx context.Context, txHash utils.Hash) (any, error) {
 
 func decodeRemoveClaim(ctx context.Context, txHash utils.Hash) (any, error) {
 	return DecodeRemoveClaimEvents(ctx, txHash)
+}
+
+// DID Alias
+
+func decodeSetDIDRootStorage(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeSetDIDRootStorageEvents(ctx, txHash)
+}
+
+func decodeRegisterTLD(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeRegisterTLDEvents(ctx, txHash)
+}
+
+func decodeRegisterDomain(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeRegisterDomainEvents(ctx, txHash)
+}
+
+func decodeRegisterSubdomain(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeRegisterSubdomainEvents(ctx, txHash)
+}
+
+func decodeSetDID(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeSetDIDEvents(ctx, txHash)
+}
+
+func decodeExtendRegistration(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeExtendRegistrationEvents(ctx, txHash)
+}
+
+func decodeRevokeAlias(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeRevokeAliasEvents(ctx, txHash)
+}
+
+func decodeUnrevokeAlias(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeUnrevokeAliasEvents(ctx, txHash)
+}
+
+func decodeTransferAliasOwnership(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeTransferAliasOwnershipEvents(ctx, txHash)
 }

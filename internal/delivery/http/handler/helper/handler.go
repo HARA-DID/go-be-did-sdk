@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/meQlause/go-be-did/internal/config"
 	"github.com/meQlause/go-be-did/internal/validator"
 	"github.com/meQlause/go-be-did/pkg/response"
 	backendutils "github.com/meQlause/go-be-did/utils"
@@ -89,33 +88,29 @@ func (hh *HelperHandler) buildHelperResponse(address utils.Address, encodedData 
 	key := new(big.Int).SetUint64(0)
 
 	var target string
-	var nonce uint64
 	var err error
 
 	switch details.Service {
 	case backendutils.ServiceDIDRoot:
-		nonceBI, err := accountabstractionsdk.GetAccountAbstractionSDK().EntryPoint.GetNonce(
-			context.Background(),
-			address,
-			key,
-		)
-		if err != nil {
-			return HelperResponse{}, err
-		}
-		nonce = nonceBI.Uint64()
 		target = didrootsdk.GetDIDRootSDK().RootFactory.Address.Hex()
 
 	case backendutils.ServiceDIDAlias:
-		nonce, err = config.Network().PendingNonce(context.Background(), address)
-		if err != nil {
-			return HelperResponse{}, err
-		}
 		target = didaliassdk.GetDIDAliasSDK().AliasFactory.Address.Hex()
 
 	default:
-		return HelperResponse{}, fmt.Errorf("invalid service type: %d", details)
+		return HelperResponse{}, fmt.Errorf("invalid service type: %d", details.Service)
 	}
 
+	nonceBI, err := accountabstractionsdk.GetAccountAbstractionSDK().EntryPoint.GetNonce(
+		context.Background(),
+		address,
+		key,
+	)
+	if err != nil {
+		return HelperResponse{}, err
+	}
+
+	nonce := nonceBI.Uint64()
 	nonceStr := strconv.FormatUint(nonce, 10)
 
 	return HelperResponse{

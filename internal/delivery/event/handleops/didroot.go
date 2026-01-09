@@ -1,4 +1,4 @@
-package didrootevent
+package didevent
 
 import (
 	"context"

@@ -300,7 +300,6 @@ func (dto *EncodeSetDIDRootStorageDTO) Into() helperdomain.EncodeSetDIDRootStora
 type RegisterDomainDIDParam struct {
 	Label  string `json:"label" validate:"required,domain_label"`
 	TLD    string `json:"tld" validate:"required,domain_label"`
-	Owner  string `json:"owner" validate:"required,eth_address"`
 	Period string `json:"period" validate:"required,registration_period"`
 }
 
@@ -316,7 +315,6 @@ func (dto *EncodeRegisterDomainDTO) Into() helperdomain.EncodeRegisterDomainPara
 		DIDParam: aliasfactory.RegisterDomainParams{
 			Label:  dto.DIDParam.Label,
 			TLD:    dto.DIDParam.TLD,
-			Owner:  dto.DIDParam.Owner,
 			Period: aliasfactory.RegistrationPeriod(period),
 		},
 	}
