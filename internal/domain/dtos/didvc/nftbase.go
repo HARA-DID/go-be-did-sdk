@@ -11,7 +11,7 @@ import (
 // GetMetadataDTO represents the request payload for retrieving credential metadata
 // @Description Data Transfer Object for getting credential metadata by token ID
 type GetMetadataDTO struct {
-	TokenID string `query:"token_id" validate:"required,hex_bigint" example:"0x1"`
+	TokenID string `query:"token_id" validate:"required,number" example:"1"`
 	Options string `query:"options" validate:"required,oneof=0 1" example:"0"`
 }
 

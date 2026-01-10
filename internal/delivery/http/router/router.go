@@ -12,6 +12,7 @@ import (
 	aarouter "github.com/meQlause/go-be-did/internal/delivery/http/router/accountabstraction"
 	didaliasrouter "github.com/meQlause/go-be-did/internal/delivery/http/router/didalias"
 	didrootrouter "github.com/meQlause/go-be-did/internal/delivery/http/router/didroot"
+	didvcrouter "github.com/meQlause/go-be-did/internal/delivery/http/router/didvc"
 	helperrouter "github.com/meQlause/go-be-did/internal/delivery/http/router/helper"
 )
 
@@ -25,6 +26,7 @@ func Setup(app *fiber.App, cfg *config.Config, bc *blockchain.Blockchain) {
 	aarouter.SetupAccountAbstractionRoutes(api, cfg, bc)
 	didrootrouter.SetupDIDRootRoutes(api, cfg, bc)
 	didaliasrouter.SetupDIDAliasRoutes(api, cfg, bc)
+	didvcrouter.SetupDIDVCRoutes(api, cfg, bc)
 	helperrouter.SetupHelperRoutes(api)
 
 	api.Get("/swagger/*", swagger.HandlerDefault)

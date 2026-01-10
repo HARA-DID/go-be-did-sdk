@@ -10,15 +10,15 @@ import (
 	didvccase "github.com/meQlause/go-be-did/internal/usecase/didvc"
 )
 
-func SetupNFTBaseRoutes(dr fiber.Router, didvcRepo repository.DIDVCRepository, cfg *config.Config, bc *blockchain.Blockchain) {
+func SetupNFTBaseRoutes(dv fiber.Router, didvcRepo repository.DIDVCRepository, cfg *config.Config, bc *blockchain.Blockchain) {
 	didVCUC := didvccase.New(didvcRepo)
 	didVCHandler := didvchandler.NewDIDVCHandler(didVCUC)
 
-	dr.Get("/get-metadata", didVCHandler.GetMetadata)
-	dr.Get("/is-credential-valid", didVCHandler.IsCredentialValid)
-	dr.Get("/get-credentials-with-metadata", didVCHandler.GetCredentialsWithMetadata)
-	dr.Get("/get-unclaimed-token-id", didVCHandler.GetUnclaimedTokenId)
-	dr.Get("/total-tokens-to-be-claimed-by-did", didVCHandler.TotalTokensToBeClaimedByDid)
-	dr.Get("/get-to-be-claimed-tokens-by-did", didVCHandler.GetToBeClaimedTokensByDid)
-	dr.Get("/is-approved-for-all", didVCHandler.IsApprovedForAll)
+	dv.Get("/get-metadata", didVCHandler.GetMetadata)
+	dv.Get("/is-credential-valid", didVCHandler.IsCredentialValid)
+	dv.Get("/get-credentials-with-metadata", didVCHandler.GetCredentialsWithMetadata)
+	dv.Get("/get-unclaimed-token-id", didVCHandler.GetUnclaimedTokenId)
+	dv.Get("/total-tokens-to-be-claimed-by-did", didVCHandler.TotalTokensToBeClaimedByDid)
+	dv.Get("/get-to-be-claimed-tokens-by-did", didVCHandler.GetToBeClaimedTokensByDid)
+	dv.Get("/is-approved-for-all", didVCHandler.IsApprovedForAll)
 }

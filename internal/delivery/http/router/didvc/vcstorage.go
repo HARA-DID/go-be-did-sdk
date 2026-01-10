@@ -10,16 +10,15 @@ import (
 	didvccase "github.com/meQlause/go-be-did/internal/usecase/didvc"
 )
 
-func SetupVCStorageRoutes(dr fiber.Router, didvcRepo repository.DIDVCRepository, cfg *config.Config, bc *blockchain.Blockchain) {
+func SetupVCStorageRoutes(dv fiber.Router, didvcRepo repository.DIDVCRepository, cfg *config.Config, bc *blockchain.Blockchain) {
 	didVCUC := didvccase.New(didvcRepo)
 	didVCHandler := didvchandler.NewDIDVCHandler(didVCUC)
 
-	// VC Storage endpoints
-	dr.Get("/get-identity-token-count", didVCHandler.GetIdentityTokenCount)
-	dr.Get("/get-certificate-token-count", didVCHandler.GetCertificateTokenCount)
-	dr.Get("/get-identity-token-ids", didVCHandler.GetIdentityTokenIds)
-	dr.Get("/get-certificate-token-ids", didVCHandler.GetCertificateTokenIds)
-	dr.Get("/get-all-identity-token-ids", didVCHandler.GetAllIdentityTokenIds)
-	dr.Get("/get-all-certificate-token-ids", didVCHandler.GetAllCertificateTokenIds)
-	dr.Get("/get-did-root-storage", didVCHandler.GetDIDRootStorage)
+	dv.Get("/get-identity-token-count", didVCHandler.GetIdentityTokenCount)
+	dv.Get("/get-certificate-token-count", didVCHandler.GetCertificateTokenCount)
+	dv.Get("/get-identity-token-ids", didVCHandler.GetIdentityTokenIds)
+	dv.Get("/get-certificate-token-ids", didVCHandler.GetCertificateTokenIds)
+	dv.Get("/get-all-identity-token-ids", didVCHandler.GetAllIdentityTokenIds)
+	dv.Get("/get-all-certificate-token-ids", didVCHandler.GetAllCertificateTokenIds)
+	dv.Get("/get-did-root-storage", didVCHandler.GetDIDRootStorage)
 }

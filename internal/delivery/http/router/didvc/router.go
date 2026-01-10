@@ -9,8 +9,8 @@ import (
 )
 
 func SetupDIDVCRoutes(api fiber.Router, cfg *config.Config, bc *blockchain.Blockchain) {
-	dr := api.Group("/did-vc")
+	dv := api.Group("/did-vc")
 
-	SetupNFTBaseRoutes(dr, didvcsdk.GetDIDVCSDK(), cfg, bc)
-	SetupVCStorageRoutes(dr, didvcsdk.GetDIDVCSDK(), cfg, bc)
+	SetupNFTBaseRoutes(dv, didvcsdk.GetDIDVCSDK(), cfg, bc)
+	SetupVCStorageRoutes(dv, didvcsdk.GetDIDVCSDK(), cfg, bc)
 }
