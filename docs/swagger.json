@@ -1674,6 +1674,900 @@
                 }
             }
         },
+        "/did-vc/get-all-certificate-token-ids": {
+            "get": {
+                "description": "Retrieves all certificate credential token IDs for a specific DID without pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - VC Storage"
+                ],
+                "summary": "Get All Certificate Token IDs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All certificate token IDs retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-all-identity-token-ids": {
+            "get": {
+                "description": "Retrieves all identity credential token IDs for a specific DID without pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - VC Storage"
+                ],
+                "summary": "Get All Identity Token IDs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All identity token IDs retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-certificate-token-count": {
+            "get": {
+                "description": "Retrieves the total number of certificate credentials for a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - VC Storage"
+                ],
+                "summary": "Get Certificate Token Count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Certificate token count retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - count retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-certificate-token-ids": {
+            "get": {
+                "description": "Retrieves a paginated list of certificate credential token IDs for a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - VC Storage"
+                ],
+                "summary": "Get Certificate Token IDs with Pagination",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Pagination offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "Pagination limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Certificate token IDs retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-credentials-with-metadata": {
+            "get": {
+                "description": "Retrieves multiple credentials and their metadata in a single call",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - NFT Base"
+                ],
+                "summary": "Get Multiple Credentials with Metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "1,2,3",
+                        "description": "Comma-separated token IDs",
+                        "name": "token_ids",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Options flag (0 for identity, 1 for certificate)",
+                        "name": "options",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Credentials retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - credentials retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-did-root-storage": {
+            "get": {
+                "description": "Retrieves the contract address of the DID root storage",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - VC Storage"
+                ],
+                "summary": "Get DID Root Storage Address",
+                "responses": {
+                    "200": {
+                        "description": "DID root storage address retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - address retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-identity-token-count": {
+            "get": {
+                "description": "Retrieves the total number of identity credentials for a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - VC Storage"
+                ],
+                "summary": "Get Identity Token Count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Identity token count retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing or malformed did_hash parameter",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - count retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-identity-token-ids": {
+            "get": {
+                "description": "Retrieves a paginated list of identity credential token IDs for a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - VC Storage"
+                ],
+                "summary": "Get Identity Token IDs with Pagination",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Pagination offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "Pagination limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Identity token IDs retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-metadata": {
+            "get": {
+                "description": "Retrieves metadata for a specific credential token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - NFT Base"
+                ],
+                "summary": "Get Credential Metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1",
+                        "description": "Token ID (hex-encoded big integer with 0x prefix)",
+                        "name": "token_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Options flag (0 for identity, 1 for certificate)",
+                        "name": "options",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Metadata retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - metadata retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-to-be-claimed-tokens-by-did": {
+            "get": {
+                "description": "Retrieves a paginated list of unclaimed credential token IDs for a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - NFT Base"
+                ],
+                "summary": "Get Unclaimed Tokens by DID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Pagination offset",
+                        "name": "offset",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "10",
+                        "description": "Pagination limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Options flag (0 for identity, 1 for certificate)",
+                        "name": "options",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token IDs retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/get-unclaimed-token-id": {
+            "get": {
+                "description": "Retrieves the DID hash of an unclaimed credential token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - NFT Base"
+                ],
+                "summary": "Get Unclaimed Token DID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1",
+                        "description": "Token ID (hex-encoded big integer with 0x prefix)",
+                        "name": "token_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Options flag (0 for identity, 1 for certificate)",
+                        "name": "options",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unclaimed token DID retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/is-approved-for-all": {
+            "get": {
+                "description": "Verifies if an operator is approved to manage all credentials for an owner",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - NFT Base"
+                ],
+                "summary": "Check Operator Approval Status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+                        "description": "Owner's Ethereum address (with 0x prefix)",
+                        "name": "owner",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef12345678",
+                        "description": "Operator's Ethereum address (with 0x prefix)",
+                        "name": "operator",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Options flag (0 for identity, 1 for certificate)",
+                        "name": "options",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Approval status retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid address format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - approval check failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/is-credential-valid": {
+            "get": {
+                "description": "Verifies if a credential is valid and not expired",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - NFT Base"
+                ],
+                "summary": "Check Credential Validity",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1",
+                        "description": "Token ID (hex-encoded big integer with 0x prefix)",
+                        "name": "token_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Options flag (0 for identity, 1 for certificate)",
+                        "name": "options",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Validity check completed",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - validity check failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/did-vc/total-tokens-to-be-claimed-by-did": {
+            "get": {
+                "description": "Retrieves the total number of unclaimed credentials for a specific DID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "DID VC - NFT Base"
+                ],
+                "summary": "Get Total Unclaimed Tokens Count",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                        "description": "DID hash (32-byte hex string with 0x prefix)",
+                        "name": "did_hash",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "0",
+                        "description": "Options flag (0 for identity, 1 for certificate)",
+                        "name": "options",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Count retrieved successfully",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.BlockchainResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request - missing parameters or invalid format",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error - count retrieval failed",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/helper/encode-add-claim-param": {
             "post": {
                 "description": "Encodes parameters for adding a claim to a DID",
@@ -3818,12 +4712,12 @@
                     "example": "QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy"
                 },
                 "option": {
-                    "type": "integer",
+                    "type": "string",
                     "enum": [
-                        0,
-                        1
+                        "0",
+                        "1"
                     ],
-                    "example": 0
+                    "example": "0"
                 }
             }
         },

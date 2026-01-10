@@ -484,10 +484,10 @@ definitions:
         type: string
       option:
         enum:
-        - 0
-        - 1
-        example: 0
-        type: integer
+        - "0"
+        - "1"
+        example: "0"
+        type: string
     required:
     - did_recipient
     - expired_at
@@ -2071,6 +2071,578 @@ paths:
       summary: Verify DID Ownership
       tags:
       - DID Root GET
+  /did-vc/get-all-certificate-token-ids:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all certificate credential token IDs for a specific DID
+        without pagination
+      parameters:
+      - description: DID hash (32-byte hex string with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: did_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All certificate token IDs retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get All Certificate Token IDs
+      tags:
+      - DID VC - VC Storage
+  /did-vc/get-all-identity-token-ids:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all identity credential token IDs for a specific DID
+        without pagination
+      parameters:
+      - description: DID hash (32-byte hex string with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: did_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All identity token IDs retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get All Identity Token IDs
+      tags:
+      - DID VC - VC Storage
+  /did-vc/get-certificate-token-count:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the total number of certificate credentials for a specific
+        DID
+      parameters:
+      - description: DID hash (32-byte hex string with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: did_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Certificate token count retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - count retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Certificate Token Count
+      tags:
+      - DID VC - VC Storage
+  /did-vc/get-certificate-token-ids:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of certificate credential token IDs
+        for a specific DID
+      parameters:
+      - description: DID hash (32-byte hex string with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: did_hash
+        required: true
+        type: string
+      - description: Pagination offset
+        example: "0"
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: Pagination limit
+        example: "10"
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Certificate token IDs retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Certificate Token IDs with Pagination
+      tags:
+      - DID VC - VC Storage
+  /did-vc/get-credentials-with-metadata:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves multiple credentials and their metadata in a single call
+      parameters:
+      - description: Comma-separated token IDs
+        example: 1,2,3
+        in: query
+        name: token_ids
+        required: true
+        type: string
+      - description: Options flag (0 for identity, 1 for certificate)
+        example: "0"
+        in: query
+        name: options
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Credentials retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - credentials retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Multiple Credentials with Metadata
+      tags:
+      - DID VC - NFT Base
+  /did-vc/get-did-root-storage:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the contract address of the DID root storage
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: DID root storage address retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "500":
+          description: Internal server error - address retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get DID Root Storage Address
+      tags:
+      - DID VC - VC Storage
+  /did-vc/get-identity-token-count:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the total number of identity credentials for a specific
+        DID
+      parameters:
+      - description: DID hash (32-byte hex string with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: did_hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Identity token count retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing or malformed did_hash parameter
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - count retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Identity Token Count
+      tags:
+      - DID VC - VC Storage
+  /did-vc/get-identity-token-ids:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of identity credential token IDs for
+        a specific DID
+      parameters:
+      - description: DID hash (32-byte hex string with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: did_hash
+        required: true
+        type: string
+      - description: Pagination offset
+        example: "0"
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: Pagination limit
+        example: "10"
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Identity token IDs retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Identity Token IDs with Pagination
+      tags:
+      - DID VC - VC Storage
+  /did-vc/get-metadata:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves metadata for a specific credential token
+      parameters:
+      - description: Token ID (hex-encoded big integer with 0x prefix)
+        example: "0x1"
+        in: query
+        name: token_id
+        required: true
+        type: string
+      - description: Options flag (0 for identity, 1 for certificate)
+        example: "0"
+        in: query
+        name: options
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Metadata retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - metadata retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Credential Metadata
+      tags:
+      - DID VC - NFT Base
+  /did-vc/get-to-be-claimed-tokens-by-did:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a paginated list of unclaimed credential token IDs for
+        a specific DID
+      parameters:
+      - description: DID hash (32-byte hex string with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: did_hash
+        required: true
+        type: string
+      - description: Pagination offset
+        example: "0"
+        in: query
+        name: offset
+        required: true
+        type: string
+      - description: Pagination limit
+        example: "10"
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: Options flag (0 for identity, 1 for certificate)
+        example: "0"
+        in: query
+        name: options
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token IDs retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Unclaimed Tokens by DID
+      tags:
+      - DID VC - NFT Base
+  /did-vc/get-unclaimed-token-id:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the DID hash of an unclaimed credential token
+      parameters:
+      - description: Token ID (hex-encoded big integer with 0x prefix)
+        example: "0x1"
+        in: query
+        name: token_id
+        required: true
+        type: string
+      - description: Options flag (0 for identity, 1 for certificate)
+        example: "0"
+        in: query
+        name: options
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Unclaimed token DID retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Unclaimed Token DID
+      tags:
+      - DID VC - NFT Base
+  /did-vc/is-approved-for-all:
+    get:
+      consumes:
+      - application/json
+      description: Verifies if an operator is approved to manage all credentials for
+        an owner
+      parameters:
+      - description: Owner's Ethereum address (with 0x prefix)
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        in: query
+        name: owner
+        required: true
+        type: string
+      - description: Operator's Ethereum address (with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef12345678
+        in: query
+        name: operator
+        required: true
+        type: string
+      - description: Options flag (0 for identity, 1 for certificate)
+        example: "0"
+        in: query
+        name: options
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Approval status retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid address format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - approval check failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Check Operator Approval Status
+      tags:
+      - DID VC - NFT Base
+  /did-vc/is-credential-valid:
+    get:
+      consumes:
+      - application/json
+      description: Verifies if a credential is valid and not expired
+      parameters:
+      - description: Token ID (hex-encoded big integer with 0x prefix)
+        example: "0x1"
+        in: query
+        name: token_id
+        required: true
+        type: string
+      - description: Options flag (0 for identity, 1 for certificate)
+        example: "0"
+        in: query
+        name: options
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Validity check completed
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - validity check failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Check Credential Validity
+      tags:
+      - DID VC - NFT Base
+  /did-vc/total-tokens-to-be-claimed-by-did:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the total number of unclaimed credentials for a specific
+        DID
+      parameters:
+      - description: DID hash (32-byte hex string with 0x prefix)
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        in: query
+        name: did_hash
+        required: true
+        type: string
+      - description: Options flag (0 for identity, 1 for certificate)
+        example: "0"
+        in: query
+        name: options
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Count retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.BlockchainResponse'
+              type: object
+        "400":
+          description: Invalid request - missing parameters or invalid format
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal server error - count retrieval failed
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get Total Unclaimed Tokens Count
+      tags:
+      - DID VC - NFT Base
   /helper/encode-add-claim-param:
     post:
       consumes:

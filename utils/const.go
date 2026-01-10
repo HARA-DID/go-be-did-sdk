@@ -34,3 +34,8 @@ const (
 	ServiceDIDAlias uint8 = 1
 	ServiceDIDVC    uint8 = 2
 )
+
+const (
+	OptionsIdentity    uint8 = 0
+	OptionsCertificate uint8 = 1
+)
