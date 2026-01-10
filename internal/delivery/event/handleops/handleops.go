@@ -23,7 +23,8 @@ var Registry = map[uint8]map[uint8]DecodeFunc{
 
 		backendutils.TypeAddClaim:    decodeAddClaim,
 		backendutils.TypeRemoveClaim: decodeRemoveClaim,
-	}, backendutils.ServiceDIDAlias: {
+	},
+	backendutils.ServiceDIDAlias: {
 		backendutils.TypeSetDIDRootStorage:      decodeSetDIDRootStorage,
 		backendutils.TypeRegisterTLD:            decodeRegisterTLD,
 		backendutils.TypeRegisterDomain:         decodeRegisterDomain,
@@ -33,6 +34,13 @@ var Registry = map[uint8]map[uint8]DecodeFunc{
 		backendutils.TypeRevokeAlias:            decodeRevokeAlias,
 		backendutils.TypeUnrevokeAlias:          decodeUnrevokeAlias,
 		backendutils.TypeTransferAliasOwnership: decodeTransferAliasOwnership,
+	},
+	backendutils.ServiceDIDVC: {
+		backendutils.TypeIssueCredential:  decodeIssueCredential,
+		backendutils.TypeBurnCredential:   decodeBurnCredential,
+		backendutils.TypeUpdateMetadata:   decodeUpdateMetadata,
+		backendutils.TypeRevokeCredential: decodeRevokeCredential,
+		backendutils.TypeClaimCredential:  decodeClaimCredential,
 	},
 }
 
@@ -119,4 +127,26 @@ func decodeUnrevokeAlias(ctx context.Context, txHash utils.Hash) (any, error) {
 
 func decodeTransferAliasOwnership(ctx context.Context, txHash utils.Hash) (any, error) {
 	return DecodeTransferAliasOwnershipEvents(ctx, txHash)
+}
+
+// DID VC (Verifiable Credentials)
+
+func decodeIssueCredential(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeIssueCredentialEvents(ctx, txHash)
+}
+
+func decodeBurnCredential(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeBurnCredentialEvents(ctx, txHash)
+}
+
+func decodeUpdateMetadata(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeUpdateMetadataEvents(ctx, txHash)
+}
+
+func decodeRevokeCredential(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeRevokeCredentialEvents(ctx, txHash)
+}
+
+func decodeClaimCredential(ctx context.Context, txHash utils.Hash) (any, error) {
+	return DecodeClaimCredentialEvents(ctx, txHash)
 }

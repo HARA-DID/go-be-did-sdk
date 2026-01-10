@@ -1,11 +1,13 @@
 package helperdto
 
 import (
+	"math/big"
 	"strconv"
 
 	"github.com/meQlause/alias-root-sdk/pkg/aliasfactory"
 	"github.com/meQlause/did-root-sdk/pkg/rootfactory"
-	helperdomain "github.com/meQlause/go-be-did/internal/domain/entities/helper"
+	"github.com/meQlause/did-verifiable-credentials-sdk/pkg/vcfactory"
+	helperdomainmain "github.com/meQlause/go-be-did/internal/domain/entities/helper"
 	"github.com/meQlause/hara-core-blockchain-lib/utils"
 )
 
@@ -13,8 +15,8 @@ type StringToHex32DTO struct {
 	Input string `json:"input" validate:"required" example:"example_string"`
 }
 
-func (dto *StringToHex32DTO) Into() helperdomain.StringToHex32Input {
-	return helperdomain.StringToHex32Input{
+func (dto *StringToHex32DTO) Into() helperdomainmain.StringToHex32Input {
+	return helperdomainmain.StringToHex32Input{
 		Input: dto.Input,
 	}
 }
@@ -29,8 +31,8 @@ type CreateDIDDTO struct {
 	DID string `json:"did" example:"did:example:123456789"`
 }
 
-func (dto EncodeCreateDIDDTO) Into() helperdomain.EncodeCreateDIDParamInput {
-	return helperdomain.EncodeCreateDIDParamInput{
+func (dto EncodeCreateDIDDTO) Into() helperdomainmain.EncodeCreateDIDParamInput {
+	return helperdomainmain.EncodeCreateDIDParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.CreateDIDParam{
 			DID: dto.DIDParam.DID,
@@ -50,8 +52,8 @@ type UpdateDIDDTO struct {
 	URI      string `json:"uri" validate:"required" example:"https://example.com/did/metadata"`
 }
 
-func (dto EncodeUpdateDIDDTO) Into() helperdomain.EncodeUpdateDIDParamInput {
-	return helperdomain.EncodeUpdateDIDParamInput{
+func (dto EncodeUpdateDIDDTO) Into() helperdomainmain.EncodeUpdateDIDParamInput {
+	return helperdomainmain.EncodeUpdateDIDParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.UpdateDIDParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
@@ -67,8 +69,8 @@ type EncodeDeactiveDIDDTO struct {
 	KeyIdentifier string `json:"key_identifier" example:"key1"`
 }
 
-func (dto EncodeDeactiveDIDDTO) Into() helperdomain.EncodeDeactiveDIDParamInput {
-	return helperdomain.EncodeDeactiveDIDParamInput{
+func (dto EncodeDeactiveDIDDTO) Into() helperdomainmain.EncodeDeactiveDIDParamInput {
+	return helperdomainmain.EncodeDeactiveDIDParamInput{
 		Address:       utils.HexToAddress(dto.Address),
 		DIDIndex:      utils.StringToBigInt(dto.DIDIndex),
 		KeyIdentifier: dto.KeyIdentifier,
@@ -81,8 +83,8 @@ type EncodeReactiveDIDDTO struct {
 	KeyIdentifier string `json:"key_identifier" example:"key1"`
 }
 
-func (dto EncodeReactiveDIDDTO) Into() helperdomain.EncodeReactiveDIDParamInput {
-	return helperdomain.EncodeReactiveDIDParamInput{
+func (dto EncodeReactiveDIDDTO) Into() helperdomainmain.EncodeReactiveDIDParamInput {
+	return helperdomainmain.EncodeReactiveDIDParamInput{
 		Address:       utils.HexToAddress(dto.Address),
 		DIDIndex:      utils.StringToBigInt(dto.DIDIndex),
 		KeyIdentifier: dto.KeyIdentifier,
@@ -101,8 +103,8 @@ type TransferDIDOwnershipDTO struct {
 	NewOwner string `json:"new_owner" validate:"required,eth_address" example:"0x8ba1f109551bD432803012645Ac136ddd64DBA72"`
 }
 
-func (dto EncodeTransferDIDOwnerDTO) Into() helperdomain.EncodeTransferDIDOwnerParamInput {
-	return helperdomain.EncodeTransferDIDOwnerParamInput{
+func (dto EncodeTransferDIDOwnerDTO) Into() helperdomainmain.EncodeTransferDIDOwnerParamInput {
+	return helperdomainmain.EncodeTransferDIDOwnerParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.TransferDIDOwnershipParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
@@ -124,8 +126,8 @@ type StoreDataDTO struct {
 	Value    string `json:"value" validate:"required" example:"user@example.com"`
 }
 
-func (dto EncodeStoreDataDTO) Into() helperdomain.EncodeStoreDataParamInput {
-	return helperdomain.EncodeStoreDataParamInput{
+func (dto EncodeStoreDataDTO) Into() helperdomainmain.EncodeStoreDataParamInput {
+	return helperdomainmain.EncodeStoreDataParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.StoreDataParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
@@ -147,8 +149,8 @@ type DeleteDataDTO struct {
 	Key      string `json:"key" validate:"required" example:"email"`
 }
 
-func (dto EncodeDeleteDataDTO) Into() helperdomain.EncodeDeleteDataParamInput {
-	return helperdomain.EncodeDeleteDataParamInput{
+func (dto EncodeDeleteDataDTO) Into() helperdomainmain.EncodeDeleteDataParamInput {
+	return helperdomainmain.EncodeDeleteDataParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.DeleteDataParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
@@ -171,13 +173,13 @@ type StoreKeyDTO struct {
 	KeyType       string `json:"key_type" validate:"required,uint8" example:"1"`
 }
 
-func (dto EncodeAddKeyDTO) Into() helperdomain.EncodeAddKeyParamInput {
+func (dto EncodeAddKeyDTO) Into() helperdomainmain.EncodeAddKeyParamInput {
 	var keyDataHashed [32]byte
 	copy(keyDataHashed[:], dto.DIDParam.KeyDataHashed)
 	keyType, _ := strconv.ParseUint(dto.DIDParam.KeyType, 10, 8)
 	purpose, _ := strconv.ParseUint(dto.DIDParam.Purpose, 10, 8)
 
-	return helperdomain.EncodeAddKeyParamInput{
+	return helperdomainmain.EncodeAddKeyParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.StoreKeyParams{
 			DIDIndex:      utils.StringToBigInt(dto.DIDParam.DIDIndex),
@@ -200,11 +202,11 @@ type RemoveKeyDTO struct {
 	KeyData  string `json:"key_data" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
 }
 
-func (dto EncodeRemoveKeyDTO) Into() helperdomain.EncodeRemoveKeyParamInput {
+func (dto EncodeRemoveKeyDTO) Into() helperdomainmain.EncodeRemoveKeyParamInput {
 	var keyData [32]byte
 	copy(keyData[:], dto.DIDParam.KeyData)
 
-	return helperdomain.EncodeRemoveKeyParamInput{
+	return helperdomainmain.EncodeRemoveKeyParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.RemoveKeyParams{
 			DIDIndex:      utils.StringToBigInt(dto.DIDParam.DIDIndex),
@@ -230,12 +232,12 @@ type StoreClaimDTO struct {
 	URI       string `json:"uri" validate:"required" example:"https://example.com/claims/1"`
 }
 
-func (dto EncodeAddClaimDTO) Into() helperdomain.EncodeAddClaimParamInput {
+func (dto EncodeAddClaimDTO) Into() helperdomainmain.EncodeAddClaimParamInput {
 	var claimID [32]byte
 	copy(claimID[:], dto.DIDParam.ClaimID)
 	topic, _ := strconv.ParseUint(dto.DIDParam.Topic, 10, 8)
 
-	return helperdomain.EncodeAddClaimParamInput{
+	return helperdomainmain.EncodeAddClaimParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.StoreClaimParams{
 			DIDIndex:  utils.StringToBigInt(dto.DIDParam.DIDIndex),
@@ -261,11 +263,11 @@ type RemoveClaimDTO struct {
 	ClaimID  string `json:"claim_id" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
 }
 
-func (dto EncodeRemoveClaimDTO) Into() helperdomain.EncodeRemoveClaimParamInput {
+func (dto EncodeRemoveClaimDTO) Into() helperdomainmain.EncodeRemoveClaimParamInput {
 	var claimID [32]byte
 	copy(claimID[:], dto.DIDParam.ClaimID)
 
-	return helperdomain.EncodeRemoveClaimParamInput{
+	return helperdomainmain.EncodeRemoveClaimParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: rootfactory.RemoveClaimParams{
 			DIDIndex: utils.StringToBigInt(dto.DIDParam.DIDIndex),
@@ -286,8 +288,8 @@ type EncodeSetDIDRootStorageDTO struct {
 	DIDParam SetDIDRootStorageDIDParam `json:"did_param" validate:"required"`
 }
 
-func (dto *EncodeSetDIDRootStorageDTO) Into() helperdomain.EncodeSetDIDRootStorageParamInput {
-	return helperdomain.EncodeSetDIDRootStorageParamInput{
+func (dto *EncodeSetDIDRootStorageDTO) Into() helperdomainmain.EncodeSetDIDRootStorageParamInput {
+	return helperdomainmain.EncodeSetDIDRootStorageParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: aliasfactory.SetDIDRootStorageParams{
 			DIDRootStorage: dto.DIDParam.DIDRootStorage,
@@ -308,9 +310,9 @@ type EncodeRegisterDomainDTO struct {
 	DIDParam RegisterDomainDIDParam `json:"did_param" validate:"required"`
 }
 
-func (dto *EncodeRegisterDomainDTO) Into() helperdomain.EncodeRegisterDomainParamInput {
+func (dto *EncodeRegisterDomainDTO) Into() helperdomainmain.EncodeRegisterDomainParamInput {
 	period, _ := strconv.ParseUint(dto.DIDParam.Period, 10, 8)
-	return helperdomain.EncodeRegisterDomainParamInput{
+	return helperdomainmain.EncodeRegisterDomainParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: aliasfactory.RegisterDomainParams{
 			Label:  dto.DIDParam.Label,
@@ -333,9 +335,9 @@ type EncodeRegisterSubdomainDTO struct {
 	DIDParam RegisterSubdomainDIDParam `json:"did_param" validate:"required"`
 }
 
-func (dto *EncodeRegisterSubdomainDTO) Into() helperdomain.EncodeRegisterSubdomainParamInput {
+func (dto *EncodeRegisterSubdomainDTO) Into() helperdomainmain.EncodeRegisterSubdomainParamInput {
 	period, _ := strconv.ParseUint(dto.DIDParam.Period, 10, 8)
-	return helperdomain.EncodeRegisterSubdomainParamInput{
+	return helperdomainmain.EncodeRegisterSubdomainParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: aliasfactory.RegisterSubdomainParams{
 			Label:        dto.DIDParam.Label,
@@ -357,8 +359,8 @@ type EncodeSetDIDDTO struct {
 	DIDParam SetDIDDIDParam `json:"did_param" validate:"required"`
 }
 
-func (dto *EncodeSetDIDDTO) Into() helperdomain.EncodeSetDIDParamInput {
-	return helperdomain.EncodeSetDIDParamInput{
+func (dto *EncodeSetDIDDTO) Into() helperdomainmain.EncodeSetDIDParamInput {
+	return helperdomainmain.EncodeSetDIDParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: aliasfactory.SetDIDParams{
 			Node: utils.HexToHash(dto.DIDParam.Node),
@@ -379,9 +381,9 @@ type EncodeExtendRegistrationDTO struct {
 	DIDParam ExtendRegistrationDIDParam `json:"did_param" validate:"required"`
 }
 
-func (dto *EncodeExtendRegistrationDTO) Into() helperdomain.EncodeExtendRegistrationParamInput {
+func (dto *EncodeExtendRegistrationDTO) Into() helperdomainmain.EncodeExtendRegistrationParamInput {
 	period, _ := strconv.ParseUint(dto.DIDParam.Period, 10, 8)
-	return helperdomain.EncodeExtendRegistrationParamInput{
+	return helperdomainmain.EncodeExtendRegistrationParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: aliasfactory.ExtendRegistrationParams{
 			Node:   utils.HexToHash(dto.DIDParam.Node),
@@ -401,8 +403,8 @@ type EncodeRevokeAliasDTO struct {
 	DIDParam RevokeAliasDIDParam `json:"did_param" validate:"required"`
 }
 
-func (dto *EncodeRevokeAliasDTO) Into() helperdomain.EncodeRevokeAliasParamInput {
-	return helperdomain.EncodeRevokeAliasParamInput{
+func (dto *EncodeRevokeAliasDTO) Into() helperdomainmain.EncodeRevokeAliasParamInput {
+	return helperdomainmain.EncodeRevokeAliasParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: aliasfactory.NodeOnlyParams{
 			Node: utils.HexToHash(dto.DIDParam.Node),
@@ -421,8 +423,8 @@ type EncodeUnrevokeAliasDTO struct {
 	DIDParam UnrevokeAliasDIDParam `json:"did_param" validate:"required"`
 }
 
-func (dto *EncodeUnrevokeAliasDTO) Into() helperdomain.EncodeUnrevokeAliasParamInput {
-	return helperdomain.EncodeUnrevokeAliasParamInput{
+func (dto *EncodeUnrevokeAliasDTO) Into() helperdomainmain.EncodeUnrevokeAliasParamInput {
+	return helperdomainmain.EncodeUnrevokeAliasParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: aliasfactory.NodeOnlyParams{
 			Node: utils.HexToHash(dto.DIDParam.Node),
@@ -442,12 +444,164 @@ type EncodeTransferAliasOwnershipDTO struct {
 	DIDParam TransferAliasOwnershipDIDParam `json:"did_param" validate:"required"`
 }
 
-func (dto *EncodeTransferAliasOwnershipDTO) Into() helperdomain.EncodeTransferAliasOwnershipParamInput {
-	return helperdomain.EncodeTransferAliasOwnershipParamInput{
+func (dto *EncodeTransferAliasOwnershipDTO) Into() helperdomainmain.EncodeTransferAliasOwnershipParamInput {
+	return helperdomainmain.EncodeTransferAliasOwnershipParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		DIDParam: aliasfactory.TransferAliasOwnershipParams{
 			Node:     utils.HexToHash(dto.DIDParam.Node),
 			NewOwner: dto.DIDParam.NewOwner,
+		},
+	}
+}
+
+// DID VC
+
+// IssueCredentialDTO represents the request to issue a credential
+// @Description Data Transfer Object for issuing a verifiable credential
+type IssueCredentialVCParamDTO struct {
+	Option       string `json:"option" validate:"required,oneof=0 1" example:"0"`
+	DIDRecipient string `json:"did_recipient" validate:"required,len=66" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
+	ExpiredAt    string `json:"expired_at" validate:"required" example:"1735689600"`
+	OffchainHash string `json:"offchain_hash" validate:"required" example:"QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy"`
+}
+
+type EncodeIssueCredentialDTO struct {
+	Address string                    `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	VCParam IssueCredentialVCParamDTO `json:"vc_param" validate:"required"`
+}
+
+func (dto *EncodeIssueCredentialDTO) Into() helperdomainmain.EncodeIssueCredentialParamInput {
+	expiredAt := new(big.Int)
+	expiredAt.SetString(dto.VCParam.ExpiredAt, 10)
+
+	res := utils.Hex2Bytes(dto.VCParam.DIDRecipient)
+	var didRecp [32]byte
+	copy(didRecp[:], res)
+
+	optUint64, _ := strconv.ParseUint(dto.VCParam.Option, 10, 8)
+
+	return helperdomainmain.EncodeIssueCredentialParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		VCParam: vcfactory.IssueCredentialParams{
+			Option:       vcfactory.Options(optUint64),
+			DIDRecipient: didRecp,
+			ExpiredAt:    expiredAt,
+			OffchainHash: dto.VCParam.OffchainHash,
+		},
+	}
+}
+
+// BurnCredentialDTO represents the request to burn a credential
+// @Description Data Transfer Object for burning a verifiable credential
+type BurnCredentialVCParamDTO struct {
+	Option  uint8  `json:"option" validate:"required,oneof=0 1" example:"0"`
+	DID     string `json:"did" validate:"required,len=66" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
+	TokenID string `json:"token_id" validate:"required" example:"1"`
+}
+
+type EncodeBurnCredentialDTO struct {
+	Address string                   `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	VCParam BurnCredentialVCParamDTO `json:"vc_param" validate:"required"`
+}
+
+func (dto *EncodeBurnCredentialDTO) Into() helperdomainmain.EncodeBurnCredentialParamInput {
+	tokenID := new(big.Int)
+	tokenID.SetString(dto.VCParam.TokenID, 10)
+
+	res := utils.Hex2Bytes(dto.VCParam.DID)
+	var didRecp [32]byte
+	copy(didRecp[:], res)
+
+	return helperdomainmain.EncodeBurnCredentialParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		VCParam: vcfactory.BurnCredentialParams{
+			Option:  vcfactory.Options(dto.VCParam.Option),
+			DID:     didRecp,
+			TokenID: tokenID,
+		},
+	}
+}
+
+// UpdateMetadataDTO represents the request to update credential metadata
+// @Description Data Transfer Object for updating credential metadata
+type UpdateMetadataVCParamDTO struct {
+	Option       uint8  `json:"option" validate:"required,oneof=0 1" example:"0"`
+	TokenID      string `json:"token_id" validate:"required" example:"1"`
+	IsValid      bool   `json:"is_valid" example:"true"`
+	ExpiredAt    string `json:"expired_at" validate:"required" example:"1735689600"`
+	OffchainHash string `json:"offchain_hash" validate:"required" example:"QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy"`
+}
+
+type EncodeUpdateMetadataDTO struct {
+	Address string                   `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	VCParam UpdateMetadataVCParamDTO `json:"vc_param" validate:"required"`
+}
+
+func (dto *EncodeUpdateMetadataDTO) Into() helperdomainmain.EncodeUpdateMetadataParamInput {
+	tokenID := new(big.Int)
+	tokenID.SetString(dto.VCParam.TokenID, 10)
+
+	expiredAt := new(big.Int)
+	expiredAt.SetString(dto.VCParam.ExpiredAt, 10)
+
+	return helperdomainmain.EncodeUpdateMetadataParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		VCParam: vcfactory.UpdateMetadataParams{
+			Option:       vcfactory.Options(dto.VCParam.Option),
+			TokenID:      tokenID,
+			IsValid:      dto.VCParam.IsValid,
+			ExpiredAt:    expiredAt,
+			OffchainHash: dto.VCParam.OffchainHash,
+		},
+	}
+}
+
+// RevokeCredentialDTO represents the request to revoke a credential
+// @Description Data Transfer Object for revoking a verifiable credential
+type RevokeCredentialVCParamDTO struct {
+	Option  uint8  `json:"option" validate:"required,oneof=0 1" example:"0"`
+	TokenID string `json:"token_id" validate:"required" example:"1"`
+}
+
+type EncodeRevokeCredentialDTO struct {
+	Address string                     `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	VCParam RevokeCredentialVCParamDTO `json:"vc_param" validate:"required"`
+}
+
+func (dto *EncodeRevokeCredentialDTO) Into() helperdomainmain.EncodeRevokeCredentialParamInput {
+	tokenID := new(big.Int)
+	tokenID.SetString(dto.VCParam.TokenID, 10)
+
+	return helperdomainmain.EncodeRevokeCredentialParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		VCParam: vcfactory.RevokeCredentialParams{
+			Option:  vcfactory.Options(dto.VCParam.Option),
+			TokenID: tokenID,
+		},
+	}
+}
+
+// ClaimCredentialDTO represents the request to claim a credential
+// @Description Data Transfer Object for claiming a verifiable credential
+type ClaimCredentialVCParamDTO struct {
+	Option  uint8  `json:"option" validate:"required,oneof=0 1" example:"0"`
+	TokenID string `json:"token_id" validate:"required" example:"1"`
+}
+
+type EncodeClaimCredentialDTO struct {
+	Address string                    `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	VCParam ClaimCredentialVCParamDTO `json:"vc_param" validate:"required"`
+}
+
+func (dto *EncodeClaimCredentialDTO) Into() helperdomainmain.EncodeClaimCredentialParamInput {
+	tokenID := new(big.Int)
+	tokenID.SetString(dto.VCParam.TokenID, 10)
+
+	return helperdomainmain.EncodeClaimCredentialParamInput{
+		Address: utils.HexToAddress(dto.Address),
+		VCParam: vcfactory.ClaimCredentialParams{
+			Option:  vcfactory.Options(dto.VCParam.Option),
+			TokenID: tokenID,
 		},
 	}
 }

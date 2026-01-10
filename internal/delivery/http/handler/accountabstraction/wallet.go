@@ -41,7 +41,7 @@ import (
 // @Description  - This endpoint only validates the operation, it does not execute it
 // @Description  - The wallet implementation address is automatically updated before validation
 // @Description  - Validation ensures the operation can be safely executed
-// @Tags         account-abstraction
+// @Tags         AA POST
 // @Accept       json
 // @Produce      json
 // @Param        request body accountabstractiondto.ValidateUserOpsDTO true "Validation payload with wallet address and UserOp object"

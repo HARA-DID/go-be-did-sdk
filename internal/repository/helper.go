@@ -29,4 +29,11 @@ type HelperRepository interface {
 	EncodeRevokeAliasParam(input helperdo.EncodeRevokeAliasParamInput) (string, error)
 	EncodeUnrevokeAliasParam(input helperdo.EncodeUnrevokeAliasParamInput) (string, error)
 	EncodeTransferAliasOwnershipParam(input helperdo.EncodeTransferAliasOwnershipParamInput) (string, error)
+
+	// VCFactory
+	EncodeIssueCredentialParam(input helperdo.EncodeIssueCredentialParamInput) (string, error)
+	EncodeBurnCredentialParam(input helperdo.EncodeBurnCredentialParamInput) (string, error)
+	EncodeUpdateMetadataParam(input helperdo.EncodeUpdateMetadataParamInput) (string, error)
+	EncodeRevokeCredentialParam(input helperdo.EncodeRevokeCredentialParamInput) (string, error)
+	EncodeClaimCredentialParam(input helperdo.EncodeClaimCredentialParamInput) (string, error)
 }

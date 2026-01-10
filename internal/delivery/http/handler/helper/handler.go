@@ -16,6 +16,7 @@ import (
 	accountabstractionsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 	didaliassdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didalias"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
+	didvcsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didvc"
 	helperuc "github.com/meQlause/go-be-did/internal/usecase/helper"
 )
 
@@ -46,7 +47,7 @@ func NewHelperHandler(uc *helperuc.HelperUseCase) *HelperHandler {
 // @Description  - Input strings longer than 32 bytes will be truncated
 // @Description  - Shorter strings will be padded with zeros
 // @Description  - The result is returned as a hex string with 0x prefix
-// @Tags         helper
+// @Tags         helper General
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.StringToHex32DTO true "String input to convert to byte32"
@@ -96,6 +97,9 @@ func (hh *HelperHandler) buildHelperResponse(address utils.Address, encodedData 
 
 	case backendutils.ServiceDIDAlias:
 		target = didaliassdk.GetDIDAliasSDK().AliasFactory.Address.Hex()
+
+	case backendutils.ServiceDIDVC:
+		target = didvcsdk.GetDIDVCSDK().VCFactory.Address.Hex()
 
 	default:
 		return HelperResponse{}, fmt.Errorf("invalid service type: %d", details.Service)

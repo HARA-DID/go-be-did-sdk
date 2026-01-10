@@ -36,7 +36,7 @@ import (
 // @Description  - The encoded data is ready to be used in a user operation
 // @Description  - The KeyIdentifier is used to identify which key will sign the operation
 // @Description  - The address must be a valid Ethereum address
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeCreateDIDDTO true "Encode DID creation parameters with wallet address, DID parameter, and key identifier"
@@ -53,7 +53,7 @@ func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeCreateDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -63,7 +63,7 @@ func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -72,7 +72,7 @@ func (hh *HelperHandler) EncodeCreateDIDParam(c *fiber.Ctx) error {
 // EncodeUpdateDIDParam godoc
 // @Summary      Encode Update DID Parameters
 // @Description  Encodes parameters for updating a DID's URI
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeUpdateDIDDTO true "Update DID parameters"
@@ -88,7 +88,7 @@ func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeUpdateDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -98,7 +98,7 @@ func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -107,7 +107,7 @@ func (hh *HelperHandler) EncodeUpdateDIDParam(c *fiber.Ctx) error {
 // EncodeDeactiveDIDParam godoc
 // @Summary      Encode Deactivate DID Parameters
 // @Description  Encodes parameters for deactivating a DID
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeDeactiveDIDDTO true "Deactivate DID parameters"
@@ -123,7 +123,7 @@ func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeDeactiveDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -133,7 +133,7 @@ func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -142,7 +142,7 @@ func (hh *HelperHandler) EncodeDeactiveDIDParam(c *fiber.Ctx) error {
 // EncodeReactiveDIDParam godoc
 // @Summary      Encode Reactivate DID Parameters
 // @Description  Encodes parameters for reactivating a DID
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeReactiveDIDDTO true "Reactivate DID parameters"
@@ -158,7 +158,7 @@ func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeReactiveDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -168,7 +168,7 @@ func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -177,7 +177,7 @@ func (hh *HelperHandler) EncodeReactiveDIDParam(c *fiber.Ctx) error {
 // EncodeTransferDIDOwnerParam godoc
 // @Summary      Encode Transfer DID Owner Parameters
 // @Description  Encodes parameters for transferring DID ownership
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeTransferDIDOwnerDTO true "Transfer DID ownership parameters"
@@ -193,7 +193,7 @@ func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeTransferDIDOwnerParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -203,7 +203,7 @@ func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -212,7 +212,7 @@ func (hh *HelperHandler) EncodeTransferDIDOwnerParam(c *fiber.Ctx) error {
 // EncodeStoreDataParam godoc
 // @Summary      Encode Store Data Parameters
 // @Description  Encodes parameters for storing data in a DID
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeStoreDataDTO true "Store data parameters"
@@ -228,7 +228,7 @@ func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeStoreDataParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -238,7 +238,7 @@ func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -247,7 +247,7 @@ func (hh *HelperHandler) EncodeStoreDataParam(c *fiber.Ctx) error {
 // EncodeDeleteDataParam godoc
 // @Summary      Encode Delete Data Parameters
 // @Description  Encodes parameters for deleting data from a DID
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeDeleteDataDTO true "Delete data parameters"
@@ -263,7 +263,7 @@ func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeDeleteDataParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -273,7 +273,7 @@ func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -282,7 +282,7 @@ func (hh *HelperHandler) EncodeDeleteDataParam(c *fiber.Ctx) error {
 // EncodeAddKeyParam godoc
 // @Summary      Encode Add Key Parameters
 // @Description  Encodes parameters for adding a key to a DID
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeAddKeyDTO true "Add key parameters"
@@ -298,7 +298,7 @@ func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeAddKeyParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -308,7 +308,7 @@ func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -317,7 +317,7 @@ func (hh *HelperHandler) EncodeAddKeyParam(c *fiber.Ctx) error {
 // EncodeRemoveKeyParam godoc
 // @Summary      Encode Remove Key Parameters
 // @Description  Encodes parameters for removing a key from a DID
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeRemoveKeyDTO true "Remove key parameters"
@@ -333,7 +333,7 @@ func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeRemoveKeyParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -343,7 +343,7 @@ func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -352,7 +352,7 @@ func (hh *HelperHandler) EncodeRemoveKeyParam(c *fiber.Ctx) error {
 // EncodeAddClaimParam godoc
 // @Summary      Encode Add Claim Parameters
 // @Description  Encodes parameters for adding a claim to a DID
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeAddClaimDTO true "Add claim parameters"
@@ -368,7 +368,7 @@ func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeAddClaimParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -378,7 +378,7 @@ func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -387,7 +387,7 @@ func (hh *HelperHandler) EncodeAddClaimParam(c *fiber.Ctx) error {
 // EncodeRemoveClaimParam godoc
 // @Summary      Encode Remove Claim Parameters
 // @Description  Encodes parameters for removing a claim from a DID
-// @Tags         helper
+// @Tags Helper - DID Root
 // @Accept       json
 // @Produce      json
 // @Param        request body helperdto.EncodeRemoveClaimDTO true "Remove claim parameters"
@@ -403,7 +403,7 @@ func (hh *HelperHandler) EncodeRemoveClaimParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeRemoveClaimParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -413,7 +413,7 @@ func (hh *HelperHandler) EncodeRemoveClaimParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)

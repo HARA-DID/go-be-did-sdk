@@ -10,6 +10,8 @@ replace github.com/meQlause/did-root-sdk => ./internal/infrastructure/lib/did-ro
 
 replace github.com/meQlause/alias-root-sdk => ./internal/infrastructure/lib/did-alias-sdk/did-alias-sdk
 
+replace github.com/meQlause/did-verifiable-credentials-sdk => ./internal/infrastructure/lib/did-verifiable-credentials-sdk/did-verifiable-credentials-sdk
+
 require (
 	github.com/ethereum/go-ethereum v1.16.7
 	github.com/go-playground/validator/v10 v10.30.1
@@ -19,6 +21,7 @@ require (
 	github.com/meQlause/account-abstraction-sdk v0.0.0-00010101000000-000000000000
 	github.com/meQlause/alias-root-sdk v0.0.0-00010101000000-000000000000
 	github.com/meQlause/did-root-sdk v0.0.0-00010101000000-000000000000
+	github.com/meQlause/did-verifiable-credentials-sdk v0.0.0-00010101000000-000000000000
 	github.com/meQlause/hara-core-blockchain-lib v1.9.0
 	github.com/swaggo/swag v1.16.6
 )

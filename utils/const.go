@@ -22,9 +22,15 @@ const (
 	TypeRevokeAlias            uint8 = 18
 	TypeUnrevokeAlias          uint8 = 19
 	TypeTransferAliasOwnership uint8 = 20
+	TypeIssueCredential        uint8 = 21
+	TypeBurnCredential         uint8 = 22
+	TypeUpdateMetadata         uint8 = 23
+	TypeRevokeCredential       uint8 = 24
+	TypeClaimCredential        uint8 = 25
 )
 
 const (
 	ServiceDIDRoot  uint8 = 0
 	ServiceDIDAlias uint8 = 1
+	ServiceDIDVC    uint8 = 2
 )

@@ -13,6 +13,7 @@ import (
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 	didaliassdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didalias"
 	didrootsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
+	didvcsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didvc"
 
 	_ "github.com/meQlause/go-be-did/docs"
 )
@@ -31,6 +32,7 @@ func main() {
 	aasdk.InitializeAccountAbstractionSDK(context.Background(), config.GetConfig().HNS.AccountAbstraction, config.Blockchain())
 	didrootsdk.InitializeDIDRootSDK(context.Background(), config.GetConfig().HNS.DIDRoot, config.Blockchain())
 	didaliassdk.InitializeDIDAliasSDK(context.Background(), config.GetConfig().HNS.DIDAlias, config.Blockchain())
+	didvcsdk.InitializeDIDVCSDK(context.Background(), config.GetConfig().HNS.DIDVC, config.Blockchain())
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: customErrorHandler,

@@ -122,6 +122,42 @@ definitions:
     - did_param
     - priv_key
     type: object
+  helperdto.BurnCredentialVCParamDTO:
+    description: Data Transfer Object for burning a verifiable credential
+    properties:
+      did:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      option:
+        enum:
+        - 0
+        - 1
+        example: 0
+        type: integer
+      token_id:
+        example: "1"
+        type: string
+    required:
+    - did
+    - option
+    - token_id
+    type: object
+  helperdto.ClaimCredentialVCParamDTO:
+    description: Data Transfer Object for claiming a verifiable credential
+    properties:
+      option:
+        enum:
+        - 0
+        - 1
+        example: 0
+        type: integer
+      token_id:
+        example: "1"
+        type: string
+    required:
+    - option
+    - token_id
+    type: object
   helperdto.CreateDIDDTO:
     properties:
       did:
@@ -165,6 +201,28 @@ definitions:
         type: string
     required:
     - address
+    type: object
+  helperdto.EncodeBurnCredentialDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      vc_param:
+        $ref: '#/definitions/helperdto.BurnCredentialVCParamDTO'
+    required:
+    - address
+    - vc_param
+    type: object
+  helperdto.EncodeClaimCredentialDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      vc_param:
+        $ref: '#/definitions/helperdto.ClaimCredentialVCParamDTO'
+    required:
+    - address
+    - vc_param
     type: object
   helperdto.EncodeCreateDIDDTO:
     properties:
@@ -216,6 +274,17 @@ definitions:
     required:
     - address
     - did_param
+    type: object
+  helperdto.EncodeIssueCredentialDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      vc_param:
+        $ref: '#/definitions/helperdto.IssueCredentialVCParamDTO'
+    required:
+    - address
+    - vc_param
     type: object
   helperdto.EncodeReactiveDIDDTO:
     properties:
@@ -287,6 +356,17 @@ definitions:
     required:
     - address
     - did_param
+    type: object
+  helperdto.EncodeRevokeCredentialDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      vc_param:
+        $ref: '#/definitions/helperdto.RevokeCredentialVCParamDTO'
+    required:
+    - address
+    - vc_param
     type: object
   helperdto.EncodeSetDIDDTO:
     properties:
@@ -367,6 +447,17 @@ definitions:
     required:
     - address
     type: object
+  helperdto.EncodeUpdateMetadataDTO:
+    properties:
+      address:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      vc_param:
+        $ref: '#/definitions/helperdto.UpdateMetadataVCParamDTO'
+    required:
+    - address
+    - vc_param
+    type: object
   helperdto.ExtendRegistrationDIDParam:
     description: Data Transfer Object for extending the registration period of an
       alias
@@ -379,12 +470,34 @@ definitions:
     - node
     - period
     type: object
+  helperdto.IssueCredentialVCParamDTO:
+    description: Data Transfer Object for issuing a verifiable credential
+    properties:
+      did_recipient:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+        type: string
+      expired_at:
+        example: "1735689600"
+        type: string
+      offchain_hash:
+        example: QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy
+        type: string
+      option:
+        enum:
+        - 0
+        - 1
+        example: 0
+        type: integer
+    required:
+    - did_recipient
+    - expired_at
+    - offchain_hash
+    - option
+    type: object
   helperdto.RegisterDomainDIDParam:
     description: Data Transfer Object for registering a new domain under a TLD
     properties:
       label:
-        type: string
-      owner:
         type: string
       period:
         type: string
@@ -392,7 +505,6 @@ definitions:
         type: string
     required:
     - label
-    - owner
     - period
     - tld
     type: object
@@ -442,6 +554,22 @@ definitions:
         type: string
     required:
     - node
+    type: object
+  helperdto.RevokeCredentialVCParamDTO:
+    description: Data Transfer Object for revoking a verifiable credential
+    properties:
+      option:
+        enum:
+        - 0
+        - 1
+        example: 0
+        type: integer
+      token_id:
+        example: "1"
+        type: string
+    required:
+    - option
+    - token_id
     type: object
   helperdto.SetDIDDIDParam:
     description: Data Transfer Object for setting a DID (Decentralized Identifier)
@@ -587,6 +715,33 @@ definitions:
     - did_index
     - uri
     type: object
+  helperdto.UpdateMetadataVCParamDTO:
+    description: Data Transfer Object for updating credential metadata
+    properties:
+      expired_at:
+        example: "1735689600"
+        type: string
+      is_valid:
+        example: true
+        type: boolean
+      offchain_hash:
+        example: QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy
+        type: string
+      option:
+        enum:
+        - 0
+        - 1
+        example: 0
+        type: integer
+      token_id:
+        example: "1"
+        type: string
+    required:
+    - expired_at
+    - offchain_hash
+    - option
+    - token_id
+    type: object
   helperhandler.HelperResponse:
     properties:
       data:
@@ -722,7 +877,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Create Account Abstraction Wallet
       tags:
-      - account-abstraction
+      - AA POST
   /account-abstraction/handle-ops:
     post:
       consumes:
@@ -790,7 +945,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Handle User Operations
       tags:
-      - account-abstraction
+      - AA POST
   /account-abstraction/is-valid-wallet:
     get:
       consumes:
@@ -842,7 +997,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Validate Smart Wallet
       tags:
-      - account-abstraction
+      - AA GET
   /account-abstraction/validate-userop:
     post:
       consumes:
@@ -908,7 +1063,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Validate User Operation
       tags:
-      - account-abstraction
+      - AA POST
   /did-alias/did:
     get:
       consumes:
@@ -954,7 +1109,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get DID by Node
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/did-from-string:
     get:
       consumes:
@@ -1000,7 +1155,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get DID by Domain Name
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/namehash:
     get:
       consumes:
@@ -1046,7 +1201,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Compute Namehash
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/owner:
     get:
       consumes:
@@ -1092,7 +1247,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Node Owner
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/owner-from-string:
     get:
       consumes:
@@ -1138,7 +1293,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Owner by Domain Name
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/register-tld:
     post:
       consumes:
@@ -1176,7 +1331,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Register a new Top-Level Domain (TLD)
       tags:
-      - DID Alias
+      - DID Alias POST
   /did-alias/registration-period:
     get:
       consumes:
@@ -1222,7 +1377,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Registration Period Duration
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/resolve:
     get:
       consumes:
@@ -1268,7 +1423,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Resolve Node to DID
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/resolve-from-string:
     get:
       consumes:
@@ -1314,7 +1469,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Resolve Domain Name to DID
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/status:
     get:
       consumes:
@@ -1361,7 +1516,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Alias Status by Node
       tags:
-      - did-alias
+      - DID Alias GET
   /did-alias/status-from-string:
     get:
       consumes:
@@ -1407,7 +1562,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Alias Status by Domain Name
       tags:
-      - did-alias
+      - DID Alias GET
   /did-root/did-index-map:
     get:
       consumes:
@@ -1443,7 +1598,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get DID Hash by Index
       tags:
-      - did-root
+      - DID Root GET
   /did-root/did-index-map-reverse:
     get:
       consumes:
@@ -1479,7 +1634,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get DID Index by Hash
       tags:
-      - did-root
+      - DID Root GET
   /did-root/get-claim:
     get:
       consumes:
@@ -1520,7 +1675,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Claim by DID and Claim ID
       tags:
-      - did-root
+      - DID Root GET
   /did-root/get-claims-by-did:
     get:
       consumes:
@@ -1555,7 +1710,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get All Claims for a DID
       tags:
-      - did-root
+      - DID Root GET
   /did-root/get-data:
     get:
       consumes:
@@ -1597,7 +1752,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Data by Hash
       tags:
-      - did-root
+      - DID Root GET
   /did-root/get-did-key-data-by-index:
     get:
       consumes:
@@ -1641,7 +1796,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get DID Key by Index
       tags:
-      - did-root
+      - DID Root GET
   /did-root/get-did-key-data-count:
     get:
       consumes:
@@ -1676,7 +1831,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get DID Key Data Count
       tags:
-      - did-root
+      - DID Root GET
   /did-root/get-key:
     get:
       consumes:
@@ -1718,7 +1873,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Key by DID and Key Hash
       tags:
-      - did-root
+      - DID Root GET
   /did-root/get-keys-by-did:
     get:
       consumes:
@@ -1753,7 +1908,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get All Keys for a DID
       tags:
-      - did-root
+      - DID Root GET
   /did-root/get-original-key:
     get:
       consumes:
@@ -1788,7 +1943,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Get Original Key by Key Code
       tags:
-      - did-root
+      - DID Root GET
   /did-root/resolve-did:
     get:
       consumes:
@@ -1824,7 +1979,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Resolve DID
       tags:
-      - did-root
+      - DID Root GET
   /did-root/verify-claim:
     get:
       consumes:
@@ -1873,7 +2028,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Verify Claim
       tags:
-      - did-root
+      - DID Root GET
   /did-root/verify-did-ownership:
     get:
       consumes:
@@ -1915,7 +2070,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Verify DID Ownership
       tags:
-      - did-root
+      - DID Root GET
   /helper/encode-add-claim-param:
     post:
       consumes:
@@ -1950,7 +2105,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Add Claim Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-add-key-param:
     post:
       consumes:
@@ -1985,7 +2140,77 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Add Key Parameters
       tags:
-      - helper
+      - Helper - DID Root
+  /helper/encode-burn-credential-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for burning/destroying a verifiable credential
+      parameters:
+      - description: Burn Credential parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeBurnCredentialDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Burn Credential parameters
+      tags:
+      - Helper - DID VC
+  /helper/encode-claim-credential-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for claiming an unclaimed verifiable credential
+      parameters:
+      - description: Claim Credential parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeClaimCredentialDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Claim Credential parameters
+      tags:
+      - Helper - DID VC
   /helper/encode-create-did-param:
     post:
       consumes:
@@ -2048,7 +2273,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Create DID Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-deactivate-did-param:
     post:
       consumes:
@@ -2083,7 +2308,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Deactivate DID Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-delete-data-param:
     post:
       consumes:
@@ -2118,7 +2343,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Delete Data Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-extend-registration-param:
     post:
       consumes:
@@ -2155,6 +2380,41 @@ paths:
       summary: Encode Extend Registration parameters
       tags:
       - Helper - DID Alias
+  /helper/encode-issue-credential-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for issuing a new verifiable credential
+      parameters:
+      - description: Issue Credential parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeIssueCredentialDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Issue Credential parameters
+      tags:
+      - Helper - DID VC
   /helper/encode-reactivate-did-param:
     post:
       consumes:
@@ -2189,7 +2449,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Reactivate DID Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-register-domain-param:
     post:
       consumes:
@@ -2295,7 +2555,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Remove Claim Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-remove-key-param:
     post:
       consumes:
@@ -2330,7 +2590,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Remove Key Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-revoke-alias-param:
     post:
       consumes:
@@ -2366,6 +2626,41 @@ paths:
       summary: Encode Revoke Alias parameters
       tags:
       - Helper - DID Alias
+  /helper/encode-revoke-credential-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for revoking a verifiable credential
+      parameters:
+      - description: Revoke Credential parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeRevokeCredentialDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Revoke Credential parameters
+      tags:
+      - Helper - DID VC
   /helper/encode-set-did-param:
     post:
       consumes:
@@ -2471,7 +2766,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Store Data Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-transfer-alias-ownership-param:
     post:
       consumes:
@@ -2542,7 +2837,7 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Transfer DID Owner Parameters
       tags:
-      - helper
+      - Helper - DID Root
   /helper/encode-unrevoke-alias-param:
     post:
       consumes:
@@ -2612,7 +2907,42 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Encode Update DID Parameters
       tags:
-      - helper
+      - Helper - DID Root
+  /helper/encode-update-metadata-param:
+    post:
+      consumes:
+      - application/json
+      description: Encodes parameters for updating credential metadata
+      parameters:
+      - description: Update Metadata parameters
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/helperdto.EncodeUpdateMetadataDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/helperhandler.HelperResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Encode Update Metadata parameters
+      tags:
+      - Helper - DID VC
   /helper/string-2-byte32:
     post:
       consumes:
@@ -2664,5 +2994,5 @@ paths:
             $ref: '#/definitions/response.Response'
       summary: Convert String to Byte32
       tags:
-      - helper
+      - helper General
 swagger: "2.0"

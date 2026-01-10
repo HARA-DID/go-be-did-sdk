@@ -9,7 +9,7 @@ import (
 	aasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/accountabstraction"
 	dasdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didalias"
 	drsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didroot"
-	// didvcsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didvc"
+	didvcsdk "github.com/meQlause/go-be-did/internal/infrastructure/sdk/didvc"
 )
 
 var (
@@ -36,8 +36,8 @@ type AppConfig struct {
 type HNSConfig struct {
 	AccountAbstraction aasdk.AccountAbstractionHNS
 	DIDRoot            drsdk.DIDRootHNS
-	// DIDVC              didvcsdk.DIDVCHNS
-	DIDAlias dasdk.DIDAliasHNS
+	DIDVC              didvcsdk.DIDVCHNS
+	DIDAlias           dasdk.DIDAliasHNS
 }
 
 func InitConfig() {
@@ -71,12 +71,12 @@ func Load() (*Config, error) {
 				RootFactory: getEnv("DID_ROOT_FACTORY_HNS", ""),
 				RootStorage: getEnv("DID_ROOT_STORAGE_HNS", ""),
 			},
-			// DIDVC: didvcsdk.DIDVCHNS{
-			// 	VCFactory:      getEnv("DID_VC_FACTORY_HNS", ""),
-			// 	VCStorage:      getEnv("DID_VC_STORAGE_HNS", ""),
-			// 	CertificateNFT: getEnv("DID_VC_CERTIFICATE_NFT_HNS", ""),
-			// 	IdentityNFT:    getEnv("DID_VC_IDENTITY_NFT_HNS", ""),
-			// },
+			DIDVC: didvcsdk.DIDVCHNS{
+				VCFactory:      getEnv("DID_VC_FACTORY_HNS", ""),
+				VCStorage:      getEnv("DID_VC_STORAGE_HNS", ""),
+				CertificateNFT: getEnv("DID_VC_CERTIFICATE_NFT_HNS", ""),
+				IdentityNFT:    getEnv("DID_VC_IDENTITY_NFT_HNS", ""),
+			},
 			DIDAlias: dasdk.DIDAliasHNS{
 				AliasFactory: getEnv("DID_ALIAS_FACTORY_HNS", ""),
 				AliasStorage: getEnv("DID_ALIAS_STORAGE_HNS", ""),
@@ -122,9 +122,9 @@ func (c *Config) Validate() error {
 		return err
 	}
 
-	// if err := c.HNS.DIDVC.Validate(); err != nil {
-	// 	return err
-	// }
+	if err := c.HNS.DIDVC.Validate(); err != nil {
+		return err
+	}
 
 	if err := c.HNS.DIDAlias.Validate(); err != nil {
 		return err

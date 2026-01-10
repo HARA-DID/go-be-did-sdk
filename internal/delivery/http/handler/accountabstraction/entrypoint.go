@@ -40,7 +40,7 @@ import (
 // @Description  - Always check the `success` field within each transaction result in the data map
 // @Description  - Multiple transaction hashes may be returned for batch operations
 // @Description  - The PrivKey is used by the relayer to sign and submit the transaction
-// @Tags         account-abstraction
+// @Tags         AA POST
 // @Accept       json
 // @Produce      json
 // @Param        request body accountabstractiondto.HandleOpsDTO true "HandleOps payload with private key, wallet address, target address, data, and nonce"
@@ -115,7 +115,7 @@ func (ah *AccountAbstractionHandler) HandleOps(c *fiber.Ctx) error {
 // @Description  - HTTP 200 does NOT guarantee the wallet is valid
 // @Description  - Always check the `data` field for validation result
 // @Description  - This endpoint does NOT modify blockchain state (read-only)
-// @Tags         account-abstraction
+// @Tags         AA GET
 // @Accept       json
 // @Produce      json
 // @Param        wallet query string true "Smart wallet address to validate" example(0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb)

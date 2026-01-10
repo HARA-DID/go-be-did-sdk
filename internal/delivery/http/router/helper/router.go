@@ -41,7 +41,6 @@ func SetupHelperRoutes(api fiber.Router) {
 
 	// DID Alias encoding endpoints
 	helper.Post("/encode-set-did-root-storage-param", helperHandler.EncodeSetDIDRootStorageParam)
-	// helper.Post("/encode-register-tld-param", helperHandler.EncodeRegisterTLDParam)
 	helper.Post("/encode-register-domain-param", helperHandler.EncodeRegisterDomainParam)
 	helper.Post("/encode-register-subdomain-param", helperHandler.EncodeRegisterSubdomainParam)
 	helper.Post("/encode-set-did-param", helperHandler.EncodeSetDIDParam)
@@ -49,4 +48,11 @@ func SetupHelperRoutes(api fiber.Router) {
 	helper.Post("/encode-revoke-alias-param", helperHandler.EncodeRevokeAliasParam)
 	helper.Post("/encode-unrevoke-alias-param", helperHandler.EncodeUnrevokeAliasParam)
 	helper.Post("/encode-transfer-alias-ownership-param", helperHandler.EncodeTransferAliasOwnershipParam)
+
+	// DID VC encoding endpoints
+	helper.Post("/encode-issue-credential-param", helperHandler.EncodeIssueCredentialParam)
+	helper.Post("/encode-burn-credential-param", helperHandler.EncodeBurnCredentialParam)
+	helper.Post("/encode-update-metadata-param", helperHandler.EncodeUpdateMetadataParam)
+	helper.Post("/encode-revoke-credential-param", helperHandler.EncodeRevokeCredentialParam)
+	helper.Post("/encode-claim-credential-param", helperHandler.EncodeClaimCredentialParam)
 }

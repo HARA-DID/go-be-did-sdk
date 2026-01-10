@@ -10,3 +10,6 @@
 [submodule "internal/infrastructure/lib/did-alias-sdk"]
 	path = internal/infrastructure/lib/did-alias-sdk
 	url = git@ssh.dev.azure.com:v3/dattabot/Blockchain%202024/did-alias-sdk
+[submodule "internal/infrastructure/lib/did-verifiable-credentials-sdk"]
+	path = internal/infrastructure/lib/did-verifiable-credentials-sdk
+	url = git@ssh.dev.azure.com:v3/dattabot/Blockchain%202024/did-verifiable-credentials-sdk

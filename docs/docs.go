@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "account-abstraction"
+                    "AA POST"
                 ],
                 "summary": "Create Account Abstraction Wallet",
                 "parameters": [
@@ -86,7 +86,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "account-abstraction"
+                    "AA POST"
                 ],
                 "summary": "Handle User Operations",
                 "parameters": [
@@ -147,7 +147,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "account-abstraction"
+                    "AA GET"
                 ],
                 "summary": "Validate Smart Wallet",
                 "parameters": [
@@ -204,7 +204,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "account-abstraction"
+                    "AA POST"
                 ],
                 "summary": "Validate User Operation",
                 "parameters": [
@@ -262,7 +262,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Get DID by Node",
                 "parameters": [
@@ -319,7 +319,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Get DID by Domain Name",
                 "parameters": [
@@ -376,7 +376,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Compute Namehash",
                 "parameters": [
@@ -433,7 +433,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Get Node Owner",
                 "parameters": [
@@ -490,7 +490,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Get Owner by Domain Name",
                 "parameters": [
@@ -547,7 +547,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "DID Alias"
+                    "DID Alias POST"
                 ],
                 "summary": "Register a new Top-Level Domain (TLD)",
                 "parameters": [
@@ -608,7 +608,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Get Registration Period Duration",
                 "parameters": [
@@ -665,7 +665,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Resolve Node to DID",
                 "parameters": [
@@ -722,7 +722,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Resolve Domain Name to DID",
                 "parameters": [
@@ -779,7 +779,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Get Alias Status by Node",
                 "parameters": [
@@ -836,7 +836,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-alias"
+                    "DID Alias GET"
                 ],
                 "summary": "Get Alias Status by Domain Name",
                 "parameters": [
@@ -893,7 +893,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get DID Hash by Index",
                 "parameters": [
@@ -950,7 +950,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get DID Index by Hash",
                 "parameters": [
@@ -1007,7 +1007,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get Claim by DID and Claim ID",
                 "parameters": [
@@ -1072,7 +1072,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get All Claims for a DID",
                 "parameters": [
@@ -1129,7 +1129,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get Data by Hash",
                 "parameters": [
@@ -1194,7 +1194,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get DID Key by Index",
                 "parameters": [
@@ -1259,7 +1259,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get DID Key Data Count",
                 "parameters": [
@@ -1316,7 +1316,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get Key by DID and Key Hash",
                 "parameters": [
@@ -1381,7 +1381,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get All Keys for a DID",
                 "parameters": [
@@ -1438,7 +1438,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Get Original Key by Key Code",
                 "parameters": [
@@ -1495,7 +1495,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Resolve DID",
                 "parameters": [
@@ -1552,7 +1552,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Verify Claim",
                 "parameters": [
@@ -1625,7 +1625,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "did-root"
+                    "DID Root GET"
                 ],
                 "summary": "Verify DID Ownership",
                 "parameters": [
@@ -1690,7 +1690,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Add Claim Parameters",
                 "parameters": [
@@ -1748,7 +1748,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Add Key Parameters",
                 "parameters": [
@@ -1796,6 +1796,122 @@ const docTemplate = `{
                 }
             }
         },
+        "/helper/encode-burn-credential-param": {
+            "post": {
+                "description": "Encodes parameters for burning/destroying a verifiable credential",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID VC"
+                ],
+                "summary": "Encode Burn Credential parameters",
+                "parameters": [
+                    {
+                        "description": "Burn Credential parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeBurnCredentialDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/encode-claim-credential-param": {
+            "post": {
+                "description": "Encodes parameters for claiming an unclaimed verifiable credential",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID VC"
+                ],
+                "summary": "Encode Claim Credential parameters",
+                "parameters": [
+                    {
+                        "description": "Claim Credential parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeClaimCredentialDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/helper/encode-create-did-param": {
             "post": {
                 "description": "Encodes parameters for creating a DID (Decentralized Identifier) and prepares the transaction data. This endpoint encodes the DID creation parameters, retrieves the current nonce for the wallet, and returns the encoded call data along with the target contract address.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true for HTTP 200\n- ` + "`" + `data` + "`" + ` (object): EncodeCreateDIDParamResponse containing:\n- ` + "`" + `Data` + "`" + ` (string): The hex-encoded call data for the DID creation transaction\n- ` + "`" + `Target` + "`" + ` (string): The target contract address (DID Root Factory address)\n- ` + "`" + `Nonce` + "`" + ` (uint64): The current nonce for the wallet address\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version\n\n## CreateDIDParam Structure\nThe DIDParam object contains:\n- ` + "`" + `DID` + "`" + ` (string): The Decentralized Identifier string to create\n\n## Common Error Scenarios\n- \"Can Not Get Nonce\" - Failed to retrieve nonce from the blockchain\n- \"failed to encode DID\" - Failed to encode the DID parameter\n- \"failed to pack\" - Failed to pack the function call data\n\n## Important Notes\n- The nonce is retrieved from the EntryPoint contract for the specified wallet address\n- The encoded data is ready to be used in a user operation\n- The KeyIdentifier is used to identify which key will sign the operation\n- The address must be a valid Ethereum address",
@@ -1806,7 +1922,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Create DID Parameters",
                 "parameters": [
@@ -1864,7 +1980,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Deactivate DID Parameters",
                 "parameters": [
@@ -1922,7 +2038,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Delete Data Parameters",
                 "parameters": [
@@ -2028,6 +2144,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/helper/encode-issue-credential-param": {
+            "post": {
+                "description": "Encodes parameters for issuing a new verifiable credential",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID VC"
+                ],
+                "summary": "Encode Issue Credential parameters",
+                "parameters": [
+                    {
+                        "description": "Issue Credential parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeIssueCredentialDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/helper/encode-reactivate-did-param": {
             "post": {
                 "description": "Encodes parameters for reactivating a DID",
@@ -2038,7 +2212,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Reactivate DID Parameters",
                 "parameters": [
@@ -2212,7 +2386,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Remove Claim Parameters",
                 "parameters": [
@@ -2270,7 +2444,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Remove Key Parameters",
                 "parameters": [
@@ -2339,6 +2513,64 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/helperdto.EncodeRevokeAliasDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/helper/encode-revoke-credential-param": {
+            "post": {
+                "description": "Encodes parameters for revoking a verifiable credential",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID VC"
+                ],
+                "summary": "Encode Revoke Credential parameters",
+                "parameters": [
+                    {
+                        "description": "Revoke Credential parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeRevokeCredentialDTO"
                         }
                     }
                 ],
@@ -2502,7 +2734,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Store Data Parameters",
                 "parameters": [
@@ -2618,7 +2850,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Transfer DID Owner Parameters",
                 "parameters": [
@@ -2734,7 +2966,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "Helper - DID Root"
                 ],
                 "summary": "Encode Update DID Parameters",
                 "parameters": [
@@ -2782,6 +3014,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/helper/encode-update-metadata-param": {
+            "post": {
+                "description": "Encodes parameters for updating credential metadata",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Helper - DID VC"
+                ],
+                "summary": "Encode Update Metadata parameters",
+                "parameters": [
+                    {
+                        "description": "Update Metadata parameters",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helperdto.EncodeUpdateMetadataDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/helperhandler.HelperResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/helper/string-2-byte32": {
             "post": {
                 "description": "Converts a string input to a 32-byte array (byte32). This is a utility endpoint commonly used for encoding data that needs to fit into a single bytes32 storage slot in smart contracts.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true for HTTP 200\n- ` + "`" + `data` + "`" + ` (string): The hex-encoded 32-byte array result\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version\n\n## Common Use Cases\n- Encoding strings for smart contract storage\n- Preparing data for keccak256 hashing\n- Converting identifiers to fixed-size byte arrays\n\n## Important Notes\n- Input strings longer than 32 bytes will be truncated\n- Shorter strings will be padded with zeros\n- The result is returned as a hex string with 0x prefix",
@@ -2792,7 +3082,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "helper"
+                    "helper General"
                 ],
                 "summary": "Convert String to Byte32",
                 "parameters": [
@@ -3007,6 +3297,55 @@ const docTemplate = `{
                 }
             }
         },
+        "helperdto.BurnCredentialVCParamDTO": {
+            "description": "Data Transfer Object for burning a verifiable credential",
+            "type": "object",
+            "required": [
+                "did",
+                "option",
+                "token_id"
+            ],
+            "properties": {
+                "did": {
+                    "type": "string",
+                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "option": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "example": 0
+                },
+                "token_id": {
+                    "type": "string",
+                    "example": "1"
+                }
+            }
+        },
+        "helperdto.ClaimCredentialVCParamDTO": {
+            "description": "Data Transfer Object for claiming a verifiable credential",
+            "type": "object",
+            "required": [
+                "option",
+                "token_id"
+            ],
+            "properties": {
+                "option": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "example": 0
+                },
+                "token_id": {
+                    "type": "string",
+                    "example": "1"
+                }
+            }
+        },
         "helperdto.CreateDIDDTO": {
             "type": "object",
             "properties": {
@@ -3068,6 +3407,38 @@ const docTemplate = `{
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                }
+            }
+        },
+        "helperdto.EncodeBurnCredentialDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "vc_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "vc_param": {
+                    "$ref": "#/definitions/helperdto.BurnCredentialVCParamDTO"
+                }
+            }
+        },
+        "helperdto.EncodeClaimCredentialDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "vc_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "vc_param": {
+                    "$ref": "#/definitions/helperdto.ClaimCredentialVCParamDTO"
                 }
             }
         },
@@ -3142,6 +3513,22 @@ const docTemplate = `{
                 },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.ExtendRegistrationDIDParam"
+                }
+            }
+        },
+        "helperdto.EncodeIssueCredentialDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "vc_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "vc_param": {
+                    "$ref": "#/definitions/helperdto.IssueCredentialVCParamDTO"
                 }
             }
         },
@@ -3246,6 +3633,22 @@ const docTemplate = `{
                 },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.RevokeAliasDIDParam"
+                }
+            }
+        },
+        "helperdto.EncodeRevokeCredentialDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "vc_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "vc_param": {
+                    "$ref": "#/definitions/helperdto.RevokeCredentialVCParamDTO"
                 }
             }
         },
@@ -3366,6 +3769,22 @@ const docTemplate = `{
                 }
             }
         },
+        "helperdto.EncodeUpdateMetadataDTO": {
+            "type": "object",
+            "required": [
+                "address",
+                "vc_param"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "vc_param": {
+                    "$ref": "#/definitions/helperdto.UpdateMetadataVCParamDTO"
+                }
+            }
+        },
         "helperdto.ExtendRegistrationDIDParam": {
             "description": "Data Transfer Object for extending the registration period of an alias",
             "type": "object",
@@ -3382,20 +3801,48 @@ const docTemplate = `{
                 }
             }
         },
+        "helperdto.IssueCredentialVCParamDTO": {
+            "description": "Data Transfer Object for issuing a verifiable credential",
+            "type": "object",
+            "required": [
+                "did_recipient",
+                "expired_at",
+                "offchain_hash",
+                "option"
+            ],
+            "properties": {
+                "did_recipient": {
+                    "type": "string",
+                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "expired_at": {
+                    "type": "string",
+                    "example": "1735689600"
+                },
+                "offchain_hash": {
+                    "type": "string",
+                    "example": "QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy"
+                },
+                "option": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "example": 0
+                }
+            }
+        },
         "helperdto.RegisterDomainDIDParam": {
             "description": "Data Transfer Object for registering a new domain under a TLD",
             "type": "object",
             "required": [
                 "label",
-                "owner",
                 "period",
                 "tld"
             ],
             "properties": {
                 "label": {
-                    "type": "string"
-                },
-                "owner": {
                     "type": "string"
                 },
                 "period": {
@@ -3469,6 +3916,28 @@ const docTemplate = `{
             "properties": {
                 "node": {
                     "type": "string"
+                }
+            }
+        },
+        "helperdto.RevokeCredentialVCParamDTO": {
+            "description": "Data Transfer Object for revoking a verifiable credential",
+            "type": "object",
+            "required": [
+                "option",
+                "token_id"
+            ],
+            "properties": {
+                "option": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "example": 0
+                },
+                "token_id": {
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },
@@ -3667,6 +4136,42 @@ const docTemplate = `{
                 "uri": {
                     "type": "string",
                     "example": "https://example.com/did/metadata"
+                }
+            }
+        },
+        "helperdto.UpdateMetadataVCParamDTO": {
+            "description": "Data Transfer Object for updating credential metadata",
+            "type": "object",
+            "required": [
+                "expired_at",
+                "offchain_hash",
+                "option",
+                "token_id"
+            ],
+            "properties": {
+                "expired_at": {
+                    "type": "string",
+                    "example": "1735689600"
+                },
+                "is_valid": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "offchain_hash": {
+                    "type": "string",
+                    "example": "QmXnnyufdzAWL5CqZ2RnSNgPbvCc1ALT73s6epPrRnZ1Xy"
+                },
+                "option": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "example": 0
+                },
+                "token_id": {
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },

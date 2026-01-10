@@ -22,7 +22,7 @@ import (
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with the DID hash
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        node query string true "Node hash (32 bytes hex)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -68,7 +68,7 @@ func (h *DIDAliasHandler) Resolve(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with the DID hash
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        name query string true "Domain name" example(example.tld)
@@ -115,7 +115,7 @@ func (h *DIDAliasHandler) ResolveFromString(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with status details
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        node query string true "Node hash (32 bytes hex)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -161,7 +161,7 @@ func (h *DIDAliasHandler) GetAliasStatus(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with status details
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        name query string true "Domain name" example(example.tld)
@@ -207,7 +207,7 @@ func (h *DIDAliasHandler) GetAliasStatusFromString(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with owner address
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        node query string true "Node hash (32 bytes hex)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -253,7 +253,7 @@ func (h *DIDAliasHandler) GetOwner(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with owner address
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        name query string true "Domain name" example(example.tld)
@@ -299,7 +299,7 @@ func (h *DIDAliasHandler) GetOwnerFromString(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with DID hash
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        node query string true "Node hash (32 bytes hex)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -345,7 +345,7 @@ func (h *DIDAliasHandler) GetDID(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with DID hash
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        name query string true "Domain name" example(example.tld)
@@ -391,7 +391,7 @@ func (h *DIDAliasHandler) GetDIDFromString(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with namehash
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        name query string true "Domain name" example(example.tld)
@@ -437,7 +437,7 @@ func (h *DIDAliasHandler) Namehash(c *fiber.Ctx) error {
 // @Description  - `success` (boolean): Always true if request is processed correctly
 // @Description  - `data` (object): BlockchainResponse with duration in seconds
 // @Description  - `meta` (object): Contains timestamp and API version
-// @Tags         did-alias
+// @Tags         DID Alias GET
 // @Accept       json
 // @Produce      json
 // @Param        period query string true "Registration period (0, 1, or 2)" example(0)
@@ -473,7 +473,7 @@ func (h *DIDAliasHandler) GetRegistrationPeriod(c *fiber.Ctx) error {
 // RegisterTLD godoc
 // @Summary Register a new Top-Level Domain (TLD)
 // @Description Register a new top-level domain in the alias system. Only admins can register TLDs.
-// @Tags DID Alias
+// @Tags DID Alias POST
 // @Accept json
 // @Produce json
 // @Param request body didaliasdto.RegisterTLDDTO true "Register TLD Request"

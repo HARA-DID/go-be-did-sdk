@@ -28,7 +28,7 @@ func (hh *HelperHandler) EncodeSetDIDRootStorageParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeSetDIDRootStorageParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -38,7 +38,7 @@ func (hh *HelperHandler) EncodeSetDIDRootStorageParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -63,7 +63,7 @@ func (hh *HelperHandler) EncodeRegisterDomainParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeRegisterDomainParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -73,7 +73,7 @@ func (hh *HelperHandler) EncodeRegisterDomainParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -98,7 +98,7 @@ func (hh *HelperHandler) EncodeRegisterSubdomainParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeRegisterSubdomainParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -108,7 +108,7 @@ func (hh *HelperHandler) EncodeRegisterSubdomainParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -133,7 +133,7 @@ func (hh *HelperHandler) EncodeSetDIDParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeSetDIDParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -143,7 +143,7 @@ func (hh *HelperHandler) EncodeSetDIDParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -168,7 +168,7 @@ func (hh *HelperHandler) EncodeExtendRegistrationParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeExtendRegistrationParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -178,7 +178,7 @@ func (hh *HelperHandler) EncodeExtendRegistrationParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -203,7 +203,7 @@ func (hh *HelperHandler) EncodeRevokeAliasParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeRevokeAliasParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -213,7 +213,7 @@ func (hh *HelperHandler) EncodeRevokeAliasParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -238,7 +238,7 @@ func (hh *HelperHandler) EncodeUnrevokeAliasParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeUnrevokeAliasParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -248,7 +248,7 @@ func (hh *HelperHandler) EncodeUnrevokeAliasParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)
@@ -273,7 +273,7 @@ func (hh *HelperHandler) EncodeTransferAliasOwnershipParam(c *fiber.Ctx) error {
 
 	encodedData, err := hh.uc.EncodeTransferAliasOwnershipParam(input.Into())
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	details := response.Details{
@@ -283,7 +283,7 @@ func (hh *HelperHandler) EncodeTransferAliasOwnershipParam(c *fiber.Ctx) error {
 
 	resp, err := hh.buildHelperResponse(utils.HexToAddress(input.Address), encodedData, details)
 	if err != nil {
-		return response.Error(c, fiber.StatusInternalServerError, err)
+		return response.Error(c, fiber.StatusInternalServerError, err.Error())
 	}
 
 	return response.Success(c, resp)

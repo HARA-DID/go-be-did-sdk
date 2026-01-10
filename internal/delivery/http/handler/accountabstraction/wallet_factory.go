@@ -52,7 +52,7 @@ import (
 // @Description  - Multiple transaction hashes may be returned for batch operations
 // @Description  - Empty data object {} indicates no events were emitted
 // @Description  - Salt must be unique per deployer address to avoid conflicts
-// @Tags         account-abstraction
+// @Tags         AA POST
 // @Accept       json
 // @Produce      json
 // @Param        request body accountabstractiondto.CreateWalletInputDTO true "Wallet creation payload with deployer address and optional salt value"

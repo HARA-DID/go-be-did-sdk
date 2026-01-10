@@ -11,7 +11,7 @@ import (
 // GetData godoc
 // @Summary      Get Data by Hash
 // @Description  Retrieves data associated with a specific hash from the DID Root contract
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "Data hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -50,7 +50,7 @@ func (drh *DIDRootHandler) GetData(c *fiber.Ctx) error {
 // ResolveDID godoc
 // @Summary      Resolve DID
 // @Description  Resolves a Decentralized Identifier (DID) to retrieve its associated document and metadata
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -88,7 +88,7 @@ func (drh *DIDRootHandler) ResolveDID(c *fiber.Ctx) error {
 // VerifyDIDOwnership godoc
 // @Summary      Verify DID Ownership
 // @Description  Verifies if a specific address is the owner of a given DID
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -127,7 +127,7 @@ func (drh *DIDRootHandler) VerifyDIDOwnership(c *fiber.Ctx) error {
 // GetKey godoc
 // @Summary      Get Key by DID and Key Hash
 // @Description  Retrieves a specific cryptographic key associated with a DID using the key's hashed data
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -166,7 +166,7 @@ func (drh *DIDRootHandler) GetKey(c *fiber.Ctx) error {
 // GetKeysByDID godoc
 // @Summary      Get All Keys for a DID
 // @Description  Retrieves all cryptographic keys associated with a specific DID
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -204,7 +204,7 @@ func (drh *DIDRootHandler) GetKeysByDID(c *fiber.Ctx) error {
 // GetClaim godoc
 // @Summary      Get Claim by DID and Claim ID
 // @Description  Retrieves a specific verifiable claim associated with a DID
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -243,7 +243,7 @@ func (drh *DIDRootHandler) GetClaim(c *fiber.Ctx) error {
 // GetClaimsByDID godoc
 // @Summary      Get All Claims for a DID
 // @Description  Retrieves all verifiable claims associated with a specific DID
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -281,7 +281,7 @@ func (drh *DIDRootHandler) GetClaimsByDID(c *fiber.Ctx) error {
 // VerifyClaim godoc
 // @Summary      Verify Claim
 // @Description  Verifies if a specific address has authority over a claim for a given DID
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -321,7 +321,7 @@ func (drh *DIDRootHandler) VerifyClaim(c *fiber.Ctx) error {
 // GetDIDKeyDataCount godoc
 // @Summary      Get DID Key Data Count
 // @Description  Returns the total number of keys associated with a specific DID
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -359,7 +359,7 @@ func (drh *DIDRootHandler) GetDIDKeyDataCount(c *fiber.Ctx) error {
 // getDIDKeyDataByIndex godoc
 // @Summary      Get DID Key by Index
 // @Description  Retrieves a specific key associated with a DID using its index position
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -398,7 +398,7 @@ func (drh *DIDRootHandler) GetDIDKeyDataByIndex(c *fiber.Ctx) error {
 // GetOriginalKey godoc
 // @Summary      Get Original Key by Key Code
 // @Description  Retrieves the original key data using a key code identifier
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        key_code query string true "Key code identifier (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
@@ -436,7 +436,7 @@ func (drh *DIDRootHandler) GetOriginalKey(c *fiber.Ctx) error {
 // DIDIndexMap godoc
 // @Summary      Get DID Hash by Index
 // @Description  Maps a DID index to its corresponding DID hash
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_index query string true "DID index (hex-encoded big integer with 0x prefix)" example(0x1)
@@ -474,7 +474,7 @@ func (drh *DIDRootHandler) DIDIndexMap(c *fiber.Ctx) error {
 // DIDIndexMapReverse godoc
 // @Summary      Get DID Index by Hash
 // @Description  Reverse maps a DID hash to its corresponding DID index
-// @Tags         did-root
+// @Tags         DID Root GET
 // @Accept       json
 // @Produce      json
 // @Param        did_hash query string true "DID hash (32-byte hex string with 0x prefix)" example(0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef)
