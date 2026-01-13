@@ -12,7 +12,7 @@ import (
 // ResolveDTO represents the request payload for resolving a node to DID
 // @Description Data Transfer Object for resolving a node hash to its associated DID
 type ResolveDTO struct {
-	Node string `query:"node" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
+	Node string `query:"domain_node_hash" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
 }
 
 func (dto *ResolveDTO) Into() didaliasdomain.ResolveInput {
@@ -24,7 +24,7 @@ func (dto *ResolveDTO) Into() didaliasdomain.ResolveInput {
 // ResolveFromStringDTO represents the request payload for resolving a domain name to DID
 // @Description Data Transfer Object for resolving a domain name string to its associated DID
 type ResolveFromStringDTO struct {
-	Name string `query:"name" validate:"required" example:"example.tld"`
+	Name string `query:"domain" validate:"required" example:"example.tld"`
 }
 
 func (dto *ResolveFromStringDTO) Into() didaliasdomain.ResolveFromStringInput {
@@ -36,7 +36,7 @@ func (dto *ResolveFromStringDTO) Into() didaliasdomain.ResolveFromStringInput {
 // GetAliasStatusDTO represents the request payload for getting alias status by node
 // @Description Data Transfer Object for retrieving alias status (expiry, revoked, valid) by node hash
 type GetAliasStatusDTO struct {
-	Node string `query:"node" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
+	Node string `query:"domain_node_hash" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
 }
 
 func (dto *GetAliasStatusDTO) Into() didaliasdomain.GetAliasStatusInput {
@@ -48,7 +48,7 @@ func (dto *GetAliasStatusDTO) Into() didaliasdomain.GetAliasStatusInput {
 // GetAliasStatusFromStringDTO represents the request payload for getting alias status by name
 // @Description Data Transfer Object for retrieving alias status by domain name string
 type GetAliasStatusFromStringDTO struct {
-	Name string `query:"name" validate:"required" example:"example.tld"`
+	Name string `query:"domain" validate:"required" example:"example.tld"`
 }
 
 func (dto *GetAliasStatusFromStringDTO) Into() didaliasdomain.GetAliasStatusFromStringInput {
@@ -60,7 +60,7 @@ func (dto *GetAliasStatusFromStringDTO) Into() didaliasdomain.GetAliasStatusFrom
 // GetOwnerDTO represents the request payload for getting owner by node
 // @Description Data Transfer Object for retrieving the owner address of a node
 type GetOwnerDTO struct {
-	Node string `query:"node" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
+	Node string `query:"domain_node_hash" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
 }
 
 func (dto *GetOwnerDTO) Into() didaliasdomain.GetOwnerInput {
@@ -72,7 +72,7 @@ func (dto *GetOwnerDTO) Into() didaliasdomain.GetOwnerInput {
 // GetOwnerFromStringDTO represents the request payload for getting owner by name
 // @Description Data Transfer Object for retrieving the owner address by domain name
 type GetOwnerFromStringDTO struct {
-	Name string `query:"name" validate:"required" example:"example.tld"`
+	Name string `query:"domain" validate:"required" example:"example.tld"`
 }
 
 func (dto *GetOwnerFromStringDTO) Into() didaliasdomain.GetOwnerFromStringInput {
@@ -84,7 +84,7 @@ func (dto *GetOwnerFromStringDTO) Into() didaliasdomain.GetOwnerFromStringInput 
 // GetDIDDTO represents the request payload for getting DID by node
 // @Description Data Transfer Object for retrieving DID hash associated with a node
 type GetDIDDTO struct {
-	Node string `query:"node" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
+	Node string `query:"domain_node_hash" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
 }
 
 func (dto *GetDIDDTO) Into() didaliasdomain.GetDIDInput {
@@ -96,7 +96,7 @@ func (dto *GetDIDDTO) Into() didaliasdomain.GetDIDInput {
 // GetDIDFromStringDTO represents the request payload for getting DID by name
 // @Description Data Transfer Object for retrieving DID hash by domain name
 type GetDIDFromStringDTO struct {
-	Name string `query:"name" validate:"required" example:"example.tld"`
+	Name string `query:"domain" validate:"required" example:"example.tld"`
 }
 
 func (dto *GetDIDFromStringDTO) Into() didaliasdomain.GetDIDFromStringInput {
@@ -108,7 +108,7 @@ func (dto *GetDIDFromStringDTO) Into() didaliasdomain.GetDIDFromStringInput {
 // NamehashDTO represents the request payload for computing namehash
 // @Description Data Transfer Object for computing the namehash of a domain name
 type NamehashDTO struct {
-	Name string `query:"name" validate:"required" example:"example.tld"`
+	Name string `query:"domain" validate:"required" example:"example.tld"`
 }
 
 func (dto *NamehashDTO) Into() didaliasdomain.NamehashInput {
@@ -134,11 +134,11 @@ func (dto *GetRegistrationPeriodDTO) Into() didaliasdomain.GetRegistrationPeriod
 // @Description Data Transfer Object for registering a new top-level domain
 type RegisterTLDDIDParam struct {
 	TLD   string `json:"tld" validate:"required,domain_label"`
-	Owner string `json:"owner" validate:"required,eth_address"`
+	Owner string `json:"user_to_register" validate:"required,eth_address"`
 }
 
 type RegisterTLDDTO struct {
-	PrivKey  string              `json:"priv_key" validate:"required,eth_private_key"`
+	PrivKey  string              `json:"did_admin_priv_key" validate:"required,eth_private_key"`
 	DIDParam RegisterTLDDIDParam `json:"did_param" validate:"required"`
 }
 

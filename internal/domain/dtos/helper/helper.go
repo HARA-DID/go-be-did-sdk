@@ -22,7 +22,7 @@ func (dto *StringToHex32DTO) Into() helperdomainmain.StringToHex32Input {
 }
 
 type EncodeCreateDIDDTO struct {
-	Address       string       `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string       `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      CreateDIDDTO `json:"did_param"`
 	KeyIdentifier string       `json:"key_identifier" example:"key1"`
 }
@@ -42,7 +42,7 @@ func (dto EncodeCreateDIDDTO) Into() helperdomainmain.EncodeCreateDIDParamInput 
 }
 
 type EncodeUpdateDIDDTO struct {
-	Address       string       `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string       `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      UpdateDIDDTO `json:"did_param"`
 	KeyIdentifier string       `json:"key_identifier" example:"key1"`
 }
@@ -64,7 +64,7 @@ func (dto EncodeUpdateDIDDTO) Into() helperdomainmain.EncodeUpdateDIDParamInput 
 }
 
 type EncodeDeactiveDIDDTO struct {
-	Address       string `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDIndex      string `json:"did_index" validate:"required,uint64" example:"1"`
 	KeyIdentifier string `json:"key_identifier" example:"key1"`
 }
@@ -78,7 +78,7 @@ func (dto EncodeDeactiveDIDDTO) Into() helperdomainmain.EncodeDeactiveDIDParamIn
 }
 
 type EncodeReactiveDIDDTO struct {
-	Address       string `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDIndex      string `json:"did_index" validate:"required,uint64" example:"1"`
 	KeyIdentifier string `json:"key_identifier" example:"key1"`
 }
@@ -92,7 +92,7 @@ func (dto EncodeReactiveDIDDTO) Into() helperdomainmain.EncodeReactiveDIDParamIn
 }
 
 type EncodeTransferDIDOwnerDTO struct {
-	Address       string                  `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string                  `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      TransferDIDOwnershipDTO `json:"did_param"`
 	KeyIdentifier string                  `json:"key_identifier" example:"key1"`
 }
@@ -115,7 +115,7 @@ func (dto EncodeTransferDIDOwnerDTO) Into() helperdomainmain.EncodeTransferDIDOw
 }
 
 type EncodeStoreDataDTO struct {
-	Address       string       `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string       `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      StoreDataDTO `json:"did_param"`
 	KeyIdentifier string       `json:"key_identifier" example:"key1"`
 }
@@ -139,7 +139,7 @@ func (dto EncodeStoreDataDTO) Into() helperdomainmain.EncodeStoreDataParamInput 
 }
 
 type EncodeDeleteDataDTO struct {
-	Address       string        `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string        `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      DeleteDataDTO `json:"did_param"`
 	KeyIdentifier string        `json:"key_identifier" example:"key1"`
 }
@@ -161,7 +161,7 @@ func (dto EncodeDeleteDataDTO) Into() helperdomainmain.EncodeDeleteDataParamInpu
 }
 
 type EncodeAddKeyDTO struct {
-	Address       string      `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string      `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      StoreKeyDTO `json:"did_param"`
 	KeyIdentifier string      `json:"key_identifier" example:"key1"`
 }
@@ -192,7 +192,7 @@ func (dto EncodeAddKeyDTO) Into() helperdomainmain.EncodeAddKeyParamInput {
 }
 
 type EncodeRemoveKeyDTO struct {
-	Address       string       `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string       `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      RemoveKeyDTO `json:"did_param"`
 	KeyIdentifier string       `json:"key_identifier" example:"key1"`
 }
@@ -217,7 +217,7 @@ func (dto EncodeRemoveKeyDTO) Into() helperdomainmain.EncodeRemoveKeyParamInput 
 }
 
 type EncodeAddClaimDTO struct {
-	Address       string        `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string        `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      StoreClaimDTO `json:"did_param"`
 	KeyIdentifier string        `json:"key_identifier" example:"key1"`
 }
@@ -253,7 +253,7 @@ func (dto EncodeAddClaimDTO) Into() helperdomainmain.EncodeAddClaimParamInput {
 }
 
 type EncodeRemoveClaimDTO struct {
-	Address       string         `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address       string         `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	DIDParam      RemoveClaimDTO `json:"did_param"`
 	KeyIdentifier string         `json:"key_identifier" example:"key1"`
 }
@@ -284,7 +284,7 @@ type SetDIDRootStorageDIDParam struct {
 }
 
 type EncodeSetDIDRootStorageDTO struct {
-	Address  string                    `json:"address" validate:"required,eth_address"`
+	Address  string                    `json:"user_account_abstraction_wallet" validate:"required,eth_address"`
 	DIDParam SetDIDRootStorageDIDParam `json:"did_param" validate:"required"`
 }
 
@@ -306,7 +306,7 @@ type RegisterDomainDIDParam struct {
 }
 
 type EncodeRegisterDomainDTO struct {
-	Address  string                 `json:"address" validate:"required,eth_address"`
+	Address  string                 `json:"user_account_abstraction_wallet" validate:"required,eth_address"`
 	DIDParam RegisterDomainDIDParam `json:"did_param" validate:"required"`
 }
 
@@ -331,7 +331,7 @@ type RegisterSubdomainDIDParam struct {
 }
 
 type EncodeRegisterSubdomainDTO struct {
-	Address  string                    `json:"address" validate:"required,eth_address"`
+	Address  string                    `json:"user_account_abstraction_wallet" validate:"required,eth_address"`
 	DIDParam RegisterSubdomainDIDParam `json:"did_param" validate:"required"`
 }
 
@@ -355,7 +355,7 @@ type SetDIDDIDParam struct {
 }
 
 type EncodeSetDIDDTO struct {
-	Address  string         `json:"address" validate:"required,eth_address"`
+	Address  string         `json:"user_account_abstraction_wallet" validate:"required,eth_address"`
 	DIDParam SetDIDDIDParam `json:"did_param" validate:"required"`
 }
 
@@ -377,7 +377,7 @@ type ExtendRegistrationDIDParam struct {
 }
 
 type EncodeExtendRegistrationDTO struct {
-	Address  string                     `json:"address" validate:"required,eth_address"`
+	Address  string                     `json:"user_account_abstraction_wallet" validate:"required,eth_address"`
 	DIDParam ExtendRegistrationDIDParam `json:"did_param" validate:"required"`
 }
 
@@ -399,7 +399,7 @@ type RevokeAliasDIDParam struct {
 }
 
 type EncodeRevokeAliasDTO struct {
-	Address  string              `json:"address" validate:"required,eth_address"`
+	Address  string              `json:"user_account_abstraction_wallet" validate:"required,eth_address"`
 	DIDParam RevokeAliasDIDParam `json:"did_param" validate:"required"`
 }
 
@@ -419,7 +419,7 @@ type UnrevokeAliasDIDParam struct {
 }
 
 type EncodeUnrevokeAliasDTO struct {
-	Address  string                `json:"address" validate:"required,eth_address"`
+	Address  string                `json:"user_account_abstraction_wallet" validate:"required,eth_address"`
 	DIDParam UnrevokeAliasDIDParam `json:"did_param" validate:"required"`
 }
 
@@ -440,7 +440,7 @@ type TransferAliasOwnershipDIDParam struct {
 }
 
 type EncodeTransferAliasOwnershipDTO struct {
-	Address  string                         `json:"address" validate:"required,eth_address"`
+	Address  string                         `json:"user_account_abstraction_wallet" validate:"required,eth_address"`
 	DIDParam TransferAliasOwnershipDIDParam `json:"did_param" validate:"required"`
 }
 
@@ -466,7 +466,7 @@ type IssueCredentialVCParamDTO struct {
 }
 
 type EncodeIssueCredentialDTO struct {
-	Address string                    `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address string                    `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	VCParam IssueCredentialVCParamDTO `json:"vc_param" validate:"required"`
 }
 
@@ -500,7 +500,7 @@ type BurnCredentialVCParamDTO struct {
 }
 
 type EncodeBurnCredentialDTO struct {
-	Address string                   `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address string                   `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	VCParam BurnCredentialVCParamDTO `json:"vc_param" validate:"required"`
 }
 
@@ -533,7 +533,7 @@ type UpdateMetadataVCParamDTO struct {
 }
 
 type EncodeUpdateMetadataDTO struct {
-	Address string                   `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address string                   `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	VCParam UpdateMetadataVCParamDTO `json:"vc_param" validate:"required"`
 }
 
@@ -564,7 +564,7 @@ type RevokeCredentialVCParamDTO struct {
 }
 
 type EncodeRevokeCredentialDTO struct {
-	Address string                     `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address string                     `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	VCParam RevokeCredentialVCParamDTO `json:"vc_param" validate:"required"`
 }
 
@@ -589,7 +589,7 @@ type ClaimCredentialVCParamDTO struct {
 }
 
 type EncodeClaimCredentialDTO struct {
-	Address string                    `json:"address" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Address string                    `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 	VCParam ClaimCredentialVCParamDTO `json:"vc_param" validate:"required"`
 }
 

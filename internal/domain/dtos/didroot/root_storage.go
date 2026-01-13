@@ -42,7 +42,7 @@ func (dto *ResolveDIDDTO) Into() didrootdomain.ResolveDIDInput {
 // @Description Data Transfer Object for verifying if an address owns a specific DID
 type VerifyDIDOwnershipDTO struct {
 	DIDHash string `query:"did_hash" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
-	Owner   string `query:"owner" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Owner   string `query:"user_owner" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 }
 
 // Into converts VerifyDIDOwnershipDTO to domain input model
@@ -83,7 +83,7 @@ func (dto *GetKeysByDIDDTO) Into() didrootdomain.GetKeysByDIDInput {
 // @Description Data Transfer Object for getting a verifiable claim by DID and claim ID
 type GetClaimDTO struct {
 	DIDHash string `query:"did_hash" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
-	ClaimID string `query:"claim_id" validate:"required,hex32" example:"0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"`
+	ClaimID string `query:"claim_hash_id" validate:"required,hex32" example:"0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"`
 }
 
 func (dto *GetClaimDTO) Into() didrootdomain.GetClaimInput {
@@ -109,8 +109,8 @@ func (dto *GetClaimsByDIDDTO) Into() didrootdomain.GetClaimsByDIDInput {
 // @Description Data Transfer Object for verifying if an address has authority over a specific claim
 type VerifyClaimDTO struct {
 	DIDHash  string `query:"did_hash" validate:"required,hex32" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
-	ClaimID  string `query:"claim_id" validate:"required,hex32" example:"0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"`
-	ToVerify string `query:"to_verify" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	ClaimID  string `query:"claim_hash_id" validate:"required,hex32" example:"0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"`
+	ToVerify string `query:"address_to_verify" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 }
 
 func (dto *VerifyClaimDTO) Into() didrootdomain.VerifyClaimInput {

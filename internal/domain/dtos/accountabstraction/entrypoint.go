@@ -11,11 +11,11 @@ import (
 // @Description HandleOps request payload with private key, wallet address, target address, data, and nonce
 type HandleOpsDTO struct {
 	Details response.Details `json:"details" validate:"required"`
-	PrivKey string           `json:"priv_key" validate:"required,eth_private_key" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
+	PrivKey string           `json:"user_priv_key" validate:"required,eth_private_key" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
 	Data    string           `json:"data" validate:"required,hex_data" example:"0x..."`
 	Target  string           `json:"target" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
-	Nonce   string           `json:"nonce" validate:"required,numeric" example:"0"`
-	Wallet  string           `json:"wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
+	Nonce   string           `json:"nonce_user" validate:"required,numeric" example:"0"`
+	Wallet  string           `json:"user_account_abstraction_wallet" validate:"required,eth_address" example:"0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"`
 }
 
 // IsValidWalletDTO represents the request payload for wallet validation
