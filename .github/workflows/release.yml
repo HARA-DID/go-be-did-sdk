@@ -58,12 +58,22 @@ jobs:
           LOG_LEVEL=${{ secrets.LOG_LEVEL }}
           RPC_TIMEOUT=${{ secrets.RPC_TIMEOUT }}
           VERSION=${{ secrets.VERSION }}
+          RPC1=${{ secrets.RPC1 }}
+          RPC2=${{ secrets.RPC2 }}
+          RPC3=${{ secrets.RPC3 }}
+          RPC4=${{ secrets.RPC4 }}
           AA_ENTRYPOINT_HNS=${{ secrets.AA_ENTRYPOINT_HNS }}
           AA_GAS_MANAGER_HNS=${{ secrets.AA_GAS_MANAGER_HNS }}
           AA_WALLET_HNS=${{ secrets.AA_WALLET_HNS }}
           AA_WALLET_FACTORY_HNS=${{ secrets.AA_WALLET_FACTORY_HNS }}
           DID_ROOT_FACTORY_HNS=${{ secrets.DID_ROOT_FACTORY_HNS }}
           DID_ROOT_STORAGE_HNS=${{ secrets.DID_ROOT_STORAGE_HNS }}
+          DID_VC_FACTORY_HNS=${{ secrets.DID_VC_FACTORY_HNS }}
+          DID_VC_STORAGE_HNS=${{ secrets.DID_VC_STORAGE_HNS }}
+          DID_VC_CERTIFICATE_NFT_HNS=${{ secrets.DID_VC_CERTIFICATE_NFT_HNS }}
+          DID_VC_IDENTITY_NFT_HNS=${{ secrets.DID_VC_IDENTITY_NFT_HNS }}
+          DID_ALIAS_FACTORY_HNS=${{ secrets.DID_ALIAS_FACTORY_HNS }}
+          DID_ALIAS_STORAGE_HNS=${{ secrets.DID_ALIAS_STORAGE_HNS }}
           EOF
       
       - name: Build Linux binary (for Alpine - static)
