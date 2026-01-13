@@ -66,15 +66,85 @@ jobs:
           DID_ROOT_STORAGE_HNS=${{ secrets.DID_ROOT_STORAGE_HNS }}
           EOF
       
-      - name: Build Linux binary
+      - name: Build Linux binary (for Alpine - static)
         run: |
-          GOOS=linux GOARCH=amd64 \
-          go build -o dist/did-be-sdk-linux-amd64 ./cmd/server
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+          go build -a -ldflags '-extldflags "-static"' \
+          -o dist/did-be-sdk-linux-amd64 ./cmd/server
       
       - name: Build Windows binary
         run: |
           GOOS=windows GOARCH=amd64 \
           go build -o dist/did-be-sdk-windows-amd64.exe ./cmd/server
+      
+      - name: Install Alpine package tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y alpine-sdk
+      
+      - name: Create Alpine .apk package
+        run: |
+          # Set version
+          VERSION=${GITHUB_REF_NAME#v}
+          
+          # Create package directory structure
+          mkdir -p pkg/alpine/did-be-sdk
+          mkdir -p pkg/alpine/did-be-sdk/usr/local/bin
+          mkdir -p pkg/alpine/did-be-sdk/etc/did-be-sdk
+          
+          # Copy binary
+          cp dist/did-be-sdk-linux-amd64 pkg/alpine/did-be-sdk/usr/local/bin/did-be-sdk
+          chmod +x pkg/alpine/did-be-sdk/usr/local/bin/did-be-sdk
+          
+          # Copy .env file
+          cp .env pkg/alpine/did-be-sdk/etc/did-be-sdk/.env
+          
+          # Create APKBUILD file
+          mkdir -p pkg/alpine/build
+          cat <<EOF > pkg/alpine/build/APKBUILD
+          # Maintainer: Your Name <you@email.com>
+          pkgname=did-be-sdk
+          pkgver=$VERSION
+          pkgrel=0
+          pkgdesc="DID Backend SDK - A Go application for DID Backend SDK"
+          url="https://github.com/${{ github.repository }}"
+          arch="x86_64"
+          license="MIT"
+          options="!check"
+          
+          package() {
+              mkdir -p "\$pkgdir"/usr/local/bin
+              mkdir -p "\$pkgdir"/etc/did-be-sdk
+              
+              install -Dm755 "\$srcdir"/../../did-be-sdk/usr/local/bin/did-be-sdk "\$pkgdir"/usr/local/bin/did-be-sdk
+              install -Dm644 "\$srcdir"/../../did-be-sdk/etc/did-be-sdk/.env "\$pkgdir"/etc/did-be-sdk/.env
+          }
+          EOF
+          
+          # Use Docker to build the apk package with Alpine
+          docker run --rm -v $(pwd)/pkg/alpine:/work -w /work alpine:3.23 sh -c "
+            apk add --no-cache alpine-sdk sudo
+            adduser -D builder
+            addgroup builder abuild
+            echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+            su builder -c '
+              abuild-keygen -a -i -n
+              cd /work/build
+              abuild -F -r
+            '
+            # Copy the built package to dist
+            find /home/builder/packages -name '*.apk' -exec cp {} /work/ \;
+          " || echo "APK build failed, creating manual package instead"
+          
+          # If Docker build fails, create a simple tar.gz as fallback
+          if [ ! -f pkg/alpine/*.apk ]; then
+            echo "Creating fallback Alpine package as tar.gz..."
+            cd pkg/alpine/did-be-sdk
+            tar -czf ../../../dist/did-be-sdk-alpine-${VERSION}.tar.gz *
+            cd ../../..
+          else
+            mv pkg/alpine/*.apk dist/did-be-sdk-${VERSION}-r0.apk
+          fi
       
       - name: Create .deb package
         run: |
@@ -128,6 +198,21 @@ jobs:
           
           ### Installation
           
+          #### Alpine Linux (.apk or .tar.gz)
+          \`\`\`bash
+          # If .apk package is available:
+          wget https://github.com/${{ github.repository }}/releases/download/${GITHUB_REF_NAME}/did-be-sdk-${GITHUB_REF_NAME#v}-r0.apk
+          sudo apk add --allow-untrusted did-be-sdk-${GITHUB_REF_NAME#v}-r0.apk
+          # Configuration will be in /etc/did-be-sdk/.env
+          
+          # Or use the tarball:
+          wget https://github.com/${{ github.repository }}/releases/download/${GITHUB_REF_NAME}/did-be-sdk-alpine-${GITHUB_REF_NAME#v}.tar.gz
+          cd /opt/did-sdk
+          sudo tar -xzf did-be-sdk-alpine-${GITHUB_REF_NAME#v}.tar.gz -C /
+          # Binary: /usr/local/bin/did-be-sdk
+          # Config: /etc/did-be-sdk/.env
+          \`\`\`
+          
           #### Debian/Ubuntu (.deb)
           \`\`\`bash
           wget https://github.com/${{ github.repository }}/releases/download/${GITHUB_REF_NAME}/did-be-sdk_${GITHUB_REF_NAME#v}_amd64.deb
@@ -151,11 +236,16 @@ jobs:
           4. Run \`did-be-sdk.exe\`
           
           ### Files Included
-          - Linux binary (standalone)
+          - Linux binary (standalone, statically compiled for Alpine compatibility)
           - Windows binary (standalone)
+          - Alpine package (.apk or .tar.gz)
           - Linux tarball (with .env)
           - Windows ZIP (with .env)
           - Debian package (with .env in /etc/did-be-sdk/)
+          
+          ### Notes
+          - The Linux binary is statically compiled and will work on Alpine Linux
+          - Alpine package includes binary and configuration in standard locations
           EOF
       
       - name: Upload release assets
@@ -165,6 +255,8 @@ jobs:
             dist/did-be-sdk-linux-amd64
             dist/did-be-sdk-windows-amd64.exe
             dist/did-be-sdk_*.deb
+            dist/did-be-sdk-*.apk
+            dist/did-be-sdk-alpine-*.tar.gz
             dist/did-be-sdk-linux-amd64-*.tar.gz
             dist/did-be-sdk-windows-amd64-*.zip
           body_path: RELEASE_NOTES.md
