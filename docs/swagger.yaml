@@ -3,19 +3,19 @@ definitions:
   accountabstractiondto.CreateWalletInputDTO:
     description: Wallet creation payload with deployer address and optional salt value
     properties:
-      input:
-        $ref: '#/definitions/accountabstractiondto.DeployWalletParamsDTO'
-      priv_key:
+      aa_admin_priv_key:
         example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
         type: string
+      input:
+        $ref: '#/definitions/accountabstractiondto.DeployWalletParamsDTO'
     required:
+    - aa_admin_priv_key
     - input
-    - priv_key
     type: object
   accountabstractiondto.DeployWalletParamsDTO:
     description: Wallet deployment parameters with owners and salt
     properties:
-      owners:
+      user_to_register:
         example:
         - 0x111...
         - 0x222...
@@ -23,12 +23,12 @@ definitions:
           type: string
         minItems: 1
         type: array
-      salt:
+      uuid_salt:
         example: 0xabc123... (32 bytes hex)
         type: string
     required:
-    - owners
-    - salt
+    - user_to_register
+    - uuid_salt
     type: object
   accountabstractiondto.HandleOpsDTO:
     description: HandleOps request payload with private key, wallet address, target
@@ -39,25 +39,25 @@ definitions:
         type: string
       details:
         $ref: '#/definitions/response.Details'
-      nonce:
+      nonce_user:
         example: "0"
-        type: string
-      priv_key:
-        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
         type: string
       target:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
-      wallet:
+      user_account_abstraction_wallet:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
+      user_priv_key:
+        example: 0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
         type: string
     required:
     - data
     - details
-    - nonce
-    - priv_key
+    - nonce_user
     - target
-    - wallet
+    - user_account_abstraction_wallet
+    - user_priv_key
     type: object
   accountabstractiondto.UserOpDTO:
     description: UserOp object containing target address, value, data, client block
@@ -104,23 +104,23 @@ definitions:
   didaliasdto.RegisterTLDDIDParam:
     description: Data Transfer Object for registering a new top-level domain
     properties:
-      owner:
-        type: string
       tld:
         type: string
+      user_to_register:
+        type: string
     required:
-    - owner
     - tld
+    - user_to_register
     type: object
   didaliasdto.RegisterTLDDTO:
     properties:
+      did_admin_priv_key:
+        type: string
       did_param:
         $ref: '#/definitions/didaliasdto.RegisterTLDDIDParam'
-      priv_key:
-        type: string
     required:
+    - did_admin_priv_key
     - did_param
-    - priv_key
     type: object
   helperdto.BurnCredentialVCParamDTO:
     description: Data Transfer Object for burning a verifiable credential
@@ -178,284 +178,284 @@ definitions:
     type: object
   helperdto.EncodeAddClaimDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.StoreClaimDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeAddKeyDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.StoreKeyDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeBurnCredentialDTO:
     properties:
-      address:
+      user_account_abstraction_wallet:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
       vc_param:
         $ref: '#/definitions/helperdto.BurnCredentialVCParamDTO'
     required:
-    - address
+    - user_account_abstraction_wallet
     - vc_param
     type: object
   helperdto.EncodeClaimCredentialDTO:
     properties:
-      address:
+      user_account_abstraction_wallet:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
       vc_param:
         $ref: '#/definitions/helperdto.ClaimCredentialVCParamDTO'
     required:
-    - address
+    - user_account_abstraction_wallet
     - vc_param
     type: object
   helperdto.EncodeCreateDIDDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.CreateDIDDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeDeactiveDIDDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_index:
         example: "1"
         type: string
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
     - did_index
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeDeleteDataDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.DeleteDataDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeExtendRegistrationDTO:
     properties:
-      address:
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.ExtendRegistrationDIDParam'
+      user_account_abstraction_wallet:
+        type: string
     required:
-    - address
     - did_param
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeIssueCredentialDTO:
     properties:
-      address:
+      user_account_abstraction_wallet:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
       vc_param:
         $ref: '#/definitions/helperdto.IssueCredentialVCParamDTO'
     required:
-    - address
+    - user_account_abstraction_wallet
     - vc_param
     type: object
   helperdto.EncodeReactiveDIDDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_index:
         example: "1"
         type: string
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
     - did_index
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeRegisterDomainDTO:
     properties:
-      address:
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.RegisterDomainDIDParam'
+      user_account_abstraction_wallet:
+        type: string
     required:
-    - address
     - did_param
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeRegisterSubdomainDTO:
     properties:
-      address:
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.RegisterSubdomainDIDParam'
+      user_account_abstraction_wallet:
+        type: string
     required:
-    - address
     - did_param
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeRemoveClaimDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.RemoveClaimDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeRemoveKeyDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.RemoveKeyDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeRevokeAliasDTO:
     properties:
-      address:
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.RevokeAliasDIDParam'
+      user_account_abstraction_wallet:
+        type: string
     required:
-    - address
     - did_param
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeRevokeCredentialDTO:
     properties:
-      address:
+      user_account_abstraction_wallet:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
       vc_param:
         $ref: '#/definitions/helperdto.RevokeCredentialVCParamDTO'
     required:
-    - address
+    - user_account_abstraction_wallet
     - vc_param
     type: object
   helperdto.EncodeSetDIDDTO:
     properties:
-      address:
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.SetDIDDIDParam'
+      user_account_abstraction_wallet:
+        type: string
     required:
-    - address
     - did_param
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeSetDIDRootStorageDTO:
     properties:
-      address:
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.SetDIDRootStorageDIDParam'
+      user_account_abstraction_wallet:
+        type: string
     required:
-    - address
     - did_param
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeStoreDataDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.StoreDataDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeTransferAliasOwnershipDTO:
     properties:
-      address:
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.TransferAliasOwnershipDIDParam'
+      user_account_abstraction_wallet:
+        type: string
     required:
-    - address
     - did_param
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeTransferDIDOwnerDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.TransferDIDOwnershipDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeUnrevokeAliasDTO:
     properties:
-      address:
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.UnrevokeAliasDIDParam'
+      user_account_abstraction_wallet:
+        type: string
     required:
-    - address
     - did_param
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeUpdateDIDDTO:
     properties:
-      address:
-        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-        type: string
       did_param:
         $ref: '#/definitions/helperdto.UpdateDIDDTO'
       key_identifier:
         example: key1
         type: string
+      user_account_abstraction_wallet:
+        example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+        type: string
     required:
-    - address
+    - user_account_abstraction_wallet
     type: object
   helperdto.EncodeUpdateMetadataDTO:
     properties:
-      address:
+      user_account_abstraction_wallet:
         example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
         type: string
       vc_param:
         $ref: '#/definitions/helperdto.UpdateMetadataVCParamDTO'
     required:
-    - address
+    - user_account_abstraction_wallet
     - vc_param
     type: object
   helperdto.ExtendRegistrationDIDParam:
@@ -749,7 +749,7 @@ definitions:
         type: string
       details:
         $ref: '#/definitions/response.Details'
-      nonce:
+      nonce_user:
         example: "1"
         type: string
       target:
@@ -3515,7 +3515,7 @@ paths:
       summary: Encode Update Metadata parameters
       tags:
       - Helper - DID VC
-  /helper/string-2-byte32:
+  /helper/string-2-hex32:
     post:
       consumes:
       - application/json

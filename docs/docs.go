@@ -3966,7 +3966,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/helper/string-2-byte32": {
+        "/helper/string-2-hex32": {
             "post": {
                 "description": "Converts a string input to a 32-byte array (byte32). This is a utility endpoint commonly used for encoding data that needs to fit into a single bytes32 storage slot in smart contracts.\n\n## Response Structure\nSuccess responses (HTTP 200) contain:\n- ` + "`" + `success` + "`" + ` (boolean): Always true for HTTP 200\n- ` + "`" + `data` + "`" + ` (string): The hex-encoded 32-byte array result\n- ` + "`" + `meta` + "`" + ` (object): Contains timestamp and API version\n\n## Common Use Cases\n- Encoding strings for smart contract storage\n- Preparing data for keccak256 hashing\n- Converting identifiers to fixed-size byte arrays\n\n## Important Notes\n- Input strings longer than 32 bytes will be truncated\n- Shorter strings will be padded with zeros\n- The result is returned as a hex string with 0x prefix",
                 "consumes": [
@@ -4030,16 +4030,16 @@ const docTemplate = `{
             "description": "Wallet creation payload with deployer address and optional salt value",
             "type": "object",
             "required": [
-                "input",
-                "priv_key"
+                "aa_admin_priv_key",
+                "input"
             ],
             "properties": {
-                "input": {
-                    "$ref": "#/definitions/accountabstractiondto.DeployWalletParamsDTO"
-                },
-                "priv_key": {
+                "aa_admin_priv_key": {
                     "type": "string",
                     "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "input": {
+                    "$ref": "#/definitions/accountabstractiondto.DeployWalletParamsDTO"
                 }
             }
         },
@@ -4047,11 +4047,11 @@ const docTemplate = `{
             "description": "Wallet deployment parameters with owners and salt",
             "type": "object",
             "required": [
-                "owners",
-                "salt"
+                "user_to_register",
+                "uuid_salt"
             ],
             "properties": {
-                "owners": {
+                "user_to_register": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
@@ -4062,7 +4062,7 @@ const docTemplate = `{
                         "0x222..."
                     ]
                 },
-                "salt": {
+                "uuid_salt": {
                     "type": "string",
                     "example": "0xabc123... (32 bytes hex)"
                 }
@@ -4074,10 +4074,10 @@ const docTemplate = `{
             "required": [
                 "data",
                 "details",
-                "nonce",
-                "priv_key",
+                "nonce_user",
                 "target",
-                "wallet"
+                "user_account_abstraction_wallet",
+                "user_priv_key"
             ],
             "properties": {
                 "data": {
@@ -4087,21 +4087,21 @@ const docTemplate = `{
                 "details": {
                     "$ref": "#/definitions/response.Details"
                 },
-                "nonce": {
+                "nonce_user": {
                     "type": "string",
                     "example": "0"
-                },
-                "priv_key": {
-                    "type": "string",
-                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
                 },
                 "target": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 },
-                "wallet": {
+                "user_account_abstraction_wallet": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+                },
+                "user_priv_key": {
+                    "type": "string",
+                    "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
                 }
             }
         },
@@ -4164,14 +4164,14 @@ const docTemplate = `{
             "description": "Data Transfer Object for registering a new top-level domain",
             "type": "object",
             "required": [
-                "owner",
-                "tld"
+                "tld",
+                "user_to_register"
             ],
             "properties": {
-                "owner": {
+                "tld": {
                     "type": "string"
                 },
-                "tld": {
+                "user_to_register": {
                     "type": "string"
                 }
             }
@@ -4179,15 +4179,15 @@ const docTemplate = `{
         "didaliasdto.RegisterTLDDTO": {
             "type": "object",
             "required": [
-                "did_param",
-                "priv_key"
+                "did_admin_priv_key",
+                "did_param"
             ],
             "properties": {
+                "did_admin_priv_key": {
+                    "type": "string"
+                },
                 "did_param": {
                     "$ref": "#/definitions/didaliasdto.RegisterTLDDIDParam"
-                },
-                "priv_key": {
-                    "type": "string"
                 }
             }
         },
@@ -4269,49 +4269,49 @@ const docTemplate = `{
         "helperdto.EncodeAddClaimDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.StoreClaimDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeAddKeyDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.StoreKeyDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeBurnCredentialDTO": {
             "type": "object",
             "required": [
-                "address",
+                "user_account_abstraction_wallet",
                 "vc_param"
             ],
             "properties": {
-                "address": {
+                "user_account_abstraction_wallet": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 },
@@ -4323,11 +4323,11 @@ const docTemplate = `{
         "helperdto.EncodeClaimCredentialDTO": {
             "type": "object",
             "required": [
-                "address",
+                "user_account_abstraction_wallet",
                 "vc_param"
             ],
             "properties": {
-                "address": {
+                "user_account_abstraction_wallet": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 },
@@ -4339,33 +4339,29 @@ const docTemplate = `{
         "helperdto.EncodeCreateDIDDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.CreateDIDDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeDeactiveDIDDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_index"
+                "did_index",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_index": {
                     "type": "string",
                     "example": "1"
@@ -4373,51 +4369,55 @@ const docTemplate = `{
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeDeleteDataDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.DeleteDataDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeExtendRegistrationDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_param"
+                "did_param",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.ExtendRegistrationDIDParam"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string"
                 }
             }
         },
         "helperdto.EncodeIssueCredentialDTO": {
             "type": "object",
             "required": [
-                "address",
+                "user_account_abstraction_wallet",
                 "vc_param"
             ],
             "properties": {
-                "address": {
+                "user_account_abstraction_wallet": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 },
@@ -4429,14 +4429,10 @@ const docTemplate = `{
         "helperdto.EncodeReactiveDIDDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_index"
+                "did_index",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_index": {
                     "type": "string",
                     "example": "1"
@@ -4444,100 +4440,104 @@ const docTemplate = `{
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeRegisterDomainDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_param"
+                "did_param",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.RegisterDomainDIDParam"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string"
                 }
             }
         },
         "helperdto.EncodeRegisterSubdomainDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_param"
+                "did_param",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.RegisterSubdomainDIDParam"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string"
                 }
             }
         },
         "helperdto.EncodeRemoveClaimDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.RemoveClaimDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeRemoveKeyDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.RemoveKeyDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeRevokeAliasDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_param"
+                "did_param",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.RevokeAliasDIDParam"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string"
                 }
             }
         },
         "helperdto.EncodeRevokeCredentialDTO": {
             "type": "object",
             "required": [
-                "address",
+                "user_account_abstraction_wallet",
                 "vc_param"
             ],
             "properties": {
-                "address": {
+                "user_account_abstraction_wallet": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 },
@@ -4549,128 +4549,128 @@ const docTemplate = `{
         "helperdto.EncodeSetDIDDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_param"
+                "did_param",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.SetDIDDIDParam"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string"
                 }
             }
         },
         "helperdto.EncodeSetDIDRootStorageDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_param"
+                "did_param",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.SetDIDRootStorageDIDParam"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string"
                 }
             }
         },
         "helperdto.EncodeStoreDataDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.StoreDataDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeTransferAliasOwnershipDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_param"
+                "did_param",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.TransferAliasOwnershipDIDParam"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string"
                 }
             }
         },
         "helperdto.EncodeTransferDIDOwnerDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.TransferDIDOwnershipDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeUnrevokeAliasDTO": {
             "type": "object",
             "required": [
-                "address",
-                "did_param"
+                "did_param",
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.UnrevokeAliasDIDParam"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string"
                 }
             }
         },
         "helperdto.EncodeUpdateDIDDTO": {
             "type": "object",
             "required": [
-                "address"
+                "user_account_abstraction_wallet"
             ],
             "properties": {
-                "address": {
-                    "type": "string",
-                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
-                },
                 "did_param": {
                     "$ref": "#/definitions/helperdto.UpdateDIDDTO"
                 },
                 "key_identifier": {
                     "type": "string",
                     "example": "key1"
+                },
+                "user_account_abstraction_wallet": {
+                    "type": "string",
+                    "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 }
             }
         },
         "helperdto.EncodeUpdateMetadataDTO": {
             "type": "object",
             "required": [
-                "address",
+                "user_account_abstraction_wallet",
                 "vc_param"
             ],
             "properties": {
-                "address": {
+                "user_account_abstraction_wallet": {
                     "type": "string",
                     "example": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
                 },
@@ -5079,7 +5079,7 @@ const docTemplate = `{
                 "details": {
                     "$ref": "#/definitions/response.Details"
                 },
-                "nonce": {
+                "nonce_user": {
                     "type": "string",
                     "example": "1"
                 },

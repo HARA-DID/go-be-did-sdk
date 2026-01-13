@@ -54,7 +54,7 @@ func NewHelperHandler(uc *helperuc.HelperUseCase) *HelperHandler {
 // @Success      200 {object} response.Response{data=string} "Successfully converted string to byte32"
 // @Failure      400 {object} response.Response "Invalid request body - malformed JSON or missing required fields"
 // @Failure      500 {object} response.Response "Internal server error - conversion failed"
-// @Router       /helper/string-2-hex32[post]
+// @Router       /helper/string-2-hex32 [post]
 func (hh *HelperHandler) StringToHex32(c *fiber.Ctx) error {
 	var input helperdto.StringToHex32DTO
 	if err := c.BodyParser(&input); err != nil {
