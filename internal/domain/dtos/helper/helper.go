@@ -494,7 +494,7 @@ func (dto *EncodeIssueCredentialDTO) Into() helperdomainmain.EncodeIssueCredenti
 // BurnCredentialDTO represents the request to burn a credential
 // @Description Data Transfer Object for burning a verifiable credential
 type BurnCredentialVCParamDTO struct {
-	Option  uint8  `json:"option" validate:"required,oneof=0 1" example:"0"`
+	Option  string `json:"option" validate:"required,oneof=0 1" example:"0"`
 	DID     string `json:"did" validate:"required,len=66" example:"0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"`
 	TokenID string `json:"token_id" validate:"required" example:"1"`
 }
@@ -512,10 +512,12 @@ func (dto *EncodeBurnCredentialDTO) Into() helperdomainmain.EncodeBurnCredential
 	var didRecp [32]byte
 	copy(didRecp[:], res)
 
+	optUint64, _ := strconv.ParseUint(dto.VCParam.Option, 10, 8)
+
 	return helperdomainmain.EncodeBurnCredentialParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		VCParam: vcfactory.BurnCredentialParams{
-			Option:  vcfactory.Options(dto.VCParam.Option),
+			Option:  vcfactory.Options(optUint64),
 			DID:     didRecp,
 			TokenID: tokenID,
 		},
@@ -525,7 +527,7 @@ func (dto *EncodeBurnCredentialDTO) Into() helperdomainmain.EncodeBurnCredential
 // UpdateMetadataDTO represents the request to update credential metadata
 // @Description Data Transfer Object for updating credential metadata
 type UpdateMetadataVCParamDTO struct {
-	Option       uint8  `json:"option" validate:"required,oneof=0 1" example:"0"`
+	Option       string `json:"option" validate:"required,oneof=0 1" example:"0"`
 	TokenID      string `json:"token_id" validate:"required" example:"1"`
 	IsValid      bool   `json:"is_valid" example:"true"`
 	ExpiredAt    string `json:"expired_at" validate:"required" example:"1735689600"`
@@ -544,10 +546,12 @@ func (dto *EncodeUpdateMetadataDTO) Into() helperdomainmain.EncodeUpdateMetadata
 	expiredAt := new(big.Int)
 	expiredAt.SetString(dto.VCParam.ExpiredAt, 10)
 
+	optUint64, _ := strconv.ParseUint(dto.VCParam.Option, 10, 8)
+
 	return helperdomainmain.EncodeUpdateMetadataParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		VCParam: vcfactory.UpdateMetadataParams{
-			Option:       vcfactory.Options(dto.VCParam.Option),
+			Option:       vcfactory.Options(optUint64),
 			TokenID:      tokenID,
 			IsValid:      dto.VCParam.IsValid,
 			ExpiredAt:    expiredAt,
@@ -559,7 +563,7 @@ func (dto *EncodeUpdateMetadataDTO) Into() helperdomainmain.EncodeUpdateMetadata
 // RevokeCredentialDTO represents the request to revoke a credential
 // @Description Data Transfer Object for revoking a verifiable credential
 type RevokeCredentialVCParamDTO struct {
-	Option  uint8  `json:"option" validate:"required,oneof=0 1" example:"0"`
+	Option  string `json:"option" validate:"required,oneof=0 1" example:"0"`
 	TokenID string `json:"token_id" validate:"required" example:"1"`
 }
 
@@ -572,10 +576,12 @@ func (dto *EncodeRevokeCredentialDTO) Into() helperdomainmain.EncodeRevokeCreden
 	tokenID := new(big.Int)
 	tokenID.SetString(dto.VCParam.TokenID, 10)
 
+	optUint64, _ := strconv.ParseUint(dto.VCParam.Option, 10, 8)
+
 	return helperdomainmain.EncodeRevokeCredentialParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		VCParam: vcfactory.RevokeCredentialParams{
-			Option:  vcfactory.Options(dto.VCParam.Option),
+			Option:  vcfactory.Options(optUint64),
 			TokenID: tokenID,
 		},
 	}
@@ -584,7 +590,7 @@ func (dto *EncodeRevokeCredentialDTO) Into() helperdomainmain.EncodeRevokeCreden
 // ClaimCredentialDTO represents the request to claim a credential
 // @Description Data Transfer Object for claiming a verifiable credential
 type ClaimCredentialVCParamDTO struct {
-	Option  uint8  `json:"option" validate:"required,oneof=0 1" example:"0"`
+	Option  string `json:"option" validate:"required,oneof=0 1" example:"0"`
 	TokenID string `json:"token_id" validate:"required" example:"1"`
 }
 
@@ -597,10 +603,12 @@ func (dto *EncodeClaimCredentialDTO) Into() helperdomainmain.EncodeClaimCredenti
 	tokenID := new(big.Int)
 	tokenID.SetString(dto.VCParam.TokenID, 10)
 
+	optUint64, _ := strconv.ParseUint(dto.VCParam.Option, 10, 8)
+
 	return helperdomainmain.EncodeClaimCredentialParamInput{
 		Address: utils.HexToAddress(dto.Address),
 		VCParam: vcfactory.ClaimCredentialParams{
-			Option:  vcfactory.Options(dto.VCParam.Option),
+			Option:  vcfactory.Options(optUint64),
 			TokenID: tokenID,
 		},
 	}
