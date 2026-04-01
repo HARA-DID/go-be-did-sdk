@@ -1,3 +1,10 @@
+# ⚠️ DEPRECATED
+
+> [!WARNING]
+> **This repository is deprecated.**
+> We are now moving to a new architecture using **Redis Streams** for event handling and processing.
+> Please refer to the new implementation for the latest updates.
+
 # Architecture Documentation
 
 ## Overview
